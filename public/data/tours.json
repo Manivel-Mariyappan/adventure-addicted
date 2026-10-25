@@ -1,0 +1,1625 @@
+[
+  {
+    "id": "tour-ldk8",
+    "gallery": [],
+    "faqs": [],
+    "safety": [
+      "Helmets, jackets and knee guards are compulsory on every ride.",
+      "The coordinator decides the riding plan each morning based on weather and road reports.",
+      "Tell us about any medical condition when you book. We carry oxygen and a first-aid kit."
+    ],
+    "cancellationPolicy": [
+      {
+        "daysBefore": 45,
+        "refundPercent": 90
+      },
+      {
+        "daysBefore": 30,
+        "refundPercent": 75
+      },
+      {
+        "daysBefore": 15,
+        "refundPercent": 50
+      },
+      {
+        "daysBefore": 0,
+        "refundPercent": 0
+      }
+    ],
+    "status": "published",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-25T00:00:00.000Z",
+    "code": "LDK8",
+    "slug": "leh-ladakh-bike-expedition",
+    "name": "Leh Ladakh Bike Expedition",
+    "tagline": "Khardung La, Nubra and Pangong on a Himalayan 450",
+    "destinationIds": [
+      "dst-leh",
+      "dst-nubra-valley",
+      "dst-pangong-lake"
+    ],
+    "route": [
+      "Leh",
+      "Khardung La",
+      "Nubra",
+      "Shyok",
+      "Pangong",
+      "Chang La",
+      "Leh"
+    ],
+    "summary": "Our most popular ride: a loop from Leh over two of the highest passes in the world.",
+    "description": "Two rest days in Leh to acclimatise, then a loop over Khardung La to the dunes of Nubra, along the Shyok river to Pangong Lake and back over Chang La. Short riding days, a mechanic in the backup vehicle and plenty of stops for photos.",
+    "highlights": [
+      "Khardung La at 5,359 m",
+      "Camel ride on the Hunder dunes",
+      "Night at Pangong Lake",
+      "Monasteries of Thiksey and Diskit"
+    ],
+    "coverImage": "art/bike-expedition.svg",
+    "days": 8,
+    "nights": 7,
+    "startLocation": "Leh airport",
+    "endLocation": "Leh airport",
+    "difficulty": "Challenging",
+    "maxAltitudeM": 5359,
+    "totalDistanceKm": 650,
+    "flightsIncluded": false,
+    "accommodation": "Hotels in Leh, Swiss tents in Nubra and Pangong",
+    "mealPlan": "Breakfast and dinner",
+    "travelOptions": [
+      {
+        "id": "bike-solo",
+        "type": "bike",
+        "label": "Himalayan 450, solo rider",
+        "description": "Your own bike for the whole loop.",
+        "price": 38500,
+        "includes": [
+          "Royal Enfield Himalayan 450 with fuel",
+          "Mechanic and spare parts",
+          "Riding gear check before departure"
+        ],
+        "customerPays": []
+      },
+      {
+        "id": "bike-pillion",
+        "type": "bike",
+        "label": "Pillion on a shared bike",
+        "description": "Ride behind a friend or partner on one bike.",
+        "price": 29500,
+        "includes": [
+          "Seat on a Himalayan 450 shared with your rider"
+        ],
+        "customerPays": []
+      },
+      {
+        "id": "suv-seat",
+        "type": "vehicle",
+        "label": "Seat in the backup SUV",
+        "description": "For non-riders. Same route, same stays.",
+        "price": 31000,
+        "includes": [
+          "Seat in a Toyota Innova with driver"
+        ],
+        "customerPays": []
+      }
+    ],
+    "addOns": [
+      {
+        "id": "single-room",
+        "label": "Single room",
+        "price": 12000,
+        "unit": "person"
+      },
+      {
+        "id": "flights-del",
+        "label": "Delhi–Leh return flights",
+        "price": 14500,
+        "unit": "person"
+      },
+      {
+        "id": "extra-night",
+        "label": "Extra night in Leh",
+        "price": 3500,
+        "unit": "person"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrive in Leh and rest",
+        "location": "Leh",
+        "description": "Airport pickup and check-in. The whole day is for rest: no walking uphill, lots of water.",
+        "activities": [
+          "Airport pickup",
+          "Welcome briefing in the evening"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Dinner",
+        "distanceKm": null,
+        "altitudeM": 3524
+      },
+      {
+        "day": 2,
+        "title": "Leh local ride",
+        "location": "Leh",
+        "description": "A short first ride to get used to the bikes: Hall of Fame, Magnetic Hill and the confluence of the Indus and Zanskar.",
+        "activities": [
+          "Bike handover",
+          "Magnetic Hill",
+          "Sangam viewpoint",
+          "Shanti Stupa sunset"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 70,
+        "altitudeM": 3524
+      },
+      {
+        "day": 3,
+        "title": "Over Khardung La to Nubra",
+        "location": "Nubra Valley",
+        "description": "Climb to Khardung La, then down into the Nubra valley. Evening at the Hunder sand dunes.",
+        "activities": [
+          "Khardung La top",
+          "Diskit monastery",
+          "Camel ride at Hunder"
+        ],
+        "stay": "Swiss tents in Hunder",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 120,
+        "altitudeM": 5359
+      },
+      {
+        "day": 4,
+        "title": "Turtuk day trip",
+        "location": "Nubra Valley",
+        "description": "Ride along the Shyok to Turtuk, a Balti village with apricot orchards, and back to camp.",
+        "activities": [
+          "Turtuk village walk",
+          "Apricot orchards"
+        ],
+        "stay": "Swiss tents in Hunder",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 160,
+        "altitudeM": 2900
+      },
+      {
+        "day": 5,
+        "title": "Nubra to Pangong via Shyok",
+        "location": "Pangong Lake",
+        "description": "The Shyok road follows the river to the lake. Rough patches and water crossings; take it slow.",
+        "activities": [
+          "Shyok river road",
+          "Sunset at Pangong"
+        ],
+        "stay": "Lakeside camp",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 170,
+        "altitudeM": 4225
+      },
+      {
+        "day": 6,
+        "title": "Pangong to Leh over Chang La",
+        "location": "Leh",
+        "description": "Sunrise at the lake, then over Chang La and back to Leh with a stop at Thiksey monastery.",
+        "activities": [
+          "Pangong sunrise",
+          "Chang La",
+          "Thiksey monastery"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 160,
+        "altitudeM": 5360
+      },
+      {
+        "day": 7,
+        "title": "Free day in Leh",
+        "location": "Leh",
+        "description": "Bike return in the morning. Free afternoon for shopping in the bazaar. Farewell dinner.",
+        "activities": [
+          "Bike return",
+          "Leh market",
+          "Farewell dinner"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": null,
+        "altitudeM": 3524
+      },
+      {
+        "day": 8,
+        "title": "Departure",
+        "location": "Leh",
+        "description": "Drop at Leh airport.",
+        "activities": [
+          "Airport drop"
+        ],
+        "stay": "",
+        "meals": "Breakfast",
+        "distanceKm": null,
+        "altitudeM": 3524
+      }
+    ],
+    "inclusions": [
+      "Hotel and camp stays on twin sharing",
+      "Breakfast and dinner every day",
+      "Tour coordinator for the whole trip",
+      "Backup vehicle with luggage, oxygen and first aid",
+      "All entry permits for travellers",
+      "Inner Line Permits and environment fees"
+    ],
+    "exclusions": [
+      "Flights to and from Leh (available as an add-on)",
+      "Lunch",
+      "Bike damage beyond the deposit",
+      "Personal expenses and tips"
+    ],
+    "documents": [
+      "Original driving licence for riders",
+      "Government photo ID (Aadhaar, passport or voter ID)",
+      "Medical fitness declaration"
+    ],
+    "minParticipants": 8,
+    "maxParticipants": 20,
+    "featured": true
+  },
+  {
+    "id": "tour-mnl10",
+    "gallery": [],
+    "faqs": [],
+    "safety": [
+      "Helmets, jackets and knee guards are compulsory on every ride.",
+      "The coordinator decides the riding plan each morning based on weather and road reports.",
+      "Tell us about any medical condition when you book. We carry oxygen and a first-aid kit."
+    ],
+    "cancellationPolicy": [
+      {
+        "daysBefore": 45,
+        "refundPercent": 90
+      },
+      {
+        "daysBefore": 30,
+        "refundPercent": 75
+      },
+      {
+        "daysBefore": 15,
+        "refundPercent": 50
+      },
+      {
+        "daysBefore": 0,
+        "refundPercent": 0
+      }
+    ],
+    "status": "published",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-25T00:00:00.000Z",
+    "code": "MNL10",
+    "slug": "manali-leh-highway-ride",
+    "name": "Manali to Leh Highway Ride",
+    "tagline": "The full Manali–Leh highway, by bike or in your own car",
+    "destinationIds": [
+      "dst-manali",
+      "dst-leh",
+      "dst-pangong-lake"
+    ],
+    "route": [
+      "Manali",
+      "Atal Tunnel",
+      "Jispa",
+      "Sarchu",
+      "Tanglang La",
+      "Leh",
+      "Pangong",
+      "Leh"
+    ],
+    "summary": "Ten days from the pine forests of Manali to the high desert of Ladakh.",
+    "description": "Start in Manali, ride through the Atal Tunnel into Lahaul, camp at Sarchu and cross Tanglang La into Ladakh. The gradual climb helps you acclimatise. Ride with us, or drive your own car with the group and share the stays, guide and backup vehicle.",
+    "highlights": [
+      "Atal Tunnel",
+      "Gata Loops",
+      "Tanglang La at 5,328 m",
+      "Pangong Lake"
+    ],
+    "coverImage": "art/manali.svg",
+    "days": 10,
+    "nights": 9,
+    "startLocation": "Manali",
+    "endLocation": "Leh airport",
+    "difficulty": "Challenging",
+    "maxAltitudeM": 5328,
+    "totalDistanceKm": 1050,
+    "flightsIncluded": false,
+    "accommodation": "Hotels, homestays and Swiss tents",
+    "mealPlan": "Breakfast and dinner",
+    "travelOptions": [
+      {
+        "id": "bike-solo",
+        "type": "bike",
+        "label": "Himalayan 450, solo rider",
+        "description": "Your own bike from Manali to Leh.",
+        "price": 46000,
+        "includes": [
+          "Royal Enfield Himalayan 450 with fuel",
+          "Mechanic and spare parts",
+          "Riding gear check before departure"
+        ],
+        "customerPays": []
+      },
+      {
+        "id": "bike-pillion",
+        "type": "bike",
+        "label": "Pillion on a shared bike",
+        "description": "",
+        "price": 35000,
+        "includes": [],
+        "customerPays": []
+      },
+      {
+        "id": "own-car",
+        "type": "own-car",
+        "label": "Drive your own car",
+        "description": "Join the convoy in your own SUV. Price is per person.",
+        "price": 27500,
+        "includes": [
+          "Convoy lead and route plan",
+          "Parking at hotels"
+        ],
+        "customerPays": [
+          "Fuel",
+          "Tolls and parking",
+          "Vehicle repairs and maintenance",
+          "Inner Line Permit vehicle fee"
+        ]
+      }
+    ],
+    "addOns": [
+      {
+        "id": "single-room",
+        "label": "Single room",
+        "price": 15000,
+        "unit": "person"
+      },
+      {
+        "id": "flight-back",
+        "label": "Leh–Delhi flight home",
+        "price": 7500,
+        "unit": "person"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrive in Manali",
+        "location": "Manali",
+        "description": "Check in and settle. Gear check and briefing in the evening.",
+        "activities": [
+          "Briefing",
+          "Old Manali walk"
+        ],
+        "stay": "Hotel in Manali",
+        "meals": "Dinner",
+        "distanceKm": null,
+        "altitudeM": 2050
+      },
+      {
+        "day": 2,
+        "title": "Manali to Jispa",
+        "location": "Jispa",
+        "description": "Through the Atal Tunnel into Lahaul and along the Bhaga river.",
+        "activities": [
+          "Atal Tunnel",
+          "Keylong"
+        ],
+        "stay": "Riverside camp, Jispa",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 140,
+        "altitudeM": 3200
+      },
+      {
+        "day": 3,
+        "title": "Jispa to Sarchu",
+        "location": "Sarchu",
+        "description": "Over Baralacha La to the plains of Sarchu.",
+        "activities": [
+          "Deepak Tal",
+          "Baralacha La"
+        ],
+        "stay": "Swiss tents, Sarchu",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 90,
+        "altitudeM": 4290
+      },
+      {
+        "day": 4,
+        "title": "Sarchu to Leh",
+        "location": "Leh",
+        "description": "The longest day: Gata Loops, More Plains and Tanglang La.",
+        "activities": [
+          "Gata Loops",
+          "More Plains",
+          "Tanglang La"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 250,
+        "altitudeM": 5328
+      },
+      {
+        "day": 5,
+        "title": "Rest day in Leh",
+        "location": "Leh",
+        "description": "Rest and acclimatise. Short visit to Shanti Stupa in the evening.",
+        "activities": [
+          "Shanti Stupa"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": null,
+        "altitudeM": 3524
+      },
+      {
+        "day": 6,
+        "title": "Leh to Nubra",
+        "location": "Nubra Valley",
+        "description": "Over Khardung La to Hunder.",
+        "activities": [
+          "Khardung La",
+          "Hunder dunes"
+        ],
+        "stay": "Swiss tents in Hunder",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 120,
+        "altitudeM": 5359
+      },
+      {
+        "day": 7,
+        "title": "Nubra to Pangong",
+        "location": "Pangong Lake",
+        "description": "Shyok route to the lake.",
+        "activities": [
+          "Shyok road",
+          "Pangong sunset"
+        ],
+        "stay": "Lakeside camp",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 170,
+        "altitudeM": 4225
+      },
+      {
+        "day": 8,
+        "title": "Pangong to Leh",
+        "location": "Leh",
+        "description": "Back over Chang La.",
+        "activities": [
+          "Chang La",
+          "Thiksey"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 160,
+        "altitudeM": 5360
+      },
+      {
+        "day": 9,
+        "title": "Free day",
+        "location": "Leh",
+        "description": "Bike return and a free afternoon.",
+        "activities": [
+          "Bike return",
+          "Farewell dinner"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": null,
+        "altitudeM": 3524
+      },
+      {
+        "day": 10,
+        "title": "Departure",
+        "location": "Leh",
+        "description": "Airport drop.",
+        "activities": [
+          "Airport drop"
+        ],
+        "stay": "",
+        "meals": "Breakfast",
+        "distanceKm": null,
+        "altitudeM": 3524
+      }
+    ],
+    "inclusions": [
+      "Hotel and camp stays on twin sharing",
+      "Breakfast and dinner every day",
+      "Tour coordinator for the whole trip",
+      "Backup vehicle with luggage, oxygen and first aid",
+      "All entry permits for travellers"
+    ],
+    "exclusions": [
+      "Flights",
+      "Lunch",
+      "Fuel for own cars",
+      "Personal expenses"
+    ],
+    "documents": [
+      "Driving licence",
+      "Vehicle RC, insurance and PUC for own cars",
+      "Government photo ID"
+    ],
+    "minParticipants": 8,
+    "maxParticipants": 18,
+    "featured": true
+  },
+  {
+    "id": "tour-spt9",
+    "gallery": [],
+    "faqs": [],
+    "safety": [
+      "Helmets, jackets and knee guards are compulsory on every ride.",
+      "The coordinator decides the riding plan each morning based on weather and road reports.",
+      "Tell us about any medical condition when you book. We carry oxygen and a first-aid kit."
+    ],
+    "cancellationPolicy": [
+      {
+        "daysBefore": 45,
+        "refundPercent": 90
+      },
+      {
+        "daysBefore": 30,
+        "refundPercent": 75
+      },
+      {
+        "daysBefore": 15,
+        "refundPercent": 50
+      },
+      {
+        "daysBefore": 0,
+        "refundPercent": 0
+      }
+    ],
+    "status": "published",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-25T00:00:00.000Z",
+    "code": "SPT9",
+    "slug": "spiti-valley-circuit",
+    "name": "Spiti Valley Circuit",
+    "tagline": "Shimla to Manali the long way, through Kinnaur and Spiti",
+    "destinationIds": [
+      "dst-spiti-valley",
+      "dst-shimla",
+      "dst-manali"
+    ],
+    "route": [
+      "Shimla",
+      "Sangla",
+      "Kalpa",
+      "Tabo",
+      "Kaza",
+      "Chandratal",
+      "Manali"
+    ],
+    "summary": "Nine days through apple valleys and high desert, ending at Chandratal lake.",
+    "description": "The Spiti circuit goes up the Sutlej through Kinnaur, into the cold desert of Spiti and out over Kunzum La to Manali. Monasteries, fossil villages and the highest post office in the world.",
+    "highlights": [
+      "Key monastery",
+      "Langza fossil village",
+      "Chandratal lake",
+      "Kinnaur apple orchards"
+    ],
+    "coverImage": "art/spiti-valley.svg",
+    "days": 9,
+    "nights": 8,
+    "startLocation": "Shimla",
+    "endLocation": "Manali",
+    "difficulty": "Moderate",
+    "maxAltitudeM": 4590,
+    "totalDistanceKm": 780,
+    "flightsIncluded": false,
+    "accommodation": "Hotels and homestays",
+    "mealPlan": "Breakfast and dinner",
+    "travelOptions": [
+      {
+        "id": "own-car",
+        "type": "own-car",
+        "label": "Drive your own car",
+        "description": "High-clearance car recommended.",
+        "price": 24000,
+        "includes": [
+          "Convoy lead"
+        ],
+        "customerPays": [
+          "Fuel",
+          "Tolls and parking",
+          "Vehicle repairs and maintenance",
+          "Inner Line Permit vehicle fee"
+        ]
+      },
+      {
+        "id": "bike-solo",
+        "type": "bike",
+        "label": "Himalayan 450, solo rider",
+        "description": "",
+        "price": 36000,
+        "includes": [
+          "Royal Enfield Himalayan 450 with fuel",
+          "Mechanic and spare parts",
+          "Riding gear check before departure"
+        ],
+        "customerPays": []
+      },
+      {
+        "id": "tempo-seat",
+        "type": "vehicle",
+        "label": "Seat in our Tempo Traveller",
+        "description": "",
+        "price": 28000,
+        "includes": [
+          "Seat in a 12-seater Tempo Traveller"
+        ],
+        "customerPays": []
+      }
+    ],
+    "addOns": [
+      {
+        "id": "single-room",
+        "label": "Single room",
+        "price": 11000,
+        "unit": "person"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrive in Shimla",
+        "location": "Shimla",
+        "description": "Meet the group and walk the Mall Road.",
+        "activities": [
+          "Briefing",
+          "Mall Road"
+        ],
+        "stay": "Hotel in Shimla",
+        "meals": "Dinner",
+        "distanceKm": null,
+        "altitudeM": 2276
+      },
+      {
+        "day": 2,
+        "title": "Shimla to Sangla",
+        "location": "Sangla",
+        "description": "Along the Sutlej into Kinnaur.",
+        "activities": [
+          "Narkanda",
+          "Sutlej valley"
+        ],
+        "stay": "Riverside hotel, Sangla",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 220,
+        "altitudeM": 2700
+      },
+      {
+        "day": 3,
+        "title": "Chitkul and Kalpa",
+        "location": "Kalpa",
+        "description": "Morning at Chitkul, the last village before Tibet, then to Kalpa.",
+        "activities": [
+          "Chitkul",
+          "Kinner Kailash view"
+        ],
+        "stay": "Hotel in Kalpa",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 110,
+        "altitudeM": 2960
+      },
+      {
+        "day": 4,
+        "title": "Kalpa to Tabo",
+        "location": "Tabo",
+        "description": "Into Spiti past Nako lake.",
+        "activities": [
+          "Nako lake",
+          "Tabo caves"
+        ],
+        "stay": "Homestay in Tabo",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 150,
+        "altitudeM": 3280
+      },
+      {
+        "day": 5,
+        "title": "Tabo to Kaza",
+        "location": "Kaza",
+        "description": "Dhankar monastery on the way.",
+        "activities": [
+          "Dhankar",
+          "Pin valley"
+        ],
+        "stay": "Hotel in Kaza",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 50,
+        "altitudeM": 3800
+      },
+      {
+        "day": 6,
+        "title": "Kaza villages",
+        "location": "Kaza",
+        "description": "Key monastery, Kibber, Langza and Hikkim.",
+        "activities": [
+          "Key monastery",
+          "Langza",
+          "Hikkim post office"
+        ],
+        "stay": "Hotel in Kaza",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 90,
+        "altitudeM": 4440
+      },
+      {
+        "day": 7,
+        "title": "Kaza to Chandratal",
+        "location": "Chandratal",
+        "description": "Over Kunzum La to the moon lake.",
+        "activities": [
+          "Kunzum La",
+          "Chandratal"
+        ],
+        "stay": "Camp near Chandratal",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 95,
+        "altitudeM": 4590
+      },
+      {
+        "day": 8,
+        "title": "Chandratal to Manali",
+        "location": "Manali",
+        "description": "Through Batal and the Atal Tunnel.",
+        "activities": [
+          "Atal Tunnel"
+        ],
+        "stay": "Hotel in Manali",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 120,
+        "altitudeM": 2050
+      },
+      {
+        "day": 9,
+        "title": "Departure",
+        "location": "Manali",
+        "description": "Check out after breakfast.",
+        "activities": [],
+        "stay": "",
+        "meals": "Breakfast",
+        "distanceKm": null,
+        "altitudeM": 2050
+      }
+    ],
+    "inclusions": [
+      "Hotel and camp stays on twin sharing",
+      "Breakfast and dinner every day",
+      "Tour coordinator for the whole trip",
+      "Backup vehicle with luggage, oxygen and first aid",
+      "All entry permits for travellers"
+    ],
+    "exclusions": [
+      "Travel to Shimla and from Manali",
+      "Lunch",
+      "Personal expenses"
+    ],
+    "documents": [
+      "Government photo ID",
+      "Driving licence and vehicle papers for drivers and riders"
+    ],
+    "minParticipants": 6,
+    "maxParticipants": 16,
+    "featured": true
+  },
+  {
+    "id": "tour-ldk6f",
+    "gallery": [],
+    "faqs": [],
+    "safety": [
+      "Helmets, jackets and knee guards are compulsory on every ride.",
+      "The coordinator decides the riding plan each morning based on weather and road reports.",
+      "Tell us about any medical condition when you book. We carry oxygen and a first-aid kit."
+    ],
+    "cancellationPolicy": [
+      {
+        "daysBefore": 45,
+        "refundPercent": 90
+      },
+      {
+        "daysBefore": 30,
+        "refundPercent": 75
+      },
+      {
+        "daysBefore": 15,
+        "refundPercent": 50
+      },
+      {
+        "daysBefore": 0,
+        "refundPercent": 0
+      }
+    ],
+    "status": "published",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-25T00:00:00.000Z",
+    "code": "LDK6F",
+    "slug": "ladakh-family-escape-with-flights",
+    "name": "Ladakh Family Escape with Flights",
+    "tagline": "Leh, Nubra and Pangong without the riding, flights included",
+    "destinationIds": [
+      "dst-leh",
+      "dst-nubra-valley",
+      "dst-pangong-lake"
+    ],
+    "route": [
+      "Delhi",
+      "Leh",
+      "Nubra",
+      "Pangong",
+      "Leh",
+      "Delhi"
+    ],
+    "summary": "Return flights from Delhi, a comfortable SUV and easy days for families.",
+    "description": "For families and first-timers who want Ladakh without the long rides. Flights from Delhi, two easy days in Leh, then Nubra and Pangong in an SUV with a local driver.",
+    "highlights": [
+      "Delhi–Leh flights included",
+      "Comfortable SUVs",
+      "Kid-friendly pace"
+    ],
+    "coverImage": "art/pangong-lake.svg",
+    "days": 6,
+    "nights": 5,
+    "startLocation": "Delhi airport",
+    "endLocation": "Delhi airport",
+    "difficulty": "Moderate",
+    "maxAltitudeM": 5359,
+    "totalDistanceKm": 520,
+    "flightsIncluded": true,
+    "accommodation": "Hotels in Leh, deluxe tents in Nubra and Pangong",
+    "mealPlan": "Breakfast and dinner",
+    "travelOptions": [
+      {
+        "id": "suv-seat",
+        "type": "vehicle",
+        "label": "Seat in our SUV, with flights",
+        "description": "Return economy flights from Delhi included.",
+        "price": 42900,
+        "includes": [
+          "Delhi–Leh–Delhi economy flights",
+          "Seat in an Innova or Xylo"
+        ],
+        "customerPays": []
+      }
+    ],
+    "addOns": [
+      {
+        "id": "single-room",
+        "label": "Single room",
+        "price": 10000,
+        "unit": "person"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Fly to Leh",
+        "location": "Leh",
+        "description": "Morning flight from Delhi. Rest for the day.",
+        "activities": [
+          "Flight",
+          "Rest"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Dinner",
+        "distanceKm": null,
+        "altitudeM": 3524
+      },
+      {
+        "day": 2,
+        "title": "Leh sightseeing",
+        "location": "Leh",
+        "description": "Shanti Stupa, Leh Palace and Hall of Fame by car.",
+        "activities": [
+          "Leh Palace",
+          "Shanti Stupa"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 40,
+        "altitudeM": 3524
+      },
+      {
+        "day": 3,
+        "title": "Leh to Nubra",
+        "location": "Nubra Valley",
+        "description": "Over Khardung La to Hunder.",
+        "activities": [
+          "Khardung La",
+          "Camel ride"
+        ],
+        "stay": "Deluxe tent",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 120,
+        "altitudeM": 5359
+      },
+      {
+        "day": 4,
+        "title": "Nubra to Pangong",
+        "location": "Pangong Lake",
+        "description": "Shyok road to the lake.",
+        "activities": [
+          "Pangong sunset"
+        ],
+        "stay": "Deluxe tent",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 170,
+        "altitudeM": 4225
+      },
+      {
+        "day": 5,
+        "title": "Pangong to Leh",
+        "location": "Leh",
+        "description": "Back via Chang La and Thiksey.",
+        "activities": [
+          "Thiksey"
+        ],
+        "stay": "Hotel in Leh",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 160,
+        "altitudeM": 5360
+      },
+      {
+        "day": 6,
+        "title": "Fly home",
+        "location": "Delhi",
+        "description": "Morning flight to Delhi.",
+        "activities": [
+          "Flight"
+        ],
+        "stay": "",
+        "meals": "Breakfast",
+        "distanceKm": null,
+        "altitudeM": null
+      }
+    ],
+    "inclusions": [
+      "Return flights from Delhi",
+      "Hotel and camp stays on twin sharing",
+      "Breakfast and dinner every day",
+      "Tour coordinator for the whole trip",
+      "Backup vehicle with luggage, oxygen and first aid",
+      "All entry permits for travellers"
+    ],
+    "exclusions": [
+      "Lunch",
+      "Extra baggage",
+      "Personal expenses"
+    ],
+    "documents": [
+      "Government photo ID for every traveller, including children"
+    ],
+    "minParticipants": 6,
+    "maxParticipants": 14,
+    "featured": false
+  },
+  {
+    "id": "tour-ksh6",
+    "gallery": [],
+    "faqs": [],
+    "safety": [
+      "Helmets, jackets and knee guards are compulsory on every ride.",
+      "The coordinator decides the riding plan each morning based on weather and road reports.",
+      "Tell us about any medical condition when you book. We carry oxygen and a first-aid kit."
+    ],
+    "cancellationPolicy": [
+      {
+        "daysBefore": 45,
+        "refundPercent": 90
+      },
+      {
+        "daysBefore": 30,
+        "refundPercent": 75
+      },
+      {
+        "daysBefore": 15,
+        "refundPercent": 50
+      },
+      {
+        "daysBefore": 0,
+        "refundPercent": 0
+      }
+    ],
+    "status": "published",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-25T00:00:00.000Z",
+    "code": "KSH6",
+    "slug": "kashmir-valleys-road-trip",
+    "name": "Kashmir Valleys Road Trip",
+    "tagline": "Srinagar, Gulmarg, Sonamarg and Pahalgam",
+    "destinationIds": [
+      "dst-srinagar",
+      "dst-gulmarg"
+    ],
+    "route": [
+      "Srinagar",
+      "Gulmarg",
+      "Sonamarg",
+      "Pahalgam",
+      "Srinagar"
+    ],
+    "summary": "A houseboat night, the Gulmarg gondola and three valleys in six days.",
+    "description": "Start on a houseboat on Dal Lake, then day trips and nights in Gulmarg, Sonamarg and Pahalgam. Drive your own car with the group or take a seat in ours.",
+    "highlights": [
+      "Houseboat on Dal Lake",
+      "Gulmarg gondola",
+      "Thajiwas glacier",
+      "Betaab valley"
+    ],
+    "coverImage": "art/srinagar.svg",
+    "days": 6,
+    "nights": 5,
+    "startLocation": "Srinagar airport",
+    "endLocation": "Srinagar airport",
+    "difficulty": "Easy",
+    "maxAltitudeM": 3980,
+    "totalDistanceKm": 480,
+    "flightsIncluded": false,
+    "accommodation": "Houseboat and hotels",
+    "mealPlan": "Breakfast and dinner",
+    "travelOptions": [
+      {
+        "id": "suv-seat",
+        "type": "vehicle",
+        "label": "Seat in our SUV",
+        "description": "",
+        "price": 24500,
+        "includes": [
+          "Seat in an SUV with driver"
+        ],
+        "customerPays": []
+      },
+      {
+        "id": "own-car",
+        "type": "own-car",
+        "label": "Drive your own car",
+        "description": "",
+        "price": 19500,
+        "includes": [
+          "Convoy lead"
+        ],
+        "customerPays": [
+          "Fuel",
+          "Tolls and parking",
+          "Vehicle repairs"
+        ]
+      }
+    ],
+    "addOns": [
+      {
+        "id": "gondola",
+        "label": "Gulmarg gondola, phase 1 and 2",
+        "price": 2800,
+        "unit": "person"
+      },
+      {
+        "id": "single-room",
+        "label": "Single room",
+        "price": 9000,
+        "unit": "person"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Srinagar houseboat",
+        "location": "Srinagar",
+        "description": "Pickup and check-in on the houseboat. Evening shikara ride.",
+        "activities": [
+          "Shikara ride"
+        ],
+        "stay": "Houseboat",
+        "meals": "Dinner",
+        "distanceKm": 20,
+        "altitudeM": 1585
+      },
+      {
+        "day": 2,
+        "title": "Mughal gardens and old city",
+        "location": "Srinagar",
+        "description": "Nishat, Shalimar and an old city walk.",
+        "activities": [
+          "Nishat Bagh",
+          "Shalimar Bagh"
+        ],
+        "stay": "Hotel in Srinagar",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 30,
+        "altitudeM": 1585
+      },
+      {
+        "day": 3,
+        "title": "Gulmarg",
+        "location": "Gulmarg",
+        "description": "Drive to Gulmarg and ride the gondola.",
+        "activities": [
+          "Gondola"
+        ],
+        "stay": "Hotel in Gulmarg",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 50,
+        "altitudeM": 2650
+      },
+      {
+        "day": 4,
+        "title": "Sonamarg",
+        "location": "Sonamarg",
+        "description": "Thajiwas glacier walk or pony ride.",
+        "activities": [
+          "Thajiwas glacier"
+        ],
+        "stay": "Hotel in Sonamarg",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 135,
+        "altitudeM": 2800
+      },
+      {
+        "day": 5,
+        "title": "Pahalgam",
+        "location": "Pahalgam",
+        "description": "Betaab and Aru valleys.",
+        "activities": [
+          "Betaab valley",
+          "Aru valley"
+        ],
+        "stay": "Hotel in Pahalgam",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 140,
+        "altitudeM": 2200
+      },
+      {
+        "day": 6,
+        "title": "Departure",
+        "location": "Srinagar",
+        "description": "Drive to Srinagar airport.",
+        "activities": [
+          "Airport drop"
+        ],
+        "stay": "",
+        "meals": "Breakfast",
+        "distanceKm": 95,
+        "altitudeM": 1585
+      }
+    ],
+    "inclusions": [
+      "Hotel and camp stays on twin sharing",
+      "Breakfast and dinner every day",
+      "Tour coordinator for the whole trip",
+      "Backup vehicle with luggage, oxygen and first aid",
+      "All entry permits for travellers"
+    ],
+    "exclusions": [
+      "Flights",
+      "Gondola tickets (add-on)",
+      "Pony rides",
+      "Lunch"
+    ],
+    "documents": [
+      "Government photo ID"
+    ],
+    "minParticipants": 6,
+    "maxParticipants": 16,
+    "featured": true
+  },
+  {
+    "id": "tour-rj7",
+    "gallery": [],
+    "faqs": [],
+    "safety": [
+      "Helmets, jackets and knee guards are compulsory on every ride.",
+      "The coordinator decides the riding plan each morning based on weather and road reports.",
+      "Tell us about any medical condition when you book. We carry oxygen and a first-aid kit."
+    ],
+    "cancellationPolicy": [
+      {
+        "daysBefore": 45,
+        "refundPercent": 90
+      },
+      {
+        "daysBefore": 30,
+        "refundPercent": 75
+      },
+      {
+        "daysBefore": 15,
+        "refundPercent": 50
+      },
+      {
+        "daysBefore": 0,
+        "refundPercent": 0
+      }
+    ],
+    "status": "published",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-25T00:00:00.000Z",
+    "code": "RJ7",
+    "slug": "rajasthan-royal-road-trip",
+    "name": "Rajasthan Royal Road Trip",
+    "tagline": "Jaipur to Jaisalmer with a night in the desert",
+    "destinationIds": [
+      "dst-rajasthan"
+    ],
+    "route": [
+      "Jaipur",
+      "Pushkar",
+      "Jodhpur",
+      "Jaisalmer",
+      "Sam dunes"
+    ],
+    "summary": "Seven days of forts and palaces, ending with a desert camp.",
+    "description": "Smooth highways and short drives make this an easy winter trip. Amber fort in Jaipur, the lake at Pushkar, Mehrangarh in Jodhpur and the golden fort of Jaisalmer, with a camp on the Sam dunes.",
+    "highlights": [
+      "Amber fort",
+      "Mehrangarh",
+      "Jaisalmer fort",
+      "Desert camp"
+    ],
+    "coverImage": "art/rajasthan.svg",
+    "days": 7,
+    "nights": 6,
+    "startLocation": "Jaipur",
+    "endLocation": "Jaisalmer",
+    "difficulty": "Easy",
+    "maxAltitudeM": null,
+    "totalDistanceKm": 900,
+    "flightsIncluded": false,
+    "accommodation": "Heritage hotels and a desert camp",
+    "mealPlan": "Breakfast and dinner",
+    "travelOptions": [
+      {
+        "id": "own-car",
+        "type": "own-car",
+        "label": "Drive your own car",
+        "description": "",
+        "price": 18500,
+        "includes": [
+          "Convoy lead"
+        ],
+        "customerPays": [
+          "Fuel",
+          "Tolls and parking"
+        ]
+      },
+      {
+        "id": "suv-seat",
+        "type": "vehicle",
+        "label": "Seat in our SUV",
+        "description": "",
+        "price": 26000,
+        "includes": [
+          "Seat in an SUV with driver"
+        ],
+        "customerPays": []
+      },
+      {
+        "id": "bike-solo",
+        "type": "bike",
+        "label": "Royal Enfield Classic, solo rider",
+        "description": "",
+        "price": 31000,
+        "includes": [
+          "Royal Enfield Classic 350 with fuel"
+        ],
+        "customerPays": []
+      }
+    ],
+    "addOns": [
+      {
+        "id": "single-room",
+        "label": "Single room",
+        "price": 9500,
+        "unit": "person"
+      },
+      {
+        "id": "jeep-safari",
+        "label": "Desert jeep safari",
+        "price": 1800,
+        "unit": "person"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrive in Jaipur",
+        "location": "Jaipur",
+        "description": "Check in to a heritage hotel.",
+        "activities": [
+          "Welcome dinner"
+        ],
+        "stay": "Heritage hotel, Jaipur",
+        "meals": "Dinner",
+        "distanceKm": null,
+        "altitudeM": null
+      },
+      {
+        "day": 2,
+        "title": "Jaipur",
+        "location": "Jaipur",
+        "description": "Amber fort, City Palace and Hawa Mahal.",
+        "activities": [
+          "Amber fort",
+          "City Palace"
+        ],
+        "stay": "Heritage hotel, Jaipur",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 40,
+        "altitudeM": null
+      },
+      {
+        "day": 3,
+        "title": "Jaipur to Pushkar",
+        "location": "Pushkar",
+        "description": "Lake ghats and the Brahma temple.",
+        "activities": [
+          "Pushkar ghats"
+        ],
+        "stay": "Hotel in Pushkar",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 150,
+        "altitudeM": null
+      },
+      {
+        "day": 4,
+        "title": "Pushkar to Jodhpur",
+        "location": "Jodhpur",
+        "description": "The blue city under Mehrangarh.",
+        "activities": [
+          "Mehrangarh"
+        ],
+        "stay": "Haveli in Jodhpur",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 190,
+        "altitudeM": null
+      },
+      {
+        "day": 5,
+        "title": "Jodhpur to Jaisalmer",
+        "location": "Jaisalmer",
+        "description": "Long drive across the Thar.",
+        "activities": [
+          "Thar desert"
+        ],
+        "stay": "Hotel in Jaisalmer",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 285,
+        "altitudeM": null
+      },
+      {
+        "day": 6,
+        "title": "Jaisalmer fort and dunes",
+        "location": "Sam dunes",
+        "description": "Fort and havelis in the morning, desert camp in the evening.",
+        "activities": [
+          "Jaisalmer fort",
+          "Patwon ki haveli",
+          "Camel ride"
+        ],
+        "stay": "Desert camp",
+        "meals": "Breakfast, dinner",
+        "distanceKm": 45,
+        "altitudeM": null
+      },
+      {
+        "day": 7,
+        "title": "Departure",
+        "location": "Jaisalmer",
+        "description": "Drop at Jaisalmer station or airport.",
+        "activities": [],
+        "stay": "",
+        "meals": "Breakfast",
+        "distanceKm": 45,
+        "altitudeM": null
+      }
+    ],
+    "inclusions": [
+      "Hotel and camp stays on twin sharing",
+      "Breakfast and dinner every day",
+      "Tour coordinator for the whole trip",
+      "Backup vehicle with luggage, oxygen and first aid",
+      "All entry permits for travellers"
+    ],
+    "exclusions": [
+      "Travel to Jaipur and from Jaisalmer",
+      "Monument tickets",
+      "Lunch"
+    ],
+    "documents": [
+      "Government photo ID",
+      "Driving licence and vehicle papers for drivers"
+    ],
+    "minParticipants": 6,
+    "maxParticipants": 18,
+    "featured": false
+  },
+  {
+    "id": "tour-uk5",
+    "gallery": [],
+    "faqs": [],
+    "safety": [
+      "Helmets, jackets and knee guards are compulsory on every ride.",
+      "The coordinator decides the riding plan each morning based on weather and road reports.",
+      "Tell us about any medical condition when you book. We carry oxygen and a first-aid kit."
+    ],
+    "cancellationPolicy": [
+      {
+        "daysBefore": 45,
+        "refundPercent": 90
+      },
+      {
+        "daysBefore": 30,
+        "refundPercent": 75
+      },
+      {
+        "daysBefore": 15,
+        "refundPercent": 50
+      },
+      {
+        "daysBefore": 0,
+        "refundPercent": 0
+      }
+    ],
+    "status": "published",
+    "createdAt": "2026-10-25T00:00:00.000Z",
+    "updatedAt": "2026-10-25T00:00:00.000Z",
+    "code": "UK5",
+    "slug": "rishikesh-and-chopta-weekend",
+    "name": "Rishikesh and Chopta Escape",
+    "tagline": "Rafting on the Ganga and a sunrise over Chandrashila",
+    "destinationIds": [
+      "dst-rishikesh",
+      "dst-uttarakhand"
+    ],
+    "route": [
+      "Rishikesh",
+      "Devprayag",
+      "Chopta",
+      "Tungnath",
+      "Rishikesh"
+    ],
+    "summary": "A short trip with river rafting and an easy Himalayan trek.",
+    "description": "Raft the Ganga, watch the evening aarti at Triveni Ghat, then drive up to Chopta for the walk to Tungnath, the highest Shiva temple in the world, and a sunrise from Chandrashila.",
+    "highlights": [
+      "River rafting",
+      "Ganga aarti",
+      "Tungnath temple",
+      "Chandrashila sunrise"
+    ],
+    "coverImage": "art/rishikesh.svg",
+    "days": 5,
+    "nights": 4,
+    "startLocation": "Rishikesh",
+    "endLocation": "Rishikesh",
+    "difficulty": "Moderate",
+    "maxAltitudeM": 4000,
+    "totalDistanceKm": 420,
+    "flightsIncluded": false,
+    "accommodation": "Riverside camp and a mountain lodge",
+    "mealPlan": "All meals",
+    "travelOptions": [
+      {
+        "id": "tempo-seat",
+        "type": "vehicle",
+        "label": "Seat in our Tempo Traveller",
+        "description": "",
+        "price": 15500,
+        "includes": [
+          "Seat in a Tempo Traveller"
+        ],
+        "customerPays": []
+      },
+      {
+        "id": "own-car",
+        "type": "own-car",
+        "label": "Drive your own car",
+        "description": "",
+        "price": 12500,
+        "includes": [
+          "Convoy lead"
+        ],
+        "customerPays": [
+          "Fuel",
+          "Tolls and parking"
+        ]
+      }
+    ],
+    "addOns": [
+      {
+        "id": "rafting-long",
+        "label": "Longer 26 km rafting stretch",
+        "price": 1500,
+        "unit": "person"
+      }
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrive in Rishikesh",
+        "location": "Rishikesh",
+        "description": "Riverside camp, evening Ganga aarti.",
+        "activities": [
+          "Ganga aarti"
+        ],
+        "stay": "Riverside camp",
+        "meals": "Dinner",
+        "distanceKm": null,
+        "altitudeM": 372
+      },
+      {
+        "day": 2,
+        "title": "Rafting day",
+        "location": "Rishikesh",
+        "description": "16 km rafting from Shivpuri.",
+        "activities": [
+          "Rafting",
+          "Cliff jump"
+        ],
+        "stay": "Riverside camp",
+        "meals": "Breakfast, lunch, dinner",
+        "distanceKm": 30,
+        "altitudeM": 372
+      },
+      {
+        "day": 3,
+        "title": "Drive to Chopta",
+        "location": "Chopta",
+        "description": "Via Devprayag, where the Alaknanda and Bhagirathi meet.",
+        "activities": [
+          "Devprayag"
+        ],
+        "stay": "Mountain lodge",
+        "meals": "Breakfast, lunch, dinner",
+        "distanceKm": 190,
+        "altitudeM": 2680
+      },
+      {
+        "day": 4,
+        "title": "Tungnath and Chandrashila",
+        "location": "Chopta",
+        "description": "Early start for the 4 km walk to Tungnath and the summit at sunrise.",
+        "activities": [
+          "Tungnath",
+          "Chandrashila"
+        ],
+        "stay": "Mountain lodge",
+        "meals": "Breakfast, lunch, dinner",
+        "distanceKm": 8,
+        "altitudeM": 4000
+      },
+      {
+        "day": 5,
+        "title": "Back to Rishikesh",
+        "location": "Rishikesh",
+        "description": "Drive down and drop at Rishikesh.",
+        "activities": [],
+        "stay": "",
+        "meals": "Breakfast, lunch",
+        "distanceKm": 190,
+        "altitudeM": 372
+      }
+    ],
+    "inclusions": [
+      "Camp and lodge stays",
+      "All meals",
+      "Rafting with certified guides",
+      "Tour coordinator"
+    ],
+    "exclusions": [
+      "Travel to Rishikesh",
+      "Personal expenses"
+    ],
+    "documents": [
+      "Government photo ID"
+    ],
+    "minParticipants": 6,
+    "maxParticipants": 20,
+    "featured": true
+  }
+]

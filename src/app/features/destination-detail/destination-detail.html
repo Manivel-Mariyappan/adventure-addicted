@@ -1,0 +1,123 @@
+@if (place(); as p) {
+  <section class="hero">
+    <img class="hero-art" [src]="image()" alt="" width="1600" height="1000" fetchpriority="high" />
+    <div class="container hero-inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a routerLink="/">Home</a>
+        <span aria-hidden="true">›</span>
+        <a routerLink="/destinations">Destinations</a>
+        @if (parent(); as parent) {
+          <span aria-hidden="true">›</span>
+          <a [routerLink]="['/destinations', parent.slug]">{{ parent.name }}</a>
+        }
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">{{ p.name }}</span>
+      </nav>
+      <h1>{{ p.name }}</h1>
+      <p class="summary">{{ p.summary }}</p>
+      <ul class="facts">
+        <li>
+          <app-icon name="calendar" [size]="17" />
+          Best time: {{ p.bestSeason }}
+        </li>
+        @if (p.altitudeM) {
+          <li>
+            <app-icon name="altitude" [size]="17" />
+            {{ p.altitudeM | number }} m
+          </li>
+        }
+        <li>
+          <app-icon name="route" [size]="17" />
+          {{ tours().length }} {{ tours().length === 1 ? 'tour' : 'tours' }}
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="container layout">
+    <div class="main">
+      <p class="description">{{ p.description }}</p>
+      @if (p.highlights.length) {
+        <h2>Highlights</h2>
+        <ul class="highlights">
+          @for (h of p.highlights; track h) {
+            <li>
+              <app-icon name="star" [size]="16" />
+              {{ h }}
+            </li>
+          }
+        </ul>
+      }
+
+      @if (gallery().length) {
+        <div class="gallery">
+          @for (src of gallery(); track src) {
+            <img [src]="src" alt="" loading="lazy" />
+          }
+        </div>
+      }
+    </div>
+    <aside class="ask">
+      <h2>Planning a trip to {{ p.name }}?</h2>
+      <p>Tell us your dates and how you want to travel, and we will suggest a departure.</p>
+      <app-whatsapp-button [message]="enquiry()" label="Ask on WhatsApp" />
+    </aside>
+  </div>
+
+  @if (children().length) {
+    <section class="container section">
+      <h2>Places in {{ p.name }}</h2>
+      <div class="places">
+        @for (c of children(); track c.id) {
+          <app-destination-card [destination]="c" />
+        }
+      </div>
+    </section>
+  }
+
+  <section class="section bg-surface">
+    <div class="container">
+      <div class="section-head">
+        <h2>Tours to {{ p.name }}</h2>
+        <a class="link-arrow" routerLink="/tours" [queryParams]="{ destination: p.slug }">
+          Filter by date
+        </a>
+      </div>
+      @if (tours().length) {
+        <div class="tours">
+          @for (t of tours(); track t.id) {
+            <app-tour-card [tour]="t" />
+          }
+        </div>
+      } @else {
+        <div class="state-box">
+          <h3>No tours here right now</h3>
+          <p>We are planning new routes. Ask us and we will let you know.</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (p.faqs.length) {
+    <section class="container section faqs">
+      <h2>Good to know</h2>
+      @for (f of p.faqs; track f.question) {
+        <details>
+          <summary>{{ f.question }}</summary>
+          <p>{{ f.answer }}</p>
+        </details>
+      }
+    </section>
+  }
+} @else {
+  <div class="container section">
+    @if (catalog.state() === 'loading') {
+      <div class="skeleton" style="height: 420px"></div>
+    } @else {
+      <div class="state-box">
+        <h3>We couldn't find this destination</h3>
+        <a class="btn btn-primary" routerLink="/destinations">All destinations</a>
+      </div>
+    }
+  </div>
+}

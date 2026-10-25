@@ -1,0 +1,356 @@
+@if (tour(); as t) {
+  <section class="hero">
+    <img class="hero-art" [src]="cover()" alt="" width="1600" height="1000" fetchpriority="high" />
+    <div class="container hero-inner">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a routerLink="/">Home</a>
+        <span aria-hidden="true">›</span>
+        <a routerLink="/tours">Tours</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">{{ t.name }}</span>
+      </nav>
+      <p class="places">
+        @for (p of places(); track p.id; let last = $last) {
+          <a [routerLink]="['/destinations', p.slug]">{{ p.name }}</a>
+          @if (!last) {
+            <span aria-hidden="true">·</span>
+          }
+        }
+      </p>
+      <h1>{{ t.name }}</h1>
+      <p class="tagline">{{ t.tagline }}</p>
+      <ul class="facts">
+        <li>
+          <app-icon name="calendar" [size]="18" />
+          <span>
+            <strong>{{ t.days }} days</strong>
+            {{ t.nights }} nights
+          </span>
+        </li>
+        <li>
+          <app-icon name="mountain" [size]="18" />
+          <span>
+            <strong>{{ t.difficulty }}</strong>
+            difficulty
+          </span>
+        </li>
+        @if (t.maxAltitudeM) {
+          <li>
+            <app-icon name="altitude" [size]="18" />
+            <span>
+              <strong>{{ t.maxAltitudeM | number }} m</strong>
+              highest point
+            </span>
+          </li>
+        }
+        @if (t.totalDistanceKm) {
+          <li>
+            <app-icon name="route" [size]="18" />
+            <span>
+              <strong>{{ t.totalDistanceKm | number }} km</strong>
+              in total
+            </span>
+          </li>
+        }
+        <li>
+          <app-icon name="plane" [size]="18" />
+          <span>
+            <strong>{{ t.flightsIncluded ? 'Flights included' : 'Land only' }}</strong>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <nav class="subnav" aria-label="On this page">
+    <div class="container">
+      <a [routerLink]="[]" fragment="overview">Overview</a>
+      <a [routerLink]="[]" fragment="itinerary">Itinerary</a>
+      <a [routerLink]="[]" fragment="options">Prices</a>
+      <a [routerLink]="[]" fragment="dates">Dates</a>
+      <a [routerLink]="[]" fragment="included">What's included</a>
+      <a [routerLink]="[]" fragment="policies">Policies</a>
+    </div>
+  </nav>
+
+  <div class="container layout">
+    <div class="main">
+      <section id="overview">
+        <h2>Overview</h2>
+        <p class="description">{{ t.description }}</p>
+        <ul class="highlights">
+          @for (h of t.highlights; track h) {
+            <li>
+              <app-icon name="check" [size]="16" />
+              {{ h }}
+            </li>
+          }
+        </ul>
+        <div class="route" aria-label="Route">
+          <span class="route-label">Route</span>
+          @for (stop of t.route; track $index; let last = $last) {
+            <span class="stop">{{ stop }}</span>
+            @if (!last) {
+              <span class="arrow" aria-hidden="true">→</span>
+            }
+          }
+        </div>
+        <dl class="basics">
+          <div>
+            <dt>Starts</dt>
+            <dd>{{ t.startLocation }}</dd>
+          </div>
+          <div>
+            <dt>Ends</dt>
+            <dd>{{ t.endLocation }}</dd>
+          </div>
+          <div>
+            <dt>Stays</dt>
+            <dd>{{ t.accommodation }}</dd>
+          </div>
+          <div>
+            <dt>Meals</dt>
+            <dd>{{ t.mealPlan }}</dd>
+          </div>
+          <div>
+            <dt>Group size</dt>
+            <dd>{{ t.minParticipants }} to {{ t.maxParticipants }} travellers</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="itinerary">
+        <h2>Day by day</h2>
+        <app-itinerary [days]="t.itinerary" />
+      </section>
+
+      <section id="options">
+        <h2>Ways to join and prices</h2>
+        <p class="note">
+          Prices are per person, before GST. Some departures have their own price, shown under
+          Dates.
+        </p>
+        <div class="options">
+          @for (o of t.travelOptions; track o.id) {
+            <article class="option">
+              <div class="option-head">
+                <span class="option-icon">
+                  <app-icon
+                    [name]="o.type === 'bike' ? 'bike' : o.type === 'own-car' ? 'car' : 'users'"
+                    [size]="22"
+                  />
+                </span>
+                <div>
+                  <h3>{{ o.label }}</h3>
+                  @if (o.description) {
+                    <p>{{ o.description }}</p>
+                  }
+                </div>
+                <p class="option-price">{{ formatInr(o.price) }}</p>
+              </div>
+              @if (o.includes.length) {
+                <ul class="ticks">
+                  @for (i of o.includes; track i) {
+                    <li>
+                      <app-icon name="check" [size]="15" />
+                      {{ i }}
+                    </li>
+                  }
+                </ul>
+              }
+              @if (o.customerPays.length) {
+                <p class="pays">
+                  <strong>You pay for:</strong>
+                  {{ o.customerPays.join(', ') }}
+                </p>
+              }
+            </article>
+          }
+        </div>
+
+        @if (t.addOns.length) {
+          <h3 class="sub">Optional extras</h3>
+          <table class="addons">
+            <tbody>
+              @for (a of t.addOns; track a.id) {
+                <tr>
+                  <th scope="row">{{ a.label }}</th>
+                  <td>
+                    {{ formatInr(a.price) }}
+                    {{ a.unit === 'person' ? 'per person' : 'per booking' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+
+      <section id="dates">
+        <h2>Dates and seats</h2>
+        <app-departure-list [tour]="t" />
+      </section>
+
+      <section id="included" class="two-col">
+        <div>
+          <h2>Included</h2>
+          <ul class="ticks">
+            @for (i of t.inclusions; track i) {
+              <li>
+                <app-icon name="check" [size]="15" />
+                {{ i }}
+              </li>
+            }
+          </ul>
+        </div>
+        <div>
+          <h2>Not included</h2>
+          <ul class="crosses">
+            @for (i of t.exclusions; track i) {
+              <li>
+                <app-icon name="close" [size]="15" />
+                {{ i }}
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="two-col">
+        <div>
+          <h2>Documents and permits</h2>
+          <ul class="docs">
+            @for (d of t.documents; track d) {
+              <li>
+                <app-icon name="doc" [size]="16" />
+                {{ d }}
+              </li>
+            }
+          </ul>
+        </div>
+        <div>
+          <h2>Difficulty and safety</h2>
+          <p class="difficulty">
+            <span class="tag tag-dark">{{ t.difficulty }}</span>
+            {{ difficultyNote() }}
+          </p>
+          <ul class="docs">
+            @for (s of t.safety; track s) {
+              <li>
+                <app-icon name="shield" [size]="16" />
+                {{ s }}
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section id="policies">
+        <h2>Payment and cancellation</h2>
+        @if (settings(); as s) {
+          <p>
+            Pay
+            <strong>{{ s.advancePercent }}%</strong>
+            to confirm your seats. The balance is due
+            <strong>{{ s.balanceDueDays }} days</strong>
+            before departure. Unpaid requests hold seats for {{ s.holdHours }} hours.
+          </p>
+        }
+        <table class="policy">
+          <thead>
+            <tr>
+              <th scope="col">If you cancel</th>
+              <th scope="col">You get back</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of policyRows(); track row.when) {
+              <tr>
+                <td>{{ row.when }}</td>
+                <td>{{ row.refund }} of the amount paid</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      @if (coordinators().length) {
+        <section>
+          <h2>Your coordinator</h2>
+          <div class="people">
+            @for (c of coordinators(); track c.id) {
+              <article class="person">
+                <span class="avatar" aria-hidden="true">{{ c.name.charAt(0) }}</span>
+                <div>
+                  <h3>{{ c.name }}</h3>
+                  <p class="meta">
+                    {{ c.experienceYears }} years leading trips · {{ c.languages.join(', ') }}
+                  </p>
+                  <p>{{ c.bio }}</p>
+                </div>
+              </article>
+            }
+          </div>
+          <p class="note">You get your coordinator's phone number once your seats are confirmed.</p>
+        </section>
+      }
+
+      @if (t.faqs.length) {
+        <section>
+          <h2>Questions about this tour</h2>
+          @for (f of t.faqs; track f.question) {
+            <details class="faq">
+              <summary>{{ f.question }}</summary>
+              <p>{{ f.answer }}</p>
+            </details>
+          }
+        </section>
+      }
+    </div>
+
+    <aside class="book-box" aria-label="Book this tour">
+      <p class="from">
+        <small>from</small>
+        {{ fromPrice() }}
+        <small>per person + GST</small>
+      </p>
+      @if (next(); as n) {
+        <p class="next">
+          <app-icon name="calendar" [size]="16" />
+          <span>
+            Next:
+            <strong>{{ n.dates }}</strong>
+            <br />
+            {{ n.bookable ? n.left + ' seats left' : 'Fully booked' }}
+          </span>
+        </p>
+        @if (n.bookable) {
+          <a
+            class="btn btn-cta"
+            [routerLink]="['/book', t.slug]"
+            [queryParams]="{ departure: n.id }"
+          >
+            Book this departure
+          </a>
+        }
+        <a class="btn btn-outline" [routerLink]="[]" fragment="dates">See all dates</a>
+      } @else {
+        <p class="next">No dates scheduled right now.</p>
+      }
+      <app-whatsapp-button [message]="enquiry()" label="Ask on WhatsApp" />
+      <p class="small">Send a booking request now and pay once we confirm your seats.</p>
+    </aside>
+  </div>
+} @else {
+  <div class="container section">
+    @if (catalog.state() === 'loading') {
+      <div class="skeleton" style="height: 420px"></div>
+    } @else {
+      <div class="state-box">
+        <h3>This tour is no longer listed</h3>
+        <p>It may have finished for the season. Have a look at our other tours.</p>
+        <a class="btn btn-primary" routerLink="/tours">See all tours</a>
+      </div>
+    }
+  </div>
+}

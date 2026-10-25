@@ -1,0 +1,23 @@
+@if (heading()) {
+  <div class="card-header d-flex align-items-center gap-2">
+    @if (icon()) {
+      <span class="card-icon" aria-hidden="true">{{ icon() }}</span>
+    }
+    <div class="flex-grow-1">
+      <h2 class="h6 mb-0">
+        {{ heading() }}
+        @if (required()) {
+          <span class="text-danger" aria-hidden="true">*</span>
+        }
+      </h2>
+      @if (subtitle()) {
+        <p class="small text-body-secondary mb-0">{{ subtitle() }}</p>
+      }
+    </div>
+    <div class="card-actions"><ng-content select="[card-actions]" /></div>
+  </div>
+}
+<div class="card-body">
+  <ng-content />
+</div>
+<div class="card-footer"><ng-content select="[card-footer]" /></div>

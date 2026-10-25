@@ -1,0 +1,24 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  outline: none;
+}
+
+.draft-bar {
+  padding: 0.55rem var(--gutter);
+  font-size: 0.82rem;
+  text-align: center;
+  background: #eff6ff;
+  color: #1e3a8a;
+  border-bottom: 1px solid #bfdbfe;
+
+  a {
+    margin-left: 0.5rem;
+    font-weight: 600;
+  }
+}

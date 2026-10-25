@@ -1,0 +1,103 @@
+<section class="banner">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a routerLink="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">My trips</span>
+    </nav>
+    <h1>My trips</h1>
+    <p class="lead">
+      @if (myTrips.profile().name) {
+        Hello {{ myTrips.profile().name }}. These are the requests sent from this device.
+      } @else {
+        Booking requests you send from this device appear here.
+      }
+    </p>
+  </div>
+</section>
+
+<div class="container page">
+  <div class="main">
+    @if (upcoming().length) {
+      <h2>Upcoming</h2>
+      <div class="trips">
+        @for (c of upcoming(); track c.trip.ref) {
+          <a class="trip" [routerLink]="['/my-trips', c.trip.ref]">
+            <img [src]="c.image" alt="" width="160" height="100" loading="lazy" />
+            <span class="info">
+              <span class="name">{{ c.tourName }}</span>
+              <span class="dates">
+                <app-icon name="calendar" [size]="14" />
+                {{ c.dates }}
+              </span>
+              <span class="ref">
+                Ref {{ c.trip.ref }} · {{ c.trip.travellers }}
+                {{ c.trip.travellers === 1 ? 'traveller' : 'travellers' }}
+              </span>
+            </span>
+            <span class="side">
+              <span class="pill" [attr.data-tone]="tones[c.status]">{{ c.status }}</span>
+              <span class="money">{{ formatInr(c.paid) }} of {{ formatInr(c.total) }} paid</span>
+            </span>
+          </a>
+        }
+      </div>
+    }
+
+    @if (past().length) {
+      <h2>Past trips</h2>
+      <div class="trips">
+        @for (c of past(); track c.trip.ref) {
+          <a class="trip past" [routerLink]="['/my-trips', c.trip.ref]">
+            <img [src]="c.image" alt="" width="160" height="100" loading="lazy" />
+            <span class="info">
+              <span class="name">{{ c.tourName }}</span>
+              <span class="dates">{{ c.dates }}</span>
+            </span>
+            <span class="side">
+              <span class="pill" [attr.data-tone]="tones[c.status]">{{ c.status }}</span>
+            </span>
+          </a>
+        }
+      </div>
+    }
+
+    @if (!myTrips.trips().length) {
+      <div class="state-box">
+        <h3>No trips yet</h3>
+        <p>When you send a booking request, it is saved here so you can follow it up.</p>
+        <a class="btn btn-cta" routerLink="/tours">Find a tour</a>
+      </div>
+    }
+  </div>
+
+  <aside class="lookup">
+    <h2>Check a booking</h2>
+    <p>Booked from another phone? Enter the reference from your WhatsApp chat.</p>
+    <form (submit)="$event.preventDefault(); lookedUp.set(true)">
+      <label class="field">
+        <span>Booking reference</span>
+        <input
+          class="input"
+          [value]="lookup()"
+          (input)="lookup.set($any($event.target).value); lookedUp.set(false)"
+          placeholder="AAC-7K2P9Q"
+          autocomplete="off"
+        />
+      </label>
+      <button type="submit" class="btn btn-primary">Check status</button>
+    </form>
+    @if (lookedUp()) {
+      @if (found(); as f) {
+        <div class="result">
+          <span class="pill" [attr.data-tone]="tones[f.status]">{{ f.status }}</span>
+          <p>{{ formatInr(f.paid) }} of {{ formatInr(f.total) }} paid</p>
+        </div>
+      } @else {
+        <p class="result muted">
+          We couldn't find that reference yet. New requests show up once we have confirmed them.
+        </p>
+      }
+    }
+  </aside>
+</div>

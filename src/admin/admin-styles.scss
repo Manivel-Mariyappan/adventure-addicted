@@ -1,0 +1,314 @@
+// Admin theme on top of Bootstrap and ng-select. Only loaded on /admin.
+
+html.aac-portal {
+  --bs-primary: #1e5aa8;
+  --bs-primary-rgb: 30, 90, 168;
+  --bs-primary-text-emphasis: #0f1f3d;
+  --bs-primary-bg-subtle: #eef4fc;
+  --bs-primary-border-subtle: #c7d7ee;
+  --bs-link-color: #174a8b;
+  --bs-link-color-rgb: 23, 74, 139;
+  --bs-link-hover-color: #0f1f3d;
+  --bs-link-hover-color-rgb: 15, 31, 61;
+  --bs-body-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  // white cards, inputs and dropdowns on a light grey page
+  --bs-body-bg: #ffffff;
+  --bs-card-bg: #ffffff;
+  --bs-card-cap-bg: #ffffff;
+  --bs-border-radius: 0.5rem;
+  --bs-focus-ring-color: rgba(30, 90, 168, 0.25);
+
+  body {
+    background: #f4f6fa;
+    font-size: 0.925rem;
+  }
+
+  .btn-primary {
+    --bs-btn-bg: #1e5aa8;
+    --bs-btn-border-color: #1e5aa8;
+    --bs-btn-hover-bg: #174a8b;
+    --bs-btn-hover-border-color: #174a8b;
+    --bs-btn-active-bg: #0f1f3d;
+    --bs-btn-active-border-color: #0f1f3d;
+    --bs-btn-disabled-bg: #1e5aa8;
+    --bs-btn-disabled-border-color: #1e5aa8;
+    --bs-btn-focus-shadow-rgb: 30, 90, 168;
+  }
+
+  .btn-outline-primary {
+    --bs-btn-color: #174a8b;
+    --bs-btn-border-color: #1e5aa8;
+    --bs-btn-hover-bg: #1e5aa8;
+    --bs-btn-hover-border-color: #1e5aa8;
+    --bs-btn-active-bg: #174a8b;
+    --bs-btn-active-border-color: #174a8b;
+    --bs-btn-focus-shadow-rgb: 30, 90, 168;
+  }
+
+  .text-primary {
+    color: #174a8b !important;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #7aa7dd;
+    box-shadow: 0 0 0 0.2rem rgba(30, 90, 168, 0.2);
+  }
+
+  // custom checkbox, radio and switch
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 1.5rem;
+    padding-left: 0;
+  }
+
+  .form-check .form-check-input {
+    float: none;
+    margin: 0;
+    flex: none;
+  }
+
+  .form-check-label {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .form-check-input {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #fff no-repeat center / 12px 12px;
+    border: 1.5px solid #cbd5e1;
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      box-shadow 0.15s,
+      background-position 0.2s ease;
+
+    &:hover {
+      border-color: #1e5aa8;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px rgba(30, 90, 168, 0.25);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  .form-check-input[type='checkbox'] {
+    border-radius: 5px;
+
+    &:checked {
+      background-color: #1e5aa8;
+      border-color: #1e5aa8;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    &:indeterminate {
+      background-color: #1e5aa8;
+      border-color: #1e5aa8;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6h6' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+  }
+
+  .form-check-input[type='radio'] {
+    border-radius: 50%;
+
+    &:checked {
+      border-color: #1e5aa8;
+      background-color: #fff;
+      box-shadow: inset 0 0 0 4px #fff;
+      background-image: radial-gradient(circle, #1e5aa8 0 4px, transparent 4.5px);
+      background-size: 100% 100%;
+    }
+
+    &:checked:focus-visible {
+      box-shadow:
+        inset 0 0 0 4px #fff,
+        0 0 0 3px rgba(30, 90, 168, 0.25);
+    }
+  }
+
+  // switch
+  .form-switch {
+    padding-left: 0;
+
+    .form-check-input {
+      width: 38px;
+      height: 22px;
+      border: none;
+      border-radius: 999px;
+      background-color: #cbd5e1;
+      background-image: radial-gradient(circle, #fff 0 8px, transparent 8.5px);
+      background-size: 22px 22px;
+      background-position: left center;
+
+      &:hover {
+        background-color: #cbd5e1;
+      }
+
+      &:checked {
+        background-color: #1e5aa8;
+        background-image: radial-gradient(circle, #fff 0 8px, transparent 8.5px);
+        background-position: right center;
+      }
+
+      &:checked:hover {
+        background-color: #174a8b;
+      }
+    }
+  }
+
+  .card {
+    --bs-card-bg: #ffffff;
+    --bs-card-cap-bg: #ffffff;
+  }
+
+  .border-dashed {
+    border-style: dashed !important;
+  }
+
+  // ng-select
+  .ng-select .ng-select-container {
+    min-height: 38px;
+    border-color: var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+  }
+
+  .ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container,
+  .ng-select.ng-select-focused > .ng-select-container {
+    border-color: #7aa7dd;
+    box-shadow: 0 0 0 0.2rem rgba(30, 90, 168, 0.2);
+  }
+
+  .ng-select.is-invalid .ng-select-container {
+    border-color: var(--bs-form-invalid-border-color);
+  }
+
+  .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+    background: #eef4fc;
+    border: 1px solid #c7d7ee;
+    color: #0f1f3d;
+    border-radius: 999px;
+    padding-inline: 0.15rem;
+  }
+
+  .ng-select.ng-select-multiple
+    .ng-select-container
+    .ng-value-container
+    .ng-value
+    .ng-value-icon.left {
+    border-right-color: #c7d7ee;
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+    background: #eef4fc;
+    color: #0f1f3d;
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected,
+  .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected.ng-option-marked {
+    background: #dbeafe;
+    color: #0f1f3d;
+  }
+
+  // deleted products are faded, except the buttons
+  .ag-row.row-deleted .ag-cell:not([col-id='actions']) {
+    opacity: 0.5;
+  }
+
+  // picture column in the grids (shared/grid.ts)
+  .grid-thumb {
+    width: 44px;
+    height: 44px;
+    margin-top: 8px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f4f6fa;
+  }
+
+  // ng-bootstrap datepicker
+  .ngb-dp-weekday {
+    color: #64748b !important;
+    font-style: normal !important;
+    font-weight: 600;
+  }
+
+  .ngb-dp-arrow-btn,
+  .ngb-dp-navigation-chevron {
+    color: #174a8b;
+  }
+
+  .btn-calendar {
+    width: 2.75rem;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='1.6' stroke-linecap='round'%3E%3Crect x='3.5' y='5' width='17' height='15.5' rx='2'/%3E%3Cpath d='M3.5 10h17M8 3v4M16 3v4'/%3E%3C/svg%3E")
+      no-repeat center / 18px;
+
+    &:hover {
+      background-color: #f1f5f9;
+    }
+  }
+
+  // wide offcanvas for the forms
+  .aac-offcanvas-xl {
+    --bs-offcanvas-width: min(1040px, 100vw);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .aac-offcanvas-lg {
+    --bs-offcanvas-width: min(680px, 100vw);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .aac-portal-menu {
+    --bs-offcanvas-width: 260px;
+    --bs-offcanvas-bg: #0f1f3d;
+  }
+
+  // SweetAlert2
+  .swal2-popup {
+    font-family: var(--bs-body-font-family);
+    border-radius: 0.9rem;
+  }
+
+  // save bar at the bottom of long forms
+  .sticky-save {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    padding: 0.85rem 0 0.25rem;
+    background: linear-gradient(transparent, #f4f6fa 35%);
+  }
+
+  // thin progress bar for seats
+  .seat-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+
+    span {
+      display: block;
+      height: 100%;
+      background: #1e5aa8;
+    }
+
+    &.full span {
+      background: #b42318;
+    }
+  }
+}

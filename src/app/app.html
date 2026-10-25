@@ -1,0 +1,21 @@
+@if (!portal()) {
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  @if (store.hasDrafts()) {
+    <div class="draft-bar" role="status">
+      Previewing unpublished admin changes in this browser.
+      <a routerLink="/admin/publish">Publish or discard</a>
+    </div>
+  }
+
+  <app-site-header />
+}
+
+<main id="main" tabindex="-1">
+  <router-outlet />
+</main>
+
+@if (!portal()) {
+  <app-site-footer />
+  <app-whatsapp-fab />
+}

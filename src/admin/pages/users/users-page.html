@@ -1,0 +1,30 @@
+<admin-ui-only-note api="/api/users" />
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white d-flex flex-wrap align-items-center gap-2 py-3">
+    <input
+      type="search"
+      class="form-control form-control-sm"
+      style="max-width: 320px"
+      placeholder="Search by name, username or email"
+      (input)="search.set($any($event.target).value)"
+    />
+    <button type="button" class="btn btn-sm btn-primary ms-auto" (click)="open(null)">
+      + Add user
+    </button>
+  </div>
+  <ag-grid-angular
+    style="display: block; height: calc(100vh - 260px); min-height: 360px"
+    [theme]="theme"
+    [rowData]="data.users.all()"
+    [columnDefs]="columns"
+    [defaultColDef]="{
+      sortable: true,
+      filter: true,
+      resizable: true,
+      suppressHeaderMenuButton: true,
+    }"
+    [getRowId]="getRowId"
+    [quickFilterText]="search()"
+    [rowHeight]="52"
+  />
+</div>

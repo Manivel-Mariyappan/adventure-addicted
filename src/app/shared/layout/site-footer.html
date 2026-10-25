@@ -1,0 +1,78 @@
+<div class="container grid">
+  <div class="about">
+    <p class="brand">
+      <img src="favicon.svg" alt="" width="36" height="36" />
+      {{ settings()?.companyName ?? 'Adventure Addicted Company' }}
+    </p>
+    <p>{{ settings()?.tagline }}</p>
+    @if (whatsappHref(); as href) {
+      <a class="btn btn-whatsapp btn-sm" [href]="href" target="_blank" rel="noopener">
+        <app-icon name="whatsapp" [size]="16" />
+        Chat on WhatsApp
+      </a>
+    }
+    @if (socials().length) {
+      <div class="socials">
+        @for (s of socials(); track s.icon) {
+          <a [href]="s.url" target="_blank" rel="noopener" [attr.aria-label]="s.label">
+            <app-icon [name]="s.icon" [size]="18" />
+          </a>
+        }
+      </div>
+    }
+  </div>
+
+  <nav aria-label="Destinations">
+    <h2>Destinations</h2>
+    @for (r of regions(); track r.id) {
+      <a [routerLink]="['/destinations', r.slug]">{{ r.name }}</a>
+    }
+  </nav>
+
+  <nav aria-label="Tours">
+    <h2>Travel with us</h2>
+    <a routerLink="/tours">All tours</a>
+    <a routerLink="/tours" [queryParams]="{ travel: 'bike' }">Bike expeditions</a>
+    <a routerLink="/tours" [queryParams]="{ travel: 'own-car' }">Self-drive road trips</a>
+    <a routerLink="/my-trips">My trips</a>
+    <a routerLink="/about">About us</a>
+  </nav>
+
+  @if (settings(); as s) {
+    <address>
+      <h2>Contact</h2>
+      @if (s.phone) {
+        <p>
+          <app-icon name="phone" [size]="16" />
+          <a [href]="'tel:' + s.phone">{{ s.phone }}</a>
+        </p>
+      }
+      @if (s.email) {
+        <p>
+          <app-icon name="mail" [size]="16" />
+          <a [href]="'mailto:' + s.email">{{ s.email }}</a>
+        </p>
+      }
+      @if (address()) {
+        <p>
+          <app-icon name="pin" [size]="16" />
+          {{ address() }}
+        </p>
+      }
+      @if (s.officeHours) {
+        <p>
+          <app-icon name="clock" [size]="16" />
+          {{ s.officeHours }}
+        </p>
+      }
+    </address>
+  }
+</div>
+
+<div class="container legal">
+  <p>© {{ year }} {{ settings()?.companyName ?? 'Adventure Addicted Company' }}</p>
+  <p>
+    Prices are per person. GST is added when you book. Seats are confirmed once the advance is
+    received.
+  </p>
+</div>

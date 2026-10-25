@@ -1,0 +1,101 @@
+<ng-template #navTpl let-close="close">
+  <div class="brand">
+    <img class="logo" src="favicon.svg" alt="" width="34" height="34" />
+    <span>
+      Adventure Addicted
+      <small>Admin</small>
+    </span>
+  </div>
+  <nav class="nav flex-column" aria-label="Admin">
+    @for (section of nav; track section.group) {
+      <p class="group">{{ section.group }}</p>
+      @for (item of section.items; track item.path) {
+        <a class="nav-link" [routerLink]="item.path" routerLinkActive="active" (click)="close?.()">
+          <span class="icon" aria-hidden="true">{{ item.icon }}</span>
+          <span class="flex-grow-1">{{ item.label }}</span>
+          @if (item.path === 'publish' && store.hasDrafts()) {
+            <span class="badge rounded-pill text-bg-warning">{{ store.draftKinds().length }}</span>
+          }
+        </a>
+      }
+    }
+  </nav>
+  <div class="side-foot">
+    @if (auth.currentUser(); as u) {
+      <div class="me">
+        <span class="avatar">{{ u.fullName.charAt(0) }}</span>
+        <span>
+          <strong>{{ u.fullName }}</strong>
+          <small>{{ u.role }}</small>
+        </span>
+      </div>
+    }
+    <a class="nav-link" href="/" target="_blank" rel="noopener">View website ↗</a>
+    <button
+      type="button"
+      class="nav-link text-start border-0 bg-transparent w-100"
+      (click)="lock()"
+    >
+      Lock admin
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #mobileMenu let-offcanvas>
+  <div class="offcanvas-body sidebar-inner">
+    <ng-container *ngTemplateOutlet="navTpl; context: { close: offcanvas.close.bind(offcanvas) }" />
+  </div>
+</ng-template>
+
+<aside class="sidebar d-none d-lg-flex">
+  <div class="sidebar-inner">
+    <ng-container *ngTemplateOutlet="navTpl" />
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <button
+      type="button"
+      class="btn btn-outline-secondary btn-sm d-lg-none"
+      (click)="openMenu(mobileMenu)"
+      aria-label="Open menu"
+    >
+      ☰
+    </button>
+    <h1 class="h5 mb-0 flex-grow-1">{{ heading() }}</h1>
+    @if (store.hasDrafts()) {
+      <a routerLink="publish" class="btn btn-sm btn-warning d-none d-sm-inline-flex">
+        Unpublished changes
+      </a>
+    }
+    <a
+      href="/"
+      target="_blank"
+      rel="noopener"
+      class="btn btn-sm btn-outline-secondary d-none d-md-inline-flex"
+    >
+      View website
+    </a>
+  </header>
+
+  <main class="content">
+    @switch (store.state()) {
+      @case ('loading') {
+        <div class="d-flex align-items-center gap-2 text-secondary">
+          <span class="spinner-border spinner-border-sm"></span>
+          Loading site data…
+        </div>
+      }
+      @case ('error') {
+        <div class="alert alert-danger">
+          Could not load the data files in /data. Check that public/data/*.json exist and are valid
+          JSON.
+        </div>
+      }
+      @default {
+        <router-outlet />
+      }
+    }
+  </main>
+</div>

@@ -1,0 +1,265 @@
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3" role="group" aria-label="Period">
+  @for (p of periods; track p.key) {
+    <button
+      type="button"
+      class="btn btn-sm"
+      [class]="period() === p.key ? 'btn-dark' : 'btn-outline-secondary'"
+      (click)="period.set(p.key)"
+    >
+      {{ p.label }}
+    </button>
+  }
+  <span class="small text-body-secondary ms-2">
+    Bookings, money and charts by booking date. Departures and seats are always upcoming.
+  </span>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-xl-3">
+    <div class="card border-0 shadow-sm p-3 h-100">
+      <div class="small text-body-secondary">Booking value</div>
+      <div class="fs-3 fw-semibold">{{ formatInr(money().gross) }}</div>
+      <div class="small text-body-secondary">
+        {{ kpis().bookings }} bookings, excluding cancelled
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card border-0 shadow-sm p-3 h-100">
+      <div class="small text-body-secondary">Collected</div>
+      <div class="fs-3 fw-semibold text-success">{{ formatInr(money().collected) }}</div>
+      <div class="small text-body-secondary">
+        after {{ formatInr(money().refundsPaid) }} refunds
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card border-0 shadow-sm p-3 h-100">
+      <div class="small text-body-secondary">Outstanding</div>
+      <div class="fs-3 fw-semibold">{{ formatInr(money().outstanding) }}</div>
+      <div class="small text-body-secondary">still to collect</div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card border-0 shadow-sm p-3 h-100">
+      <div class="small text-body-secondary">Refunds owed</div>
+      <div class="fs-3 fw-semibold" [class.text-danger]="money().refundsPending">
+        {{ formatInr(money().refundsPending) }}
+      </div>
+      <div class="small text-body-secondary">
+        on {{ alerts().refunds.length }} refund-pending bookings
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-md-4 col-xl-2">
+    <a routerLink="/admin/tours" class="card border-0 shadow-sm p-3 h-100 text-decoration-none">
+      <div class="small text-body-secondary">Tour packages</div>
+      <div class="fs-4 fw-semibold">
+        {{ kpis().packages }}
+        <span class="fs-6 text-body-secondary">/ {{ kpis().packagesTotal }}</span>
+      </div>
+      <div class="small text-body-secondary">published</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <a
+      routerLink="/admin/departures"
+      class="card border-0 shadow-sm p-3 h-100 text-decoration-none"
+    >
+      <div class="small text-body-secondary">Upcoming departures</div>
+      <div class="fs-4 fw-semibold">{{ kpis().departures }}</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card border-0 shadow-sm p-3 h-100">
+      <div class="small text-body-secondary">Seats booked</div>
+      <div class="fs-4 fw-semibold">
+        {{ kpis().seatsTaken }}
+        <span class="fs-6 text-body-secondary">/ {{ kpis().seatsTotal }}</span>
+      </div>
+      <div class="small text-body-secondary">
+        {{ kpis().seatsTotal - kpis().seatsTaken }} available
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card border-0 shadow-sm p-3 h-100">
+      <div class="small text-body-secondary">Confirmed travellers</div>
+      <div class="fs-4 fw-semibold">{{ kpis().travellers }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <a routerLink="/admin/bookings" class="card border-0 shadow-sm p-3 h-100 text-decoration-none">
+      <div class="small text-body-secondary">Payments pending</div>
+      <div class="fs-4 fw-semibold">{{ kpis().pendingCount }}</div>
+      <div class="small text-body-secondary">{{ formatInr(kpis().pendingAmount) }} due</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card border-0 shadow-sm p-3 h-100">
+      <div class="small text-body-secondary">Cancelled</div>
+      <div class="fs-4 fw-semibold">{{ kpis().cancelled }}</div>
+      <div class="small text-body-secondary">in this period</div>
+    </div>
+  </div>
+</div>
+
+@if (alerts(); as a) {
+  @if (a.short.length || a.noCoordinator.length || a.expiredHolds.length || a.overdue.length) {
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body">
+        <h2 class="h6 mb-3">Needs attention</h2>
+        <ul class="list-unstyled mb-0 vstack gap-2 small">
+          @for (u of a.short; track u.departure.id) {
+            <li>
+              <span class="badge text-bg-warning">Below minimum</span>
+              <a [routerLink]="['/admin/departures', u.departure.id]">{{ u.departure.code }}</a>
+              has {{ u.taken }} of the {{ u.minimum }} travellers needed, {{ u.daysToGo }} days to
+              go. Decide whether to run, merge or cancel.
+            </li>
+          }
+          @for (u of a.noCoordinator; track u.departure.id) {
+            <li>
+              <span class="badge text-bg-info">No coordinator</span>
+              <a [routerLink]="['/admin/departures', u.departure.id]">{{ u.departure.code }}</a>
+              starts in {{ u.daysToGo }} days.
+            </li>
+          }
+          @if (a.expiredHolds.length) {
+            <li>
+              <span class="badge text-bg-danger">Holds expired</span>
+              {{ a.expiredHolds.length }} unpaid request(s) no longer hold seats.
+              <a routerLink="/admin/bookings">Confirm or cancel them</a>
+              .
+            </li>
+          }
+          @if (a.overdue.length) {
+            <li>
+              <span class="badge text-bg-danger">Balance overdue</span>
+              {{ a.overdue.length }} confirmed booking(s) are past their balance due date.
+              <a routerLink="/admin/bookings">See bookings</a>
+              .
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  }
+}
+
+<div class="row g-3 mb-3">
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-0">Bookings per month</h2>
+        <p class="small text-body-secondary">
+          Last 12 months, by booking date, excluding cancelled
+        </p>
+        <admin-bar-chart [data]="bookingsChart()" caption="Bookings per month" />
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-0">Booking value per month</h2>
+        <p class="small text-body-secondary">Total of those bookings, including GST</p>
+        <admin-bar-chart [data]="revenueChart()" caption="Booking value per month" />
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-0">Next departures: seats filled</h2>
+        <p class="small text-body-secondary">Share of each group's seats booked</p>
+        <admin-bar-chart
+          [data]="occupancyChart()"
+          orientation="bar"
+          caption="Seats filled per departure"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h6 mb-0">Popular destinations</h2>
+        <p class="small text-body-secondary">Travellers booked in this period, by region</p>
+        <admin-bar-chart
+          [data]="destinationsChart()"
+          orientation="bar"
+          caption="Travellers by region"
+        />
+        <hr />
+        <div class="d-flex flex-wrap gap-4 small">
+          <div>
+            <div class="text-body-secondary">Requests</div>
+            <div class="fs-5 fw-semibold">{{ conversion().requests }}</div>
+          </div>
+          <div>
+            <div class="text-body-secondary">Confirmed</div>
+            <div class="fs-5 fw-semibold">{{ conversion().confirmed }}</div>
+          </div>
+          <div>
+            <div class="text-body-secondary">Waitlisted</div>
+            <div class="fs-5 fw-semibold">{{ conversion().waitlisted }}</div>
+          </div>
+          <div>
+            <div class="text-body-secondary">Conversion</div>
+            <div class="fs-5 fw-semibold">{{ conversion().rate }}%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body">
+    <div class="d-flex align-items-center mb-2">
+      <h2 class="h6 mb-0">Upcoming departures</h2>
+      <a routerLink="/admin/departures" class="btn btn-sm btn-outline-secondary ms-auto">
+        All departures
+      </a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Departure</th>
+            <th>Tour</th>
+            <th>Dates</th>
+            <th style="width: 180px">Seats</th>
+            <th>Coordinator</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of upcoming().slice(0, 8); track u.departure.id) {
+            <tr>
+              <td>
+                <a [routerLink]="['/admin/departures', u.departure.id]">{{ u.departure.code }}</a>
+              </td>
+              <td>{{ u.tour }}</td>
+              <td class="text-nowrap">{{ u.dates }}</td>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="seat-bar flex-grow-1" [class.full]="!u.left">
+                    <span [style.width.%]="(u.taken / u.departure.totalSeats) * 100"></span>
+                  </div>
+                  <span class="small text-nowrap">{{ u.taken }}/{{ u.departure.totalSeats }}</span>
+                </div>
+              </td>
+              <td>{{ u.coordinator || '—' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="text-body-secondary">No upcoming departures.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

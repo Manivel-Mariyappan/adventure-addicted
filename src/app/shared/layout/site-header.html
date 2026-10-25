@@ -1,0 +1,59 @@
+<div class="bar container">
+  <a routerLink="/" class="brand" aria-label="Adventure Addicted, home">
+    <img src="favicon.svg" alt="" width="42" height="42" />
+    <span class="name">
+      Adventure Addicted
+      <small>Company</small>
+    </span>
+  </a>
+
+  <nav class="links" aria-label="Main">
+    @for (link of links; track link.label) {
+      <a
+        [routerLink]="link.path"
+        [queryParams]="link.query"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{
+          paths: 'exact',
+          queryParams: link.query ? 'subset' : 'ignored',
+          matrixParams: 'ignored',
+          fragment: 'ignored',
+        }"
+      >
+        {{ link.label }}
+      </a>
+    }
+  </nav>
+
+  <div class="actions">
+    <a class="trips" routerLink="/my-trips" routerLinkActive="active" aria-label="My trips">
+      <app-icon name="user" [size]="19" />
+      <span class="trips-label">My trips</span>
+      @if (tripCount()) {
+        <span class="badge">{{ tripCount() }}</span>
+      }
+    </a>
+    <a class="btn btn-cta btn-sm book" routerLink="/tours">Book a tour</a>
+    <button
+      type="button"
+      class="menu-toggle"
+      (click)="menuOpen.update((v) => !v)"
+      [attr.aria-expanded]="menuOpen()"
+      aria-controls="mobile-menu"
+      [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
+    >
+      <app-icon [name]="menuOpen() ? 'close' : 'menu'" [size]="24" />
+    </button>
+  </div>
+</div>
+
+<div id="mobile-menu" class="mobile-menu" [attr.inert]="menuOpen() ? null : ''">
+  <nav aria-label="Mobile">
+    <a routerLink="/">Home</a>
+    @for (link of links; track link.label) {
+      <a [routerLink]="link.path" [queryParams]="link.query">{{ link.label }}</a>
+    }
+    <a routerLink="/my-trips">My trips</a>
+  </nav>
+  <a class="btn btn-cta" routerLink="/tours">Book a tour</a>
+</div>

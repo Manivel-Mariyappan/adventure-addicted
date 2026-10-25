@@ -1,0 +1,587 @@
+<div class="offcanvas-header border-bottom bg-white">
+  <h2 class="offcanvas-title h5 mb-0" id="booking-form-title">
+    {{ booking ? 'Booking ' + booking.ref : 'Add booking' }}
+    @if (booking?.demo) {
+      <span class="badge text-bg-light border ms-1">Demo</span>
+    }
+  </h2>
+  <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+</div>
+
+<form
+  class="offcanvas-body bg-body-tertiary"
+  [formGroup]="form"
+  (ngSubmit)="save()"
+  id="booking-form"
+  novalidate
+>
+  <div class="row g-3">
+    <div class="col-lg-7">
+      @if (!booking) {
+        <admin-card
+          heading="Paste WhatsApp request"
+          subtitle="Copy the customer's booking request and paste it here"
+          icon="⎘"
+        >
+          <textarea
+            class="form-control mb-2"
+            rows="5"
+            placeholder="*Booking request* AAC-7K2P9Q&#10;Tour: ...&#10;Departure: ..."
+            aria-label="Booking request message"
+            [value]="pasted()"
+            (input)="pasted.set($any($event.target).value)"
+          ></textarea>
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            [disabled]="!pasted().trim()"
+            (click)="readMessage()"
+          >
+            Fill in from message
+          </button>
+          @if (pasteResult(); as r) {
+            <div
+              class="alert small py-2 mt-3 mb-0"
+              [class.alert-success]="r.ok"
+              [class.alert-warning]="!r.ok"
+            >
+              {{ r.text }}
+            </div>
+          }
+          <div card-footer>
+            Or fill the booking in by hand, e.g. for phone or walk-in customers.
+          </div>
+        </admin-card>
+      }
+
+      <admin-card heading="Trip" icon="▦" [required]="true">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label" for="b-dep">
+              Departure
+              <span class="text-danger">*</span>
+            </label>
+            <ng-select
+              labelForId="b-dep"
+              formControlName="departureId"
+              [items]="departures()"
+              bindLabel="label"
+              bindValue="id"
+              placeholder="Search by code, tour or date"
+              [class.is-invalid]="submitted() && form.controls.departureId.invalid"
+            />
+          </div>
+          <div class="col-md-8">
+            <label class="form-label" for="b-opt">
+              Travel option
+              <span class="text-danger">*</span>
+            </label>
+            <ng-select
+              labelForId="b-opt"
+              formControlName="optionId"
+              [items]="options()"
+              bindLabel="label"
+              bindValue="id"
+              [clearable]="false"
+              placeholder="Choose the departure first"
+              [class.is-invalid]="submitted() && form.controls.optionId.invalid"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="b-pax">Travellers</label>
+            <input
+              id="b-pax"
+              class="form-control"
+              formControlName="travellers"
+              appNumbersOnly
+              [decimals]="0"
+              placeholder="1"
+            />
+            <div class="form-text">{{ seatsAvailable() }} seats free on this option</div>
+          </div>
+          @if (tour()?.addOns?.length) {
+            <div class="col-12" formGroupName="addOns">
+              <label class="form-label">Extras</label>
+              <div class="row g-2">
+                @for (a of tour()!.addOns; track a.id) {
+                  <div class="col-md-6">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text flex-grow-1 text-wrap text-start">
+                        {{ a.label }} · {{ formatInr(a.price)
+                        }}{{ a.unit === 'person' ? '/person' : '' }}
+                      </span>
+                      <input
+                        class="form-control"
+                        style="max-width: 70px"
+                        [formControlName]="a.id"
+                        appNumbersOnly
+                        [decimals]="0"
+                        [attr.aria-label]="a.label + ' quantity'"
+                      />
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+          <div class="col-md-4">
+            <label class="form-label" for="b-src">Source</label>
+            <ng-select
+              labelForId="b-src"
+              formControlName="source"
+              [items]="sources"
+              [clearable]="false"
+              [searchable]="false"
+            />
+          </div>
+          <div class="col-md-8">
+            <label class="form-label" for="b-ref">Booking reference</label>
+            <input id="b-ref" class="form-control" formControlName="ref" readonly />
+          </div>
+        </div>
+      </admin-card>
+
+      <admin-card
+        heading="Lead traveller"
+        subtitle="The person we contact"
+        icon="☺"
+        [required]="true"
+      >
+        @if (leadWhatsapp(); as href) {
+          <a
+            card-actions
+            class="btn btn-sm btn-success"
+            [href]="href"
+            target="_blank"
+            rel="noopener"
+          >
+            Message on WhatsApp
+          </a>
+        }
+        <div class="row g-3" formGroupName="lead">
+          <div class="col-md-6">
+            <label class="form-label" for="b-lname">
+              Name
+              <span class="text-danger">*</span>
+            </label>
+            <input
+              id="b-lname"
+              class="form-control"
+              formControlName="name"
+              placeholder="Full name"
+              [class.is-invalid]="invalidLead('name')"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="b-lphone">
+              Mobile
+              <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">+91</span>
+              <input
+                id="b-lphone"
+                class="form-control"
+                formControlName="phone"
+                appNumbersOnly
+                [decimals]="0"
+                maxlength="10"
+                placeholder="10 digits"
+                [class.is-invalid]="invalidLead('phone')"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="b-lemail">Email</label>
+            <input
+              id="b-lemail"
+              type="email"
+              class="form-control"
+              formControlName="email"
+              placeholder="For the invoice"
+              [class.is-invalid]="invalidLead('email')"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="b-lcity">City</label>
+            <input
+              id="b-lcity"
+              class="form-control"
+              formControlName="city"
+              placeholder="Travelling from"
+            />
+          </div>
+        </div>
+      </admin-card>
+
+      <admin-card
+        heading="Travellers"
+        subtitle="Emergency contacts and notes go to the coordinator"
+        icon="☰"
+        [required]="true"
+      >
+        <div formArrayName="passengers" class="vstack gap-2">
+          @for (row of form.controls.passengers.controls; track row; let i = $index) {
+            <div [formGroupName]="i" class="border rounded-3 p-2 bg-white">
+              <div class="row g-2">
+                <div class="col-md-5">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="name"
+                    [placeholder]="'Traveller ' + (i + 1) + ' name'"
+                    aria-label="Name"
+                    [class.is-invalid]="submitted() && row.controls.name.invalid"
+                  />
+                </div>
+                <div class="col-3 col-md-2">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="age"
+                    appNumbersOnly
+                    [decimals]="0"
+                    placeholder="Age"
+                    aria-label="Age"
+                  />
+                </div>
+                <div class="col-5 col-md-3">
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="gender"
+                    aria-label="Gender"
+                  >
+                    <option value="">Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="col-4 col-md-2 d-flex align-items-center">
+                  <div class="form-check mb-0">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      formControlName="idChecked"
+                      [id]="'b-id-' + i"
+                    />
+                    <label class="form-check-label small" [for]="'b-id-' + i">ID seen</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="phone"
+                    placeholder="Own phone (optional)"
+                    aria-label="Phone"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="emergencyName"
+                    placeholder="Emergency contact name"
+                    aria-label="Emergency contact"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="emergencyPhone"
+                    placeholder="Emergency phone"
+                    aria-label="Emergency phone"
+                  />
+                </div>
+                <div class="col-12">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="notes"
+                    placeholder="Diet, medical, riding experience"
+                    aria-label="Notes"
+                  />
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+        <label class="form-label mt-3" for="b-notes">Customer's notes</label>
+        <textarea
+          id="b-notes"
+          class="form-control"
+          rows="2"
+          formControlName="notes"
+          placeholder="Anything the customer asked for"
+        ></textarea>
+      </admin-card>
+    </div>
+
+    <div class="col-lg-5">
+      <admin-card heading="Status" icon="◉" [required]="true">
+        <div class="row g-3">
+          <div class="col-12">
+            <ng-select
+              formControlName="status"
+              [items]="statuses"
+              [clearable]="false"
+              [searchable]="false"
+              aria-label="Status"
+            />
+          </div>
+          @if (
+            form.controls.status.value === 'Requested' ||
+            form.controls.status.value === 'Pending payment'
+          ) {
+            <div class="col-12">
+              <label class="form-label small" for="b-hold">Hold seats until</label>
+              <div class="input-group input-group-sm">
+                <input
+                  id="b-hold"
+                  class="form-control"
+                  formControlName="holdUntil"
+                  ngbDatepicker
+                  #dh="ngbDatepicker"
+                  placeholder="dd-mm-yyyy"
+                  readonly
+                  (click)="dh.toggle()"
+                />
+                <button
+                  class="btn btn-outline-secondary btn-calendar"
+                  type="button"
+                  (click)="dh.toggle()"
+                  aria-label="Open calendar"
+                ></button>
+                <button class="btn btn-outline-secondary" type="button" (click)="setHold()">
+                  Reset
+                </button>
+              </div>
+              <div class="form-text">
+                After this date the seats are released unless the booking is confirmed.
+              </div>
+            </div>
+          }
+          @if (
+            form.controls.status.value === 'Cancelled' ||
+            form.controls.status.value === 'Refund pending'
+          ) {
+            <div class="col-12">
+              <label class="form-label small" for="b-cancel">Cancellation reason</label>
+              <input
+                id="b-cancel"
+                class="form-control form-control-sm"
+                formControlName="cancelReason"
+                placeholder="Why it was cancelled"
+              />
+              @if (refundEstimate(); as r) {
+                <div class="form-text">
+                  Policy: cancelling {{ r.daysBefore }} days before departure refunds
+                  {{ r.percent }}% of {{ formatInr(paid()) }} =
+                  <strong>{{ formatInr(r.refund) }}</strong>
+                  .
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </admin-card>
+
+      <admin-card heading="Price" icon="₹">
+        @if (price(); as p) {
+          @if (p.snapshot) {
+            <div class="alert alert-light border small py-2">
+              Price as booked. Change the trip or press Recalculate to use today's prices.
+            </div>
+          }
+          <table class="table table-sm mb-2">
+            <tbody>
+              @for (l of p.lines; track l.label) {
+                <tr>
+                  <td>{{ l.label }}</td>
+                  <td class="text-end">{{ formatInr(l.amount) }}</td>
+                </tr>
+              }
+              @if (p.discount) {
+                <tr>
+                  <td>Discount</td>
+                  <td class="text-end">− {{ formatInr(p.discount) }}</td>
+                </tr>
+              }
+              <tr>
+                <td>GST</td>
+                <td class="text-end">{{ formatInr(p.gst) }}</td>
+              </tr>
+              <tr class="fw-semibold">
+                <td>Total</td>
+                <td class="text-end">{{ formatInr(p.total) }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row g-2">
+            <div class="col-5">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text">₹</span>
+                <input
+                  class="form-control"
+                  formControlName="discount"
+                  appNumbersOnly
+                  [decimals]="0"
+                  placeholder="Discount"
+                  aria-label="Discount"
+                />
+              </div>
+            </div>
+            <div class="col-7">
+              <input
+                class="form-control form-control-sm"
+                formControlName="discountNote"
+                placeholder="Reason, e.g. group of 6"
+                aria-label="Discount reason"
+              />
+            </div>
+          </div>
+          @if (p.snapshot) {
+            <button
+              type="button"
+              class="btn btn-sm btn-link px-0 mt-1"
+              (click)="keepSnapshot.set(false)"
+            >
+              Recalculate with today's prices
+            </button>
+          }
+        } @else {
+          <p class="text-body-secondary mb-0">Choose a departure and travel option.</p>
+        }
+      </admin-card>
+
+      <admin-card heading="Payments" subtitle="Payments received and refunds paid" icon="⇄">
+        <div card-actions class="d-flex gap-1">
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="addPayment()">
+            + Payment
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            (click)="addPayment('refund')"
+          >
+            + Refund
+          </button>
+        </div>
+        <div formArrayName="payments" class="vstack gap-2">
+          @for (row of form.controls.payments.controls; track row; let i = $index) {
+            <div
+              [formGroupName]="i"
+              class="border rounded-3 p-2 bg-white"
+              [class.border-danger]="row.controls.kind.value === 'refund'"
+            >
+              <div class="row g-2">
+                <div class="col-6">
+                  <div class="input-group input-group-sm">
+                    <input
+                      class="form-control"
+                      formControlName="date"
+                      ngbDatepicker
+                      #dp="ngbDatepicker"
+                      placeholder="dd-mm-yyyy"
+                      readonly
+                      (click)="dp.toggle()"
+                      aria-label="Date"
+                    />
+                    <button
+                      class="btn btn-outline-secondary btn-calendar"
+                      type="button"
+                      (click)="dp.toggle()"
+                      aria-label="Open calendar"
+                    ></button>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">
+                      {{ row.controls.kind.value === 'refund' ? '−₹' : '₹' }}
+                    </span>
+                    <input
+                      class="form-control"
+                      formControlName="amount"
+                      appNumbersOnly
+                      [decimals]="2"
+                      placeholder="Amount"
+                      aria-label="Amount"
+                      [class.is-invalid]="submitted() && row.controls.amount.invalid"
+                    />
+                  </div>
+                </div>
+                <div class="col-5">
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="method"
+                    aria-label="Method"
+                  >
+                    @for (m of methods; track m) {
+                      <option [value]="m">{{ m }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-5">
+                  <input
+                    class="form-control form-control-sm"
+                    formControlName="reference"
+                    placeholder="UPI / UTR ref"
+                    aria-label="Reference"
+                  />
+                </div>
+                <div class="col-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger w-100"
+                    (click)="form.controls.payments.removeAt(i)"
+                    aria-label="Remove payment"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-body-secondary small mb-0">No payments yet.</p>
+          }
+        </div>
+        <div card-footer class="d-flex justify-content-between">
+          <span>
+            Paid
+            <strong>{{ formatInr(paid()) }}</strong>
+          </span>
+          <span>
+            Due
+            <strong>
+              {{
+                formatInr((price()?.total ?? 0) - paid() > 0 ? (price()?.total ?? 0) - paid() : 0)
+              }}
+            </strong>
+          </span>
+        </div>
+      </admin-card>
+
+      @if (booking?.history?.length) {
+        <admin-card heading="History" icon="⌚">
+          <ul class="list-unstyled small mb-0">
+            @for (h of booking!.history; track $index) {
+              <li class="mb-1">
+                <span class="text-body-secondary">{{ formatDate(h.at.slice(0, 10)) }}</span>
+                · {{ h.text }}
+              </li>
+            }
+          </ul>
+        </admin-card>
+      }
+    </div>
+  </div>
+</form>
+
+<div class="border-top bg-white p-3 d-flex gap-2">
+  @if (booking) {
+    <button type="button" class="btn btn-outline-danger" (click)="remove()">Delete</button>
+  }
+  <button type="button" class="btn btn-outline-secondary ms-auto" (click)="offcanvas.dismiss()">
+    Cancel
+  </button>
+  <button type="submit" form="booking-form" class="btn btn-primary px-4">
+    {{ booking ? 'Save booking' : 'Add booking' }}
+  </button>
+</div>

@@ -1,0 +1,386 @@
+@if (departure(); as d) {
+  <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <a routerLink="/admin/departures" class="btn btn-sm btn-outline-secondary">← All departures</a>
+    <h2 class="h5 mb-0 ms-1">{{ tour()?.name }}</h2>
+    <span class="badge text-bg-dark">{{ d.code }}</span>
+    <span
+      class="badge"
+      [class]="
+        d.status === 'cancelled'
+          ? 'text-bg-danger'
+          : d.status === 'completed'
+            ? 'text-bg-secondary'
+            : 'text-bg-success'
+      "
+    >
+      {{ d.status }}
+    </span>
+    <span class="text-body-secondary small">
+      {{ dates() }}
+      @if (daysToGo() > 0) {
+        · starts in {{ daysToGo() }} days
+      }
+    </span>
+    <div class="ms-auto d-flex gap-2">
+      <button type="button" class="btn btn-sm btn-outline-primary" (click)="openBookings()">
+        Bookings
+      </button>
+      @if (d.status === 'scheduled') {
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="setStatus('completed')"
+        >
+          Mark completed
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          (click)="setStatus('cancelled')"
+        >
+          Cancel departure
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (capacity(); as c) {
+    <div class="row g-3 mb-1">
+      <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm p-3 h-100">
+          <div class="small text-body-secondary">Seats booked</div>
+          <div class="fs-3 fw-semibold">
+            {{ c.taken }}
+            <span class="fs-6 text-body-secondary">/ {{ c.total }}</span>
+          </div>
+          <div class="seat-bar mt-1" [class.full]="!c.left">
+            <span [style.width.%]="(c.taken / c.total) * 100"></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm p-3 h-100">
+          <div class="small text-body-secondary">Minimum group</div>
+          <div class="fs-3 fw-semibold">{{ c.minimum }}</div>
+          @if (c.taken < c.minimum && d.status === 'scheduled') {
+            <div class="small text-danger">{{ c.minimum - c.taken }} more needed to run</div>
+          } @else {
+            <div class="small text-success">Minimum reached</div>
+          }
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm p-3 h-100">
+          <div class="small text-body-secondary">Collected</div>
+          <div class="fs-3 fw-semibold">{{ formatInr(money().collected) }}</div>
+          <div class="small text-body-secondary">of {{ formatInr(money().gross) }} booked</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm p-3 h-100">
+          <div class="small text-body-secondary">Outstanding</div>
+          <div class="fs-3 fw-semibold">{{ formatInr(money().outstanding) }}</div>
+          <div class="small text-body-secondary">{{ waitlist().length }} on waitlist</div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (expiredHolds().length) {
+    <div class="alert alert-warning mt-3 mb-0">
+      {{ expiredHolds().length }} unpaid request(s) passed their hold and no longer hold seats:
+      @for (b of expiredHolds(); track b.id) {
+        <strong>{{ b.ref }}</strong>
+        &nbsp;
+      }
+      Confirm or cancel them on the Bookings page.
+    </div>
+  }
+
+  <div class="row g-3 mt-0">
+    <div class="col-xl-7">
+      <admin-card heading="Seats by travel option" icon="▦">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th class="text-end">Seats</th>
+              <th class="text-end">Booked</th>
+              <th class="text-end">Left</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (o of capacity()?.options; track o.label) {
+              <tr>
+                <td>{{ o.label }}</td>
+                <td class="text-end">{{ o.seats }}</td>
+                <td class="text-end">{{ o.taken }}</td>
+                <td class="text-end" [class.text-danger]="!o.left">{{ o.left }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </admin-card>
+
+      <admin-card
+        heading="Passenger manifest"
+        [subtitle]="manifest().length + ' travellers with seats'"
+        icon="☰"
+      >
+        <button
+          card-actions
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="exportManifest()"
+          [disabled]="!manifest().length"
+        >
+          Export CSV
+        </button>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Option</th>
+                <th>Contact</th>
+                <th>Emergency</th>
+                <th>Notes</th>
+                <th>ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of manifest(); track m.key) {
+                <tr>
+                  <td>
+                    {{ m.name }}
+                    <div class="small text-body-secondary">{{ m.ref }}</div>
+                  </td>
+                  <td>{{ m.age ?? '' }} {{ m.gender ? m.gender.charAt(0) : '' }}</td>
+                  <td class="small">{{ m.option }}</td>
+                  <td class="small">{{ m.phone || m.lead.phone }}</td>
+                  <td class="small">{{ m.emergencyName }} {{ m.emergencyPhone }}</td>
+                  <td class="small">{{ m.notes }}</td>
+                  <td>
+                    @if (m.idChecked) {
+                      <span class="badge text-bg-success">✓</span>
+                    } @else {
+                      <span class="badge text-bg-light border">—</span>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="7" class="text-body-secondary">No bookings with seats yet.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </admin-card>
+
+      <admin-card
+        heading="Arrangements"
+        subtitle="Hotels, vehicles, bikes and flights. Sent to the coordinator in the trip pack"
+        icon="⌂"
+      >
+        <textarea
+          class="form-control mb-3"
+          rows="6"
+          [ngModel]="arrangements()"
+          (ngModelChange)="arrangements.set($event)"
+          placeholder="e.g. Days 1-2: hotel in Leh, 12 rooms. Bikes: 14 Himalayan 450. Backup vehicle: Innova with driver name and phone."
+        ></textarea>
+        <label class="form-label small" for="ops-notes">Internal notes (office only)</label>
+        <textarea
+          id="ops-notes"
+          class="form-control"
+          rows="2"
+          [ngModel]="internalNotes()"
+          (ngModelChange)="internalNotes.set($event)"
+          placeholder="Anything the coordinator doesn't need"
+        ></textarea>
+        <div card-footer class="d-flex justify-content-end">
+          <button type="button" class="btn btn-sm btn-primary" (click)="saveOps()">Save</button>
+        </div>
+      </admin-card>
+    </div>
+
+    <div class="col-xl-5">
+      <admin-card heading="Coordinator" icon="☺">
+        <label class="form-label" for="dd-coord">Assigned coordinator</label>
+        <select
+          id="dd-coord"
+          class="form-select mb-3"
+          [ngModel]="d.coordinatorId"
+          (ngModelChange)="assignCoordinator($event || null)"
+        >
+          <option [ngValue]="null">Not assigned</option>
+          @for (c of coordinators(); track c.id) {
+            <option [ngValue]="c.id">{{ c.name }}</option>
+          }
+        </select>
+        <p class="small text-body-secondary">
+          The trip pack has the passenger list and arrangements. Share it with the coordinator
+          privately (not in a group chat); they open it in the coordinator portal.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            (click)="downloadTripPack()"
+            [disabled]="!coordinator()"
+          >
+            Download trip pack
+          </button>
+          <label class="btn btn-sm btn-outline-secondary mb-0">
+            Import coordinator report
+            <input #rep type="file" accept="application/json" hidden (change)="importReport(rep)" />
+          </label>
+        </div>
+        @if (report(); as r) {
+          <hr />
+          <h3 class="h6">
+            Coordinator report
+            <span class="small text-body-secondary">
+              ({{ formatDate(r.generatedAt.slice(0, 10)) }})
+            </span>
+          </h3>
+          @if (reportSummary(); as s) {
+            <ul class="small mb-2">
+              <li>
+                Attendance taken on {{ s.days }} day(s), about {{ s.avgAttendance }} of
+                {{ s.people }} present
+              </li>
+              <li>
+                {{ r.incidents.length }} incident(s), {{ r.expenses.length }} expense(s) totalling
+                {{ formatInr(s.expenses) }}
+              </li>
+              <li>
+                {{ r.dailyReports.length }} daily report(s){{
+                  r.completedAt ? ', trip completed ' + formatDate(r.completedAt.slice(0, 10)) : ''
+                }}
+              </li>
+            </ul>
+          }
+          @for (i of r.incidents; track i.id) {
+            <div
+              class="alert py-2 small mb-2"
+              [class]="
+                i.severity === 'High'
+                  ? 'alert-danger'
+                  : i.severity === 'Medium'
+                    ? 'alert-warning'
+                    : 'alert-light border'
+              "
+            >
+              <strong>Day {{ i.day }} · {{ i.title }}</strong>
+              <div>{{ i.details }}</div>
+            </div>
+          }
+          @if (r.finalSummary) {
+            <p class="small mb-0">
+              <strong>Summary:</strong>
+              {{ r.finalSummary }}
+            </p>
+          }
+        }
+      </admin-card>
+
+      <admin-card
+        heading="Costs and profit"
+        subtitle="Estimated costs here; actual expenses come from the coordinator report"
+        icon="₹"
+      >
+        <button
+          card-actions
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="addCost()"
+        >
+          + Add cost
+        </button>
+        <div class="vstack gap-2 mb-3">
+          @for (c of costs(); track c.id) {
+            <div class="d-flex gap-2">
+              <select
+                class="form-select form-select-sm"
+                style="max-width: 130px"
+                [ngModel]="c.category"
+                (ngModelChange)="updateCost(c.id, { category: $event })"
+                aria-label="Category"
+              >
+                @for (cat of categories; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+              <input
+                class="form-control form-control-sm"
+                [ngModel]="c.label"
+                (ngModelChange)="updateCost(c.id, { label: $event })"
+                placeholder="e.g. 7 nights, 10 rooms"
+                aria-label="Description"
+              />
+              <input
+                class="form-control form-control-sm text-end"
+                style="max-width: 110px"
+                type="number"
+                min="0"
+                [ngModel]="c.amount"
+                (ngModelChange)="updateCost(c.id, { amount: +$event })"
+                placeholder="₹"
+                aria-label="Amount"
+              />
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                (click)="removeCost(c.id)"
+                aria-label="Remove cost"
+              >
+                ✕
+              </button>
+            </div>
+          } @empty {
+            <p class="small text-body-secondary mb-0">No costs entered yet.</p>
+          }
+        </div>
+        <table class="table table-sm mb-0">
+          <tbody>
+            <tr>
+              <td>Booked value</td>
+              <td class="text-end">{{ formatInr(money().gross) }}</td>
+            </tr>
+            <tr>
+              <td>Estimated costs</td>
+              <td class="text-end">− {{ formatInr(money().estimated) }}</td>
+            </tr>
+            <tr class="fw-semibold">
+              <td>Estimated profit</td>
+              <td class="text-end">{{ formatInr(money().estimatedProfit) }}</td>
+            </tr>
+            @if (report()) {
+              <tr>
+                <td>Trip expenses (coordinator)</td>
+                <td class="text-end">− {{ formatInr(money().actual) }}</td>
+              </tr>
+              <tr class="fw-semibold">
+                <td>Profit on money collected</td>
+                <td class="text-end">{{ formatInr(money().actualProfit) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <div card-footer class="d-flex justify-content-end">
+          <button type="button" class="btn btn-sm btn-primary" (click)="saveOps()">
+            Save costs
+          </button>
+        </div>
+      </admin-card>
+    </div>
+  </div>
+} @else {
+  <div class="alert alert-warning">
+    Departure not found.
+    <a routerLink="/admin/departures">Back to departures</a>
+  </div>
+}

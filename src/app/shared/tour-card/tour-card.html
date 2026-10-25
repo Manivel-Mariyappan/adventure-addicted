@@ -1,0 +1,66 @@
+<a class="media" [routerLink]="['/tours', tour().slug]" tabindex="-1" aria-hidden="true">
+  <img [src]="image()" alt="" loading="lazy" decoding="async" width="1600" height="1000" />
+  <span class="flags">
+    <span class="tag tag-dark">{{ tour().days }}D / {{ tour().nights }}N</span>
+    @if (tour().flightsIncluded) {
+      <span class="tag">
+        <app-icon name="plane" [size]="12" />
+        Flights included
+      </span>
+    }
+  </span>
+  <span class="difficulty" [attr.data-level]="tour().difficulty">{{ tour().difficulty }}</span>
+</a>
+
+<div class="body">
+  <p class="places">{{ places() }}</p>
+  <h3>
+    <a [routerLink]="['/tours', tour().slug]">{{ tour().name }}</a>
+  </h3>
+  <p class="tagline">{{ tour().tagline }}</p>
+
+  <ul class="modes" aria-label="Ways to join">
+    @if (types().has('bike')) {
+      <li>
+        <app-icon name="bike" [size]="16" />
+        Bike
+      </li>
+    }
+    @if (types().has('own-car')) {
+      <li>
+        <app-icon name="car" [size]="16" />
+        Own car
+      </li>
+    }
+    @if (types().has('vehicle')) {
+      <li>
+        <app-icon name="users" [size]="16" />
+        Seat in our vehicle
+      </li>
+    }
+  </ul>
+
+  @if (next(); as n) {
+    <p class="next" [attr.data-state]="n.state">
+      <app-icon name="calendar" [size]="15" />
+      <span>
+        <strong>{{ n.dates }}</strong>
+        · {{ n.label }}
+        @if (n.more > 0) {
+          <small>+{{ n.more }} more {{ n.more === 1 ? 'date' : 'dates' }}</small>
+        }
+      </span>
+    </p>
+  } @else {
+    <p class="next none">New dates coming soon</p>
+  }
+
+  <div class="foot">
+    <p class="price">
+      <small>from</small>
+      {{ price() }}
+      <small>per person</small>
+    </p>
+    <a class="btn btn-primary btn-sm" [routerLink]="['/tours', tour().slug]">View tour</a>
+  </div>
+</div>

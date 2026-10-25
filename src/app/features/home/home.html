@@ -1,0 +1,227 @@
+<section class="hero">
+  <img class="hero-art" src="art/hero.svg" alt="" width="1600" height="1000" fetchpriority="high" />
+  <div class="container hero-inner">
+    <p class="eyebrow">Ladakh · Kashmir · Spiti · Himachal · Uttarakhand · Rajasthan</p>
+    <h1 class="display">
+      Ride the highest roads.
+      <br />
+      <span>Come back addicted.</span>
+    </h1>
+    <p class="lead">
+      Guided bike expeditions and self-drive road trips with fixed departures, small groups and a
+      coordinator on every trip.
+    </p>
+
+    <form
+      class="finder"
+      (submit)="$event.preventDefault(); search(dest.value, month.value, travel.value)"
+    >
+      <label>
+        <span>Where</span>
+        <select #dest>
+          <option value="">Any destination</option>
+          @for (r of catalog.regions(); track r.id) {
+            <optgroup [label]="r.name">
+              <option [value]="r.slug">All of {{ r.name }}</option>
+              @for (c of catalog.children(r); track c.id) {
+                <option [value]="c.slug">{{ c.name }}</option>
+              }
+            </optgroup>
+          }
+        </select>
+      </label>
+      <label>
+        <span>When</span>
+        <select #month>
+          <option value="">Any month</option>
+          @for (m of catalog.months(); track m) {
+            <option [value]="m">{{ formatMonth(m + '-01') }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span>How</span>
+        <select #travel>
+          <option value="">Any way</option>
+          <option value="bike">On a bike</option>
+          <option value="own-car">In my own car</option>
+          <option value="vehicle">Seat in your vehicle</option>
+        </select>
+      </label>
+      <button type="submit" class="btn btn-cta">
+        <app-icon name="search" [size]="18" />
+        Find tours
+      </button>
+    </form>
+
+    <ul class="stats">
+      @for (s of stats(); track s.label) {
+        <li>
+          <strong>{{ s.value }}</strong>
+          {{ s.label }}
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- Upcoming departures -->
+@if (upcoming().length) {
+  <section class="container section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Next departures</p>
+        <h2>Seats open now</h2>
+      </div>
+      <a class="link-arrow" routerLink="/tours" [queryParams]="{ seats: 1 }">All open dates</a>
+    </div>
+    <div class="departures">
+      @for (u of upcoming(); track u.id) {
+        <a class="dep" [routerLink]="['/book', u.tour.slug]" [queryParams]="{ departure: u.id }">
+          <img [src]="u.image" alt="" loading="lazy" width="160" height="100" />
+          <span class="dep-text">
+            <span class="dep-name">{{ u.tour.name }}</span>
+            <span class="dep-dates">
+              <app-icon name="calendar" [size]="14" />
+              {{ u.dates }}
+            </span>
+            <span class="dep-seats" [class.filling]="u.filling">{{ u.left }} seats left</span>
+          </span>
+          <span class="dep-price">
+            <small>from</small>
+            {{ u.price }}
+          </span>
+        </a>
+      }
+    </div>
+  </section>
+}
+
+<!-- Featured tours -->
+<section class="section bg-surface">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Our tours</p>
+        <h2>Popular trips this season</h2>
+      </div>
+      <a class="link-arrow" routerLink="/tours">See all tours</a>
+    </div>
+    <div class="tours">
+      @for (t of featured(); track t.id) {
+        <app-tour-card [tour]="t" />
+      } @empty {
+        @for (i of [1, 2, 3]; track i) {
+          <div class="skeleton" style="aspect-ratio: 3 / 4"></div>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Destinations -->
+<section class="container section">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">Destinations</p>
+      <h2>Where we ride</h2>
+    </div>
+    <a class="link-arrow" routerLink="/destinations">All destinations</a>
+  </div>
+  <div class="regions">
+    @for (r of regions(); track r.id) {
+      <app-destination-card [destination]="r" />
+    }
+  </div>
+</section>
+
+<!-- Two ways to travel -->
+<section class="container section ways">
+  <a class="way" routerLink="/tours" [queryParams]="{ travel: 'bike' }">
+    <img src="art/bike-expedition.svg" alt="" loading="lazy" width="1600" height="1000" />
+    <span class="way-text">
+      <span class="tag tag-orange">
+        <app-icon name="bike" [size]="14" />
+        Bike expeditions
+      </span>
+      <span class="way-title">Ride a Himalayan 450 over Khardung La</span>
+      <span>Bikes, fuel, a mechanic and a backup vehicle. You just ride.</span>
+    </span>
+  </a>
+  <a class="way" routerLink="/tours" [queryParams]="{ travel: 'own-car' }">
+    <img src="art/self-drive.svg" alt="" loading="lazy" width="1600" height="1000" />
+    <span class="way-text">
+      <span class="tag tag-orange">
+        <app-icon name="car" [size]="14" />
+        Self-drive road trips
+      </span>
+      <span class="way-title">Drive your own car with the group</span>
+      <span>Join the convoy and share the stays, meals, guide and backup vehicle.</span>
+    </span>
+  </a>
+</section>
+
+<!-- Why us -->
+<section class="section bg-dark">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Why travel with us</p>
+        <h2>Adventure, without the guesswork</h2>
+      </div>
+    </div>
+    <div class="reasons">
+      @for (r of reasons; track r.title) {
+        <div class="reason">
+          <app-icon [name]="r.icon" [size]="26" />
+          <h3>{{ r.title }}</h3>
+          <p>{{ r.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+@if (testimonials().length) {
+  <section class="container section">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Travellers</p>
+        <h2>What our riders say</h2>
+      </div>
+    </div>
+    <div class="reviews">
+      @for (t of testimonials(); track t.name) {
+        <figure>
+          <blockquote>{{ t.text }}</blockquote>
+          <figcaption>
+            <strong>{{ t.name }}</strong>
+            {{ t.city }} · {{ t.tour }}
+          </figcaption>
+        </figure>
+      }
+    </div>
+  </section>
+}
+
+@if (faqs().length) {
+  <section class="container section faq-wrap">
+    <div>
+      <p class="eyebrow">Questions</p>
+      <h2>Before you book</h2>
+      <p class="lead">Anything else? Ask us on WhatsApp.</p>
+      <app-whatsapp-button
+        [message]="'Hello, I have a question about your tours.'"
+        label="Ask a question"
+      />
+    </div>
+    <div class="faqs">
+      @for (f of faqs(); track f.question) {
+        <details>
+          <summary>{{ f.question }}</summary>
+          <p>{{ f.answer }}</p>
+        </details>
+      }
+    </div>
+  </section>
+}

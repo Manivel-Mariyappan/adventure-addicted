@@ -1,0 +1,47 @@
+[
+  {
+    "id": "crd-tenzin",
+    "name": "Tenzin Norbu",
+    "phone": "+91 90000 00011",
+    "photo": "",
+    "bio": "Born in Leh. Has led more than 60 Ladakh rides and knows every mechanic between Manali and Leh.",
+    "languages": [
+      "English",
+      "Hindi",
+      "Ladakhi"
+    ],
+    "experienceYears": 9,
+    "pinHash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+    "active": true
+  },
+  {
+    "id": "crd-arjun",
+    "name": "Arjun Rawat",
+    "phone": "+91 90000 00012",
+    "photo": "",
+    "bio": "Rafting guide turned tour leader from Rishikesh. Leads our Uttarakhand and Spiti trips.",
+    "languages": [
+      "English",
+      "Hindi",
+      "Garhwali"
+    ],
+    "experienceYears": 7,
+    "pinHash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+    "active": true
+  },
+  {
+    "id": "crd-meera",
+    "name": "Meera Shekhawat",
+    "phone": "+91 90000 00013",
+    "photo": "",
+    "bio": "Road-trip planner from Jodhpur. Leads our Rajasthan and Kashmir trips.",
+    "languages": [
+      "English",
+      "Hindi",
+      "Rajasthani"
+    ],
+    "experienceYears": 6,
+    "pinHash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+    "active": true
+  }
+]

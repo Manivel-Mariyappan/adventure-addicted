@@ -1,0 +1,434 @@
+@if (departure(); as d) {
+  <a routerLink="/coordinator" class="small text-decoration-none">← My trips</a>
+  <h1 class="h5 mt-2 mb-0">{{ tour()?.name }}</h1>
+  <p class="small text-body-secondary mb-3">{{ dates() }} · {{ d.code }}</p>
+
+  @if (!pack()) {
+    <div class="alert alert-warning">
+      <strong>Load the trip pack first.</strong>
+      The office sends you a file named
+      <code>trip-pack-{{ d.code }}.json</code>
+      with the passenger list and arrangements.
+      <label class="btn btn-sm btn-warning d-block mt-2 mb-0">
+        Open trip pack file
+        <input #pk type="file" accept="application/json" hidden (change)="importPack(pk)" />
+      </label>
+    </div>
+  }
+
+  <ul class="nav nav-pills flex-nowrap overflow-auto mb-3 pb-1">
+    @for (t of tabs; track t.key) {
+      <li class="nav-item">
+        <button
+          type="button"
+          class="nav-link text-nowrap"
+          [class.active]="tab() === t.key"
+          (click)="tab.set(t.key)"
+        >
+          {{ t.label }}
+        </button>
+      </li>
+    }
+  </ul>
+
+  <!-- day picker, used by Today, Attendance and Log -->
+  @if (tab() === 'today' || tab() === 'attendance' || tab() === 'log') {
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        [disabled]="day() <= 1"
+        (click)="selectedDay.set(day() - 1)"
+        aria-label="Previous day"
+      >
+        ‹
+      </button>
+      <div class="flex-grow-1 text-center">
+        <strong>Day {{ day() }}</strong>
+        <span class="small text-body-secondary">· {{ dayDate() }}</span>
+        @if (day() !== todayDay()) {
+          <button type="button" class="btn btn-link btn-sm py-0" (click)="selectedDay.set(null)">
+            today
+          </button>
+        }
+      </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        [disabled]="day() >= (tour()?.days ?? 1)"
+        (click)="selectedDay.set(day() + 1)"
+        aria-label="Next day"
+      >
+        ›
+      </button>
+    </div>
+  }
+
+  @switch (tab()) {
+    @case ('today') {
+      @if (dayPlan(); as p) {
+        <div class="card border-0 shadow-sm p-3 mb-3">
+          <h2 class="h6 mb-1">{{ p.title }}</h2>
+          <p class="small text-body-secondary mb-2">
+            {{ p.location }}{{ p.distanceKm ? ' · ' + p.distanceKm + ' km' : ''
+            }}{{ p.altitudeM ? ' · up to ' + p.altitudeM + ' m' : '' }}
+          </p>
+          <p class="small mb-2">{{ p.description }}</p>
+          <div class="small">
+            <strong>Stay:</strong>
+            {{ p.stay || '—' }} ·
+            <strong>Meals:</strong>
+            {{ p.meals || '—' }}
+          </div>
+        </div>
+      }
+      <div class="row g-2 mb-3">
+        <div class="col-4">
+          <div class="card border-0 shadow-sm p-2 text-center">
+            <div class="fs-4 fw-semibold">{{ present().size }}/{{ passengers().length }}</div>
+            <div class="small text-body-secondary">present</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card border-0 shadow-sm p-2 text-center">
+            <div class="fs-4 fw-semibold">{{ log().incidents.length }}</div>
+            <div class="small text-body-secondary">incidents</div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card border-0 shadow-sm p-2 text-center">
+            <div class="fs-4 fw-semibold">{{ formatInr(expenseTotal()) }}</div>
+            <div class="small text-body-secondary">spent</div>
+          </div>
+        </div>
+      </div>
+      @if (pack()?.arrangements) {
+        <div class="card border-0 shadow-sm p-3 mb-3">
+          <h2 class="h6">Arrangements from the office</h2>
+          <p class="small mb-0" style="white-space: pre-line">{{ pack()!.arrangements }}</p>
+        </div>
+      }
+      <div class="d-grid gap-2">
+        <button type="button" class="btn btn-primary" (click)="tab.set('attendance')">
+          Take attendance
+        </button>
+        <button type="button" class="btn btn-outline-primary" (click)="tab.set('log')">
+          Send daily report
+        </button>
+      </div>
+    }
+
+    @case ('itinerary') {
+      <div class="vstack gap-2">
+        @for (p of tour()?.itinerary; track p.day) {
+          <div
+            class="card border-0 shadow-sm p-3"
+            [class.border-start]="p.day === todayDay()"
+            [class.border-primary]="p.day === todayDay()"
+            [class.border-4]="p.day === todayDay()"
+          >
+            <div class="small text-body-secondary">Day {{ p.day }} · {{ p.location }}</div>
+            <div class="fw-semibold">{{ p.title }}</div>
+            <p class="small mb-1">{{ p.description }}</p>
+            <div class="small text-body-secondary">{{ p.activities.join(' · ') }}</div>
+          </div>
+        }
+      </div>
+    }
+
+    @case ('passengers') {
+      <div class="vstack gap-2">
+        @for (p of passengers(); track p.key) {
+          <div class="card border-0 shadow-sm p-3">
+            <div class="d-flex align-items-start gap-2">
+              <div class="flex-grow-1">
+                <div class="fw-semibold">
+                  {{ p.name }}
+                  <span class="small text-body-secondary">{{ p.age ?? '' }} {{ p.gender }}</span>
+                </div>
+                <div class="small text-body-secondary">{{ p.option }} · {{ p.bookingRef }}</div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class]="checkedIn().has(p.key) ? 'btn-success' : 'btn-outline-secondary'"
+                (click)="toggleCheckIn(p.key)"
+              >
+                {{ checkedIn().has(p.key) ? 'Checked in' : 'Check in' }}
+              </button>
+            </div>
+            @if (p.notes) {
+              <div class="small mt-2 p-2 bg-warning-subtle rounded">{{ p.notes }}</div>
+            }
+            <div class="d-flex flex-wrap gap-2 mt-2">
+              @if (p.phone || p.leadPhone) {
+                <a class="btn btn-sm btn-outline-primary" [href]="tel(p.phone || p.leadPhone)">
+                  Call
+                </a>
+              }
+              @if (p.emergencyPhone) {
+                <a class="btn btn-sm btn-outline-danger" [href]="tel(p.emergencyPhone)">
+                  Emergency: {{ p.emergencyName || p.emergencyPhone }}
+                </a>
+              }
+              @if (!p.idChecked) {
+                <span class="badge text-bg-light border align-self-center">ID not seen yet</span>
+              }
+            </div>
+          </div>
+        } @empty {
+          <p class="text-body-secondary">Load the trip pack to see passengers.</p>
+        }
+      </div>
+    }
+
+    @case ('attendance') {
+      <div class="d-flex align-items-center mb-2">
+        <span class="small">{{ present().size }} of {{ passengers().length }} present</span>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-success ms-auto"
+          (click)="allPresent()"
+          [disabled]="!passengers().length"
+        >
+          Everyone present
+        </button>
+      </div>
+      <div class="list-group shadow-sm">
+        @for (p of passengers(); track p.key) {
+          <label class="list-group-item d-flex align-items-center gap-3 py-3">
+            <input
+              class="form-check-input m-0"
+              type="checkbox"
+              style="width: 1.4rem; height: 1.4rem"
+              [checked]="present().has(p.key)"
+              (change)="togglePresent(p.key)"
+            />
+            <span class="flex-grow-1">{{ p.name }}</span>
+            <span class="small text-body-secondary">{{ p.option }}</span>
+          </label>
+        } @empty {
+          <div class="list-group-item text-body-secondary">
+            Load the trip pack to take attendance.
+          </div>
+        }
+      </div>
+    }
+
+    @case ('log') {
+      <div class="card border-0 shadow-sm p-3 mb-3">
+        <h2 class="h6">Daily report, day {{ day() }}</h2>
+        @if (dayReport(); as r) {
+          <div class="alert alert-light border small py-2">
+            Sent: {{ r.status }}. {{ r.summary }}
+          </div>
+        }
+        <select
+          class="form-select form-select-sm mb-2"
+          [(ngModel)]="report.status"
+          aria-label="Status"
+        >
+          <option>On plan</option>
+          <option>Delayed</option>
+          <option>Changed</option>
+        </select>
+        <textarea
+          class="form-control mb-2"
+          rows="3"
+          [(ngModel)]="report.summary"
+          placeholder="How the day went, road and weather, anything the office should know"
+        ></textarea>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          (click)="saveDailyReport()"
+          [disabled]="!report.summary.trim()"
+        >
+          Save and send to office
+        </button>
+      </div>
+
+      <div class="card border-0 shadow-sm p-3 mb-3">
+        <h2 class="h6">Announcement to the group</h2>
+        <textarea
+          class="form-control mb-2"
+          rows="2"
+          [(ngModel)]="announcement"
+          placeholder="e.g. Tomorrow we leave at 7 AM sharp. Breakfast from 6:15."
+        ></textarea>
+        <button
+          type="button"
+          class="btn btn-success btn-sm"
+          (click)="addAnnouncement()"
+          [disabled]="!announcement.trim()"
+        >
+          Share on WhatsApp
+        </button>
+        @for (a of log().announcements.slice(0, 3); track a.id) {
+          <p class="small text-body-secondary mt-2 mb-0">
+            {{ formatDate(a.at.slice(0, 10)) }}: {{ a.text }}
+          </p>
+        }
+      </div>
+
+      <div class="card border-0 shadow-sm p-3 mb-3">
+        <h2 class="h6">Incident or delay</h2>
+        <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Severity">
+          @for (s of ['Low', 'Medium', 'High']; track s) {
+            <button
+              type="button"
+              class="btn"
+              [class]="
+                incident.severity === s
+                  ? s === 'High'
+                    ? 'btn-danger'
+                    : 'btn-dark'
+                  : 'btn-outline-secondary'
+              "
+              (click)="incident.severity = $any(s)"
+            >
+              {{ s }}
+            </button>
+          }
+        </div>
+        <input
+          class="form-control form-control-sm mb-2"
+          [(ngModel)]="incident.title"
+          placeholder="What happened, e.g. Puncture near Khardung La"
+        />
+        <textarea
+          class="form-control form-control-sm mb-2"
+          rows="2"
+          [(ngModel)]="incident.details"
+          placeholder="Details and what you did"
+        ></textarea>
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm"
+          (click)="addIncident()"
+          [disabled]="!incident.title.trim()"
+        >
+          Record incident
+        </button>
+        <div class="form-text">High severity also opens WhatsApp to the office.</div>
+      </div>
+
+      <div class="card border-0 shadow-sm p-3">
+        <h2 class="h6">
+          Expenses
+          <span class="text-body-secondary small">· {{ formatInr(expenseTotal()) }} so far</span>
+        </h2>
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <select
+              class="form-select form-select-sm"
+              [(ngModel)]="expense.category"
+              aria-label="Category"
+            >
+              @for (c of categories; track c) {
+                <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-6">
+            <input
+              class="form-control form-control-sm"
+              type="number"
+              min="0"
+              inputmode="decimal"
+              [(ngModel)]="expense.amount"
+              placeholder="Amount ₹"
+            />
+          </div>
+          <div class="col-8">
+            <input
+              class="form-control form-control-sm"
+              [(ngModel)]="expense.description"
+              placeholder="What for"
+            />
+          </div>
+          <div class="col-4">
+            <input
+              class="form-control form-control-sm"
+              [(ngModel)]="expense.paidBy"
+              placeholder="Paid by"
+            />
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="addExpense()">
+          Add expense
+        </button>
+        <ul class="list-unstyled small mt-3 mb-0">
+          @for (e of log().expenses; track e.id) {
+            <li class="d-flex gap-2 border-top py-1">
+              <span class="text-body-secondary">D{{ e.day }}</span>
+              <span class="flex-grow-1">{{ e.category }}: {{ e.description }}</span>
+              <strong>{{ formatInr(e.amount) }}</strong>
+              <button
+                type="button"
+                class="btn btn-link btn-sm p-0 text-danger"
+                (click)="removeExpense(e.id)"
+                aria-label="Remove expense"
+              >
+                ✕
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @case ('finish') {
+      <div class="card border-0 shadow-sm p-3 mb-3">
+        <h2 class="h6">Trip summary</h2>
+        <ul class="small">
+          <li>Attendance taken on {{ attendanceDays() }} day(s)</li>
+          <li>
+            {{ log().dailyReports.length }} daily report(s),
+            {{ log().incidents.length }} incident(s)
+          </li>
+          <li>{{ log().expenses.length }} expense(s), {{ formatInr(expenseTotal()) }} in total</li>
+        </ul>
+        <textarea
+          class="form-control mb-2"
+          rows="4"
+          [(ngModel)]="finalSummary"
+          [placeholder]="
+            log().finalSummary ||
+            'How the trip went overall, feedback from the group, suggestions for next time'
+          "
+        ></textarea>
+        @if (log().completedAt) {
+          <div class="alert alert-success small py-2">
+            Completed on {{ formatDate(log().completedAt!.slice(0, 10)) }}.
+          </div>
+        } @else {
+          <button type="button" class="btn btn-success w-100 mb-2" (click)="complete()">
+            Mark trip completed
+          </button>
+        }
+        <button type="button" class="btn btn-primary w-100 mb-2" (click)="downloadReport()">
+          Download report file
+        </button>
+        @if (officeSummaryLink(); as href) {
+          <a class="btn btn-outline-success w-100" [href]="href" target="_blank" rel="noopener">
+            Send summary to office on WhatsApp
+          </a>
+        }
+        <p class="small text-body-secondary mt-2 mb-0">
+          Send the report file to the office (WhatsApp or email). They import it on the departure
+          page. Everything here is saved on this phone only.
+        </p>
+      </div>
+      <label class="btn btn-sm btn-outline-secondary">
+        Load a newer trip pack
+        <input #pk2 type="file" accept="application/json" hidden (change)="importPack(pk2)" />
+      </label>
+    }
+  }
+} @else {
+  <div class="alert alert-warning">
+    This trip isn't assigned to you.
+    <a routerLink="/coordinator">Back to my trips</a>
+  </div>
+}

@@ -1,0 +1,391 @@
+// Hero
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #fff;
+  background: var(--dark);
+}
+
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 70%;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 31, 61, 0.92) 0%,
+    rgba(15, 31, 61, 0.55) 55%,
+    rgba(15, 31, 61, 0.2)
+  );
+}
+
+.hero-inner {
+  padding-block: clamp(3.5rem, 9vw, 6.5rem) clamp(2.5rem, 6vw, 4rem);
+
+  .eyebrow {
+    color: #fdba74;
+    letter-spacing: 0.04em;
+  }
+
+  h1 {
+    max-width: 14ch;
+    color: #fff;
+
+    span {
+      color: #fdba74;
+    }
+  }
+
+  .lead {
+    color: #cbd5e1;
+  }
+}
+
+.finder {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 0.5rem;
+  max-width: 920px;
+  margin-top: 2rem;
+  padding: 0.6rem;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+
+  label {
+    display: flex;
+    flex-direction: column;
+    padding: 0.35rem 0.75rem;
+    border-right: 1px solid var(--line);
+
+    span {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  }
+
+  select {
+    padding: 0.2rem 0;
+    font-weight: 600;
+    color: var(--text);
+    background: none;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .btn {
+    min-height: 3.4rem;
+  }
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+
+  strong {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 1.9rem;
+    line-height: 1.1;
+    color: #fff;
+  }
+}
+
+// Upcoming departures
+.departures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.dep {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.6rem;
+  text-decoration: none;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+  &:hover {
+    border-color: #c7d7ee;
+    box-shadow: var(--shadow);
+  }
+
+  img {
+    width: 96px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+}
+
+.dep-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.dep-name {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.dep-dates {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-2);
+}
+
+.dep-seats {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--success);
+
+  &.filling {
+    color: var(--orange-ink);
+  }
+}
+
+.dep-price {
+  font-family: var(--font-head);
+  font-weight: 700;
+  text-align: right;
+
+  small {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+}
+
+.tours {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.regions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+// Bike vs self-drive
+.ways {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  padding-top: 0;
+}
+
+.way {
+  position: relative;
+  display: block;
+  min-height: 340px;
+  overflow: hidden;
+  color: #fff;
+  text-decoration: none;
+  border-radius: var(--radius);
+  isolation: isolate;
+
+  img {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, transparent 20%, rgba(15, 31, 61, 0.9));
+  }
+
+  &:hover img {
+    transform: scale(1.04);
+  }
+}
+
+.way-text {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 1.5rem;
+  color: #e2e8f0;
+}
+
+.way-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #fff;
+}
+
+// Why us
+.reasons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.reason {
+  padding: 1.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+
+  app-icon {
+    color: #fdba74;
+  }
+
+  h3 {
+    margin: 0.75rem 0 0.35rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #94a3b8;
+  }
+}
+
+.reviews {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+
+  figure {
+    margin: 0;
+    padding: 1.35rem;
+    background: var(--surface);
+    border-radius: var(--radius);
+  }
+
+  blockquote {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+  }
+
+  figcaption {
+    font-size: 0.82rem;
+    color: var(--muted);
+
+    strong {
+      display: block;
+      color: var(--text);
+    }
+  }
+}
+
+// FAQ
+.faq-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.faqs details {
+  border-bottom: 1px solid var(--line);
+
+  summary {
+    padding: 1rem 0;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+
+    &::after {
+      content: '+';
+      float: right;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+  }
+
+  &[open] summary::after {
+    content: '−';
+  }
+
+  p {
+    margin: 0 0 1rem;
+    color: var(--text-2);
+  }
+}
+
+@media (max-width: 1100px) {
+  .regions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .departures,
+  .tours,
+  .reasons,
+  .reviews {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .finder {
+    grid-template-columns: 1fr;
+
+    label {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+
+  .departures,
+  .tours,
+  .reasons,
+  .reviews,
+  .ways,
+  .faq-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .regions {
+    grid-template-columns: 1fr 1fr;
+  }
+}

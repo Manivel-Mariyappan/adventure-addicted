@@ -1,0 +1,199 @@
+<div class="offcanvas-header border-bottom bg-white">
+  <h2 class="offcanvas-title h5 mb-0" id="departure-form-title">
+    {{ departure ? 'Edit departure ' + departure.code : 'Schedule a departure' }}
+  </h2>
+  <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+</div>
+
+<form
+  class="offcanvas-body bg-body-tertiary"
+  [formGroup]="form"
+  (ngSubmit)="save()"
+  id="departure-form"
+  novalidate
+>
+  <admin-card heading="Tour and dates" icon="▦" [required]="true">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label" for="f-tour">
+          Tour package
+          <span class="text-danger">*</span>
+        </label>
+        <ng-select
+          labelForId="f-tour"
+          formControlName="tourId"
+          [items]="tours()"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Choose the tour"
+          [class.is-invalid]="submitted() && form.controls.tourId.invalid"
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="f-start">
+          Start date
+          <span class="text-danger">*</span>
+        </label>
+        <div class="input-group">
+          <input
+            id="f-start"
+            class="form-control"
+            formControlName="startDate"
+            ngbDatepicker
+            #d1="ngbDatepicker"
+            placeholder="dd-mm-yyyy"
+            readonly
+            (click)="d1.toggle()"
+            [class.is-invalid]="submitted() && form.controls.startDate.invalid"
+          />
+          <button
+            class="btn btn-outline-secondary btn-calendar"
+            type="button"
+            (click)="d1.toggle()"
+            aria-label="Open calendar"
+          ></button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="f-closes">Bookings close on</label>
+        <div class="input-group">
+          <input
+            id="f-closes"
+            class="form-control"
+            formControlName="bookingClosesOn"
+            ngbDatepicker
+            #d2="ngbDatepicker"
+            placeholder="dd-mm-yyyy"
+            readonly
+            (click)="d2.toggle()"
+          />
+          <button
+            class="btn btn-outline-secondary btn-calendar"
+            type="button"
+            (click)="d2.toggle()"
+            aria-label="Open calendar"
+          ></button>
+        </div>
+      </div>
+      @if (preview(); as p) {
+        <div class="col-12">
+          <div class="alert alert-light border small mb-0">
+            Reference
+            <strong>{{ p.code }}</strong>
+            , ends on {{ p.end }} ({{ tour()?.days }} days).
+          </div>
+        </div>
+      }
+    </div>
+  </admin-card>
+
+  <admin-card
+    heading="Seats and prices"
+    subtitle="Leave seats empty for options you don't offer on this date"
+    icon="₹"
+    [required]="true"
+  >
+    <div class="mb-3" style="max-width: 220px">
+      <label class="form-label" for="f-total">
+        Total seats in the group
+        <span class="text-danger">*</span>
+      </label>
+      <input
+        id="f-total"
+        class="form-control"
+        formControlName="totalSeats"
+        appNumbersOnly
+        [decimals]="0"
+        placeholder="16"
+      />
+    </div>
+    @if (tour(); as t) {
+      <table class="table table-sm align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Travel option</th>
+            <th style="width: 110px">Seats</th>
+            <th style="width: 170px">Price for this date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (o of t.travelOptions; track o.id) {
+            <tr>
+              <td>
+                {{ o.label }}
+                <div class="small text-body-secondary">
+                  Tour price {{ formatInr(o.price) }}
+                  @if (taken()[o.id]) {
+                    · {{ taken()[o.id] }} booked
+                  }
+                </div>
+              </td>
+              <td [formGroup]="seats">
+                <input
+                  class="form-control form-control-sm"
+                  [formControlName]="o.id"
+                  appNumbersOnly
+                  [decimals]="0"
+                  placeholder="—"
+                  [attr.aria-label]="'Seats for ' + o.label"
+                />
+              </td>
+              <td [formGroup]="prices">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">₹</span>
+                  <input
+                    class="form-control"
+                    [formControlName]="o.id"
+                    appNumbersOnly
+                    [decimals]="0"
+                    placeholder="Tour price"
+                    [attr.aria-label]="'Price for ' + o.label"
+                  />
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <p class="text-body-secondary mb-0">Choose a tour to set seats per travel option.</p>
+    }
+  </admin-card>
+
+  <admin-card heading="Coordinator and status" icon="☺">
+    <div class="row g-3">
+      <div class="col-md-7">
+        <label class="form-label" for="f-coord">Coordinator</label>
+        <ng-select
+          labelForId="f-coord"
+          formControlName="coordinatorId"
+          [items]="coordinators()"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="Assign a coordinator"
+        />
+      </div>
+      <div class="col-md-5">
+        <label class="form-label" for="f-status">Status</label>
+        <ng-select
+          labelForId="f-status"
+          formControlName="status"
+          [items]="statuses"
+          bindLabel="label"
+          bindValue="value"
+          [clearable]="false"
+          [searchable]="false"
+        />
+      </div>
+    </div>
+  </admin-card>
+</form>
+
+<div class="border-top bg-white p-3 d-flex justify-content-end gap-2">
+  <button type="button" class="btn btn-outline-secondary" (click)="offcanvas.dismiss()">
+    Cancel
+  </button>
+  <button type="submit" form="departure-form" class="btn btn-primary px-4">
+    {{ departure ? 'Update departure' : 'Schedule departure' }}
+  </button>
+</div>

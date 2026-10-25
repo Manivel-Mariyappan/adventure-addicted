@@ -1,0 +1,75 @@
+@for (row of rows(); track row.departure.id) {
+  <article class="row" [attr.data-state]="row.state">
+    <div class="when">
+      <p class="dates">{{ row.dates }}</p>
+      <p class="meta">
+        Starts {{ row.weekday }} · {{ tour().days }} days · Ref {{ row.departure.code }}
+      </p>
+      <div
+        class="bar"
+        role="img"
+        [attr.aria-label]="row.filled + '% of seats booked'"
+        [style.--filled]="row.filled + '%'"
+      ></div>
+      <p class="status">
+        <span class="dot"></span>
+        {{ row.stateLabel }}
+        @if (row.state === 'open' || row.state === 'filling') {
+          · {{ row.left }} of {{ row.departure.totalSeats }} seats left
+        }
+      </p>
+    </div>
+
+    <ul class="options">
+      @for (o of row.options; track o.label) {
+        <li [class.out]="!o.left">
+          <app-icon
+            [name]="o.type === 'bike' ? 'bike' : o.type === 'own-car' ? 'car' : 'users'"
+            [size]="16"
+          />
+          <span class="label">{{ o.label }}</span>
+          <span class="seats">{{ o.left ? o.left + ' left' : 'Full' }}</span>
+          <span class="each">{{ o.price }}</span>
+        </li>
+      }
+    </ul>
+
+    <div class="cta">
+      <p class="price">
+        <small>from</small>
+        {{ row.price }}
+        @if (row.discounted) {
+          <span class="tag tag-orange">Special price</span>
+        }
+      </p>
+      @switch (row.state) {
+        @case ('soldout') {
+          <a
+            class="btn btn-outline btn-sm"
+            [routerLink]="['/book', tour().slug]"
+            [queryParams]="{ departure: row.departure.id }"
+          >
+            Join waitlist
+          </a>
+        }
+        @case ('closed') {
+          <span class="btn btn-outline btn-sm" aria-disabled="true">Booking closed</span>
+        }
+        @default {
+          <a
+            class="btn btn-cta btn-sm"
+            [routerLink]="['/book', tour().slug]"
+            [queryParams]="{ departure: row.departure.id }"
+          >
+            Book seats
+          </a>
+        }
+      }
+    </div>
+  </article>
+} @empty {
+  <div class="state-box">
+    <h3>No departures scheduled yet</h3>
+    <p>New dates are added every season. Ask us on WhatsApp and we will tell you first.</p>
+  </div>
+}

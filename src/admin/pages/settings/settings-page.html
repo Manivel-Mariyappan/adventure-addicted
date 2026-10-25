@@ -1,0 +1,347 @@
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <div class="row g-3">
+    <div class="col-xl-6">
+      <admin-card
+        heading="Company"
+        subtitle="Shown in the header and footer"
+        icon="◆"
+        [required]="true"
+      >
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="s-name">
+              Company name
+              <span class="text-danger">*</span>
+            </label>
+            <input
+              id="s-name"
+              class="form-control"
+              formControlName="companyName"
+              placeholder="Enter company name"
+              [class.is-invalid]="invalid('companyName')"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="s-tag">Tagline</label>
+            <input
+              id="s-tag"
+              class="form-control"
+              formControlName="tagline"
+              placeholder="Enter a short tagline"
+            />
+          </div>
+        </div>
+      </admin-card>
+
+      <admin-card heading="Contact" subtitle="Booking requests go to this WhatsApp number" icon="✆">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="s-wa">WhatsApp number</label>
+            <input
+              id="s-wa"
+              class="form-control"
+              formControlName="whatsappNumber"
+              appNumbersOnly
+              [decimals]="0"
+              [class.is-invalid]="invalid('whatsappNumber')"
+              placeholder="e.g. 919786995053"
+            />
+            <div class="form-text">Digits only, with country code (91 for India).</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="s-phone">Phone</label>
+            <input
+              id="s-phone"
+              class="form-control"
+              formControlName="phone"
+              placeholder="e.g. +91 97869 95053"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="s-email">Email</label>
+            <input
+              id="s-email"
+              type="email"
+              class="form-control"
+              formControlName="email"
+              [class.is-invalid]="invalid('email')"
+              placeholder="Enter email address"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="s-hours">Office hours</label>
+            <input
+              id="s-hours"
+              class="form-control"
+              formControlName="officeHours"
+              placeholder="e.g. Monday to Saturday, 10 AM to 7 PM"
+            />
+          </div>
+        </div>
+      </admin-card>
+
+      <admin-card
+        heading="Office address"
+        subtitle="Optional. The contact page shows a map when it is set"
+        icon="⌂"
+      >
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label" for="s-addr">Address</label>
+            <input
+              id="s-addr"
+              class="form-control"
+              formControlName="addressLine1"
+              placeholder="Enter building and street"
+            />
+          </div>
+          <div class="col-md-5">
+            <label class="form-label" for="s-city">City</label>
+            <input
+              id="s-city"
+              class="form-control"
+              formControlName="city"
+              placeholder="Enter city"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="s-state">State</label>
+            <ng-select
+              labelForId="s-state"
+              formControlName="state"
+              [items]="states"
+              placeholder="Select state"
+              [addTag]="true"
+              addTagText="Use"
+            />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label" for="s-pin">PIN code</label>
+            <input
+              id="s-pin"
+              class="form-control"
+              formControlName="postalCode"
+              appNumbersOnly
+              [decimals]="0"
+              maxlength="6"
+              placeholder="6 digits"
+            />
+          </div>
+        </div>
+      </admin-card>
+
+      <admin-card heading="Social media" subtitle="Links shown in the footer" icon="♥">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label" for="s-ig">Instagram</label>
+            <input
+              id="s-ig"
+              class="form-control"
+              formControlName="instagram"
+              placeholder="https://instagram.com/..."
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="s-yt">YouTube</label>
+            <input
+              id="s-yt"
+              class="form-control"
+              formControlName="youtube"
+              placeholder="https://youtube.com/..."
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="s-fb">Facebook</label>
+            <input
+              id="s-fb"
+              class="form-control"
+              formControlName="facebook"
+              placeholder="https://facebook.com/..."
+            />
+          </div>
+        </div>
+      </admin-card>
+    </div>
+
+    <div class="col-xl-6">
+      <admin-card
+        heading="Payments and holds"
+        subtitle="Used for every price and booking on the website"
+        icon="₹"
+        [required]="true"
+      >
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label class="form-label" for="s-gst">GST %</label>
+            <div class="input-group">
+              <input
+                id="s-gst"
+                class="form-control"
+                formControlName="gstPercent"
+                appNumbersOnly
+                [decimals]="2"
+                placeholder="5"
+              />
+              <span class="input-group-text">%</span>
+            </div>
+            <div class="form-text">Tour packages are usually 5%.</div>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="s-adv">Advance to confirm</label>
+            <div class="input-group">
+              <input
+                id="s-adv"
+                class="form-control"
+                formControlName="advancePercent"
+                appNumbersOnly
+                [decimals]="0"
+                placeholder="30"
+              />
+              <span class="input-group-text">% of total</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="s-bal">Balance due</label>
+            <div class="input-group">
+              <input
+                id="s-bal"
+                class="form-control"
+                formControlName="balanceDueDays"
+                appNumbersOnly
+                [decimals]="0"
+                placeholder="21"
+              />
+              <span class="input-group-text">days before departure</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="s-hold">Seat hold for unpaid requests</label>
+            <div class="input-group">
+              <input
+                id="s-hold"
+                class="form-control"
+                formControlName="holdHours"
+                appNumbersOnly
+                [decimals]="0"
+                placeholder="48"
+              />
+              <span class="input-group-text">hours</span>
+            </div>
+          </div>
+        </div>
+      </admin-card>
+
+      <admin-card heading="FAQs" subtitle="Shown on the home page" icon="?">
+        <button
+          card-actions
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="addFaq()"
+        >
+          + Add question
+        </button>
+        <div formArrayName="faqs" class="vstack gap-3">
+          @for (row of form.controls.faqs.controls; track row; let i = $index) {
+            <div [formGroupName]="i" class="border rounded-3 p-3">
+              <div class="d-flex gap-2 mb-2">
+                <input
+                  class="form-control"
+                  formControlName="question"
+                  placeholder="Enter the question"
+                  aria-label="Question"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="form.controls.faqs.removeAt(i)"
+                  aria-label="Remove question"
+                >
+                  ✕
+                </button>
+              </div>
+              <textarea
+                class="form-control"
+                rows="2"
+                formControlName="answer"
+                placeholder="Enter the answer"
+                aria-label="Answer"
+              ></textarea>
+            </div>
+          } @empty {
+            <p class="text-body-secondary mb-0">No questions yet.</p>
+          }
+        </div>
+      </admin-card>
+
+      <admin-card
+        heading="Testimonials"
+        subtitle="Real reviews only. The home page hides this section when it is empty"
+        icon="★"
+      >
+        <button
+          card-actions
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="addTestimonial()"
+        >
+          + Add review
+        </button>
+        <div formArrayName="testimonials" class="vstack gap-3">
+          @for (row of form.controls.testimonials.controls; track row; let i = $index) {
+            <div [formGroupName]="i" class="border rounded-3 p-3">
+              <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                  <input
+                    class="form-control"
+                    formControlName="name"
+                    placeholder="Traveller name"
+                    aria-label="Name"
+                  />
+                </div>
+                <div class="col-md-3">
+                  <input
+                    class="form-control"
+                    formControlName="city"
+                    placeholder="City"
+                    aria-label="City"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <input
+                    class="form-control"
+                    formControlName="tour"
+                    placeholder="Tour taken"
+                    aria-label="Tour"
+                  />
+                </div>
+                <div class="col-md-1 d-grid">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    (click)="form.controls.testimonials.removeAt(i)"
+                    aria-label="Remove review"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <textarea
+                class="form-control"
+                rows="2"
+                formControlName="text"
+                placeholder="What they said, in their words"
+                aria-label="Review"
+              ></textarea>
+            </div>
+          } @empty {
+            <p class="text-body-secondary mb-0">No reviews yet.</p>
+          }
+        </div>
+      </admin-card>
+    </div>
+  </div>
+
+  <div class="sticky-save d-flex justify-content-end gap-2">
+    <button type="submit" class="btn btn-primary px-4">Save settings</button>
+  </div>
+</form>

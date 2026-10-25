@@ -1,0 +1,186 @@
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+  <ul class="nav nav-pills">
+    @for (t of tabs; track t.key) {
+      <li class="nav-item">
+        <button
+          type="button"
+          class="nav-link"
+          [class.active]="tab() === t.key"
+          (click)="tab.set(t.key)"
+        >
+          {{ t.label }}
+        </button>
+      </li>
+    }
+  </ul>
+  <button type="button" class="btn btn-sm btn-outline-primary ms-auto" (click)="export()">
+    Export CSV
+  </button>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    @switch (tab()) {
+      @case ('departures') {
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Departure</th>
+              <th>Tour</th>
+              <th>Dates</th>
+              <th>Seats</th>
+              <th class="text-end">Bookings</th>
+              <th class="text-end">Booked value</th>
+              <th class="text-end">Collected</th>
+              <th class="text-end">Outstanding</th>
+              <th class="text-end">Est. costs</th>
+              <th class="text-end">Trip expenses</th>
+              <th class="text-end">Profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of byDeparture(); track r.code) {
+              <tr [class.text-body-secondary]="r.status !== 'scheduled'">
+                <td>{{ r.code }}</td>
+                <td>{{ r.tour }}</td>
+                <td class="text-nowrap">{{ r.dates }}</td>
+                <td>{{ r.seats }}</td>
+                <td class="text-end">{{ r.bookings }}</td>
+                <td class="text-end">{{ formatInr(r.gross) }}</td>
+                <td class="text-end">{{ formatInr(r.collected) }}</td>
+                <td class="text-end">{{ formatInr(r.outstanding) }}</td>
+                <td class="text-end">{{ formatInr(r.estimated) }}</td>
+                <td class="text-end">{{ formatInr(r.actual) }}</td>
+                <td class="text-end fw-semibold" [class.text-danger]="r.profit < 0">
+                  {{ formatInr(r.profit) }}
+                </td>
+              </tr>
+            }
+          </tbody>
+          <tfoot class="table-light fw-semibold">
+            <tr>
+              <td colspan="5">Total</td>
+              <td class="text-end">{{ formatInr(totals().gross) }}</td>
+              <td class="text-end">{{ formatInr(totals().collected) }}</td>
+              <td class="text-end">{{ formatInr(totals().outstanding) }}</td>
+              <td colspan="2"></td>
+              <td class="text-end">{{ formatInr(totals().profit) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      }
+      @case ('tours') {
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Code</th>
+              <th>Tour</th>
+              <th>Status</th>
+              <th class="text-end">Departures</th>
+              <th class="text-end">Bookings</th>
+              <th class="text-end">Travellers</th>
+              <th class="text-end">Booked value</th>
+              <th class="text-end">Collected</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of byTour(); track r.code) {
+              <tr>
+                <td>{{ r.code }}</td>
+                <td>{{ r.tour }}</td>
+                <td>{{ r.status }}</td>
+                <td class="text-end">{{ r.departures }}</td>
+                <td class="text-end">{{ r.bookings }}</td>
+                <td class="text-end">{{ r.travellers }}</td>
+                <td class="text-end">{{ formatInr(r.gross) }}</td>
+                <td class="text-end">{{ formatInr(r.collected) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @case ('coordinators') {
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Coordinator</th>
+              <th class="text-end">Upcoming</th>
+              <th class="text-end">Completed</th>
+              <th class="text-end">Travellers led</th>
+              <th class="text-end">Reports received</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of byCoordinator(); track r.name) {
+              <tr>
+                <td>{{ r.name }}</td>
+                <td class="text-end">{{ r.upcoming }}</td>
+                <td class="text-end">{{ r.completed }}</td>
+                <td class="text-end">{{ r.travellers }}</td>
+                <td class="text-end">{{ r.reports }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @case ('cancellations') {
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Ref</th>
+              <th>Lead</th>
+              <th>Departure</th>
+              <th>Status</th>
+              <th class="text-end">Total</th>
+              <th class="text-end">Received</th>
+              <th class="text-end">Refunded</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of cancellations(); track r.ref) {
+              <tr>
+                <td>{{ r.ref }}</td>
+                <td>{{ r.lead }}</td>
+                <td>{{ r.departure }}</td>
+                <td>{{ r.status }}</td>
+                <td class="text-end">{{ formatInr(r.total) }}</td>
+                <td class="text-end">{{ formatInr(r.received) }}</td>
+                <td class="text-end">{{ formatInr(r.refunded) }}</td>
+                <td class="small">{{ r.reason }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="8" class="text-body-secondary p-3">No cancellations.</td></tr>
+            }
+          </tbody>
+        </table>
+      }
+      @case ('costs') {
+        <table class="table table-sm table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Category</th>
+              <th class="text-end">Estimated</th>
+              <th class="text-end">Spent on trips</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of costs(); track r.category) {
+              <tr>
+                <td>{{ r.category }}</td>
+                <td class="text-end">{{ formatInr(r.estimated) }}</td>
+                <td class="text-end">{{ formatInr(r.actual) }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="3" class="text-body-secondary p-3">
+                  Enter costs on a departure's page, or import a coordinator report.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    }
+  </div>
+</div>

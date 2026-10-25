@@ -1,0 +1,519 @@
+@if (tour(); as t) {
+  <section class="banner">
+    <div class="container head">
+      <img [src]="cover()" alt="" width="120" height="75" />
+      <div>
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a routerLink="/tours">Tours</a>
+          <span aria-hidden="true">›</span>
+          <a [routerLink]="['/tours', t.slug]">{{ t.name }}</a>
+          <span aria-hidden="true">›</span>
+          <span aria-current="page">Book</span>
+        </nav>
+        <h1>
+          {{
+            sentRef()
+              ? 'Request sent'
+              : waitlist() && step() > 0
+                ? 'Join the waitlist'
+                : 'Book your seats'
+          }}
+        </h1>
+        <p class="lead">{{ t.name }} · {{ t.days }} days</p>
+      </div>
+    </div>
+  </section>
+
+  @if (sentRef(); as ref) {
+    <section class="container done">
+      <div class="done-card">
+        <span class="done-icon"><app-icon name="check" [size]="34" /></span>
+        <h2>{{ waitlist() ? 'You are on the list' : 'Your request is with us' }}</h2>
+        <p>
+          Your reference is
+          <strong class="ref">{{ ref }}</strong>
+          . WhatsApp should have opened with your request. If it didn't, send it again below.
+        </p>
+        <ol class="next-steps">
+          @if (waitlist()) {
+            <li>We add you to the waitlist for {{ selected()?.dates }}.</li>
+            <li>If seats open up, we message you before anyone else.</li>
+          } @else {
+            <li>We check the seats and reply on WhatsApp with the payment details.</li>
+            <li>
+              Pay the advance of
+              <strong>{{ formatInr(quote()?.advance ?? 0) }}</strong>
+              to confirm your seats. Unpaid requests are held for
+              {{ store.settings()?.holdHours }} hours.
+            </li>
+            <li>
+              The balance of {{ formatInr(quote()?.balance ?? 0) }} is due by
+              {{ formatDate(quote()?.balanceDueOn ?? '') }}.
+            </li>
+          }
+        </ol>
+        <div class="done-actions">
+          @if (resendHref(); as href) {
+            <a class="btn btn-whatsapp" [href]="href" target="_blank" rel="noopener">
+              <app-icon name="whatsapp" [size]="18" />
+              Send on WhatsApp again
+            </a>
+          }
+          <a class="btn btn-primary" [routerLink]="['/my-trips', ref]">View in My trips</a>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <div class="container layout">
+      <div class="main">
+        <ol class="stepper" aria-label="Booking steps">
+          @for (s of steps; track s; let i = $index) {
+            <li [class.current]="i === step()" [class.done]="i < step()">
+              <button type="button" (click)="goTo(i)" [disabled]="i >= step()">
+                <span class="n">{{ i + 1 }}</span>
+                <span class="s">{{ s }}</span>
+              </button>
+            </li>
+          }
+        </ol>
+
+        <div class="panel">
+          @switch (step()) {
+            @case (0) {
+              <h2>Choose your departure</h2>
+              @if (departures().length) {
+                <div class="choices" role="radiogroup" aria-label="Departure">
+                  @for (d of departures(); track d.id) {
+                    <label
+                      class="choice"
+                      [class.on]="departureId() === d.id"
+                      [attr.data-state]="d.state"
+                    >
+                      <input
+                        type="radio"
+                        name="departure"
+                        [value]="d.id"
+                        [checked]="departureId() === d.id"
+                        (change)="departureId.set(d.id)"
+                      />
+                      <span class="choice-main">
+                        <strong>{{ d.dates }}</strong>
+                        <small>Ref {{ d.departure.code }}</small>
+                      </span>
+                      <span class="choice-side">
+                        {{ d.left ? d.left + ' seats left' : d.label }}
+                      </span>
+                    </label>
+                  }
+                </div>
+              } @else {
+                <div class="state-box">
+                  <h3>No dates open for booking</h3>
+                  <p>Ask us on WhatsApp about the next departures.</p>
+                </div>
+              }
+            }
+
+            @case (1) {
+              <h2>How will you travel?</h2>
+              <div class="choices" role="radiogroup" aria-label="Travel option">
+                @for (o of options(); track o.option.id) {
+                  <label class="choice tall" [class.on]="optionId() === o.option.id">
+                    <input
+                      type="radio"
+                      name="option"
+                      [value]="o.option.id"
+                      [checked]="optionId() === o.option.id"
+                      (change)="optionId.set(o.option.id)"
+                    />
+                    <span class="choice-icon">
+                      <app-icon
+                        [name]="
+                          o.option.type === 'bike'
+                            ? 'bike'
+                            : o.option.type === 'own-car'
+                              ? 'car'
+                              : 'users'
+                        "
+                        [size]="22"
+                      />
+                    </span>
+                    <span class="choice-main">
+                      <strong>{{ o.option.label }}</strong>
+                      <small>{{ o.option.description }}</small>
+                      @if (o.option.customerPays.length) {
+                        <small class="pays">
+                          You pay for: {{ o.option.customerPays.join(', ') }}
+                        </small>
+                      }
+                    </span>
+                    <span class="choice-side">
+                      <strong>{{ formatInr(o.price) }}</strong>
+                      <small>{{ o.left ? o.left + ' left' : 'Full, waitlist' }}</small>
+                    </span>
+                  </label>
+                }
+              </div>
+            }
+
+            @case (2) {
+              <h2>Who's coming?</h2>
+              <div class="counter-row">
+                <div>
+                  <strong>Travellers</strong>
+                  <small>
+                    {{
+                      waitlist()
+                        ? 'Up to ' + maxTravellers() + ' per request'
+                        : maxTravellers() + ' seats available for this option'
+                    }}
+                  </small>
+                </div>
+                <div class="counter">
+                  <button
+                    type="button"
+                    (click)="setTravellers(travellers() - 1)"
+                    [disabled]="travellers() <= 1"
+                    aria-label="Fewer travellers"
+                  >
+                    −
+                  </button>
+                  <span aria-live="polite">{{ travellers() }}</span>
+                  <button
+                    type="button"
+                    (click)="setTravellers(travellers() + 1)"
+                    [disabled]="travellers() >= maxTravellers()"
+                    aria-label="More travellers"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              @if (t.addOns.length) {
+                <h3 class="sub">Optional extras</h3>
+                @for (a of t.addOns; track a.id) {
+                  <div class="counter-row">
+                    <div>
+                      <strong>{{ a.label }}</strong>
+                      <small>
+                        {{ formatInr(a.price) }}
+                        {{ a.unit === 'person' ? 'per person' : 'per booking' }}
+                      </small>
+                    </div>
+                    @if (a.unit === 'person') {
+                      <div class="counter">
+                        <button
+                          type="button"
+                          (click)="setAddOn(a.id, qty(a.id) - 1)"
+                          [disabled]="!addOns()[a.id]"
+                          [attr.aria-label]="'Fewer ' + a.label"
+                        >
+                          −
+                        </button>
+                        <span>{{ qty(a.id) }}</span>
+                        <button
+                          type="button"
+                          (click)="setAddOn(a.id, qty(a.id) + 1)"
+                          [disabled]="qty(a.id) >= travellers()"
+                          [attr.aria-label]="'More ' + a.label"
+                        >
+                          +
+                        </button>
+                      </div>
+                    } @else {
+                      <label class="switch">
+                        <input
+                          type="checkbox"
+                          [checked]="!!addOns()[a.id]"
+                          (change)="setAddOn(a.id, addOns()[a.id] ? 0 : 1)"
+                        />
+                        <span class="visually-hidden">{{ a.label }}</span>
+                      </label>
+                    }
+                  </div>
+                }
+              }
+            }
+
+            @case (3) {
+              <h2>Contact and traveller details</h2>
+              <fieldset class="group">
+                <legend>Lead traveller (we contact this person)</legend>
+                <div class="fields">
+                  <label class="field">
+                    <span>Full name *</span>
+                    <input
+                      class="input"
+                      [class.invalid]="showErrors() && leadErrors().name"
+                      [ngModel]="lead().name"
+                      (ngModelChange)="updateLead('name', $event)"
+                      autocomplete="name"
+                      placeholder="As on your ID"
+                    />
+                    @if (showErrors() && leadErrors().name) {
+                      <small class="error">Please enter your name.</small>
+                    }
+                  </label>
+                  <label class="field">
+                    <span>Mobile (WhatsApp) *</span>
+                    <input
+                      class="input"
+                      [class.invalid]="showErrors() && leadErrors().phone"
+                      [ngModel]="lead().phone"
+                      (ngModelChange)="updateLead('phone', $event)"
+                      inputmode="tel"
+                      autocomplete="tel"
+                      placeholder="10-digit mobile number"
+                    />
+                    @if (showErrors() && leadErrors().phone) {
+                      <small class="error">Enter a 10-digit mobile number.</small>
+                    }
+                  </label>
+                  <label class="field">
+                    <span>Email</span>
+                    <input
+                      class="input"
+                      type="email"
+                      [class.invalid]="showErrors() && leadErrors().email"
+                      [ngModel]="lead().email"
+                      (ngModelChange)="updateLead('email', $event)"
+                      autocomplete="email"
+                      placeholder="For the invoice (optional)"
+                    />
+                    @if (showErrors() && leadErrors().email) {
+                      <small class="error">This email doesn't look right.</small>
+                    }
+                  </label>
+                  <label class="field">
+                    <span>City</span>
+                    <input
+                      class="input"
+                      [ngModel]="lead().city"
+                      (ngModelChange)="updateLead('city', $event)"
+                      autocomplete="address-level2"
+                      placeholder="Where you are travelling from"
+                    />
+                  </label>
+                </div>
+              </fieldset>
+
+              @for (p of people(); track $index; let i = $index) {
+                <fieldset class="group">
+                  <legend>Traveller {{ i + 1 }}</legend>
+                  <div class="fields three">
+                    <label class="field">
+                      <span>Full name *</span>
+                      <input
+                        class="input"
+                        [class.invalid]="showErrors() && peopleErrors()[i].name"
+                        [ngModel]="p.name"
+                        (ngModelChange)="updatePerson(i, { name: $event })"
+                        placeholder="As on ID"
+                      />
+                    </label>
+                    <label class="field">
+                      <span>Age</span>
+                      <input
+                        class="input"
+                        type="number"
+                        min="1"
+                        max="99"
+                        [class.invalid]="showErrors() && peopleErrors()[i].age"
+                        [ngModel]="p.age"
+                        (ngModelChange)="
+                          updatePerson(i, {
+                            age: $event === null || $event === '' ? null : +$event,
+                          })
+                        "
+                        placeholder="Age"
+                      />
+                    </label>
+                    <label class="field">
+                      <span>Gender</span>
+                      <select
+                        class="input"
+                        [ngModel]="p.gender"
+                        (ngModelChange)="updatePerson(i, { gender: $event })"
+                      >
+                        <option value="">Prefer not to say</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                      </select>
+                    </label>
+                  </div>
+                  @if (showErrors() && peopleErrors()[i].name) {
+                    <small class="error">Please enter traveller {{ i + 1 }}'s name.</small>
+                  }
+                </fieldset>
+              }
+
+              <label class="field">
+                <span>Anything we should know?</span>
+                <textarea
+                  class="input"
+                  [ngModel]="notes()"
+                  (ngModelChange)="notes.set($event)"
+                  placeholder="Food preferences, medical conditions, riding experience, room sharing..."
+                ></textarea>
+              </label>
+              <p class="privacy">
+                ID documents are not collected here. Your coordinator asks for them after the
+                booking is confirmed.
+              </p>
+            }
+
+            @default {
+              <h2>Review and send</h2>
+              <dl class="review">
+                <div>
+                  <dt>Departure</dt>
+                  <dd>
+                    {{ selected()?.dates }}
+                    <small>({{ selected()?.departure?.code }})</small>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Travel</dt>
+                  <dd>{{ chosen()?.option?.label }} × {{ travellers() }}</dd>
+                </div>
+                <div>
+                  <dt>Lead</dt>
+                  <dd>{{ lead().name }}, {{ lead().phone }}</dd>
+                </div>
+                <div>
+                  <dt>Travellers</dt>
+                  <dd>
+                    @for (p of people(); track $index; let last = $last) {
+                      {{ p.name }}{{ last ? '' : ', ' }}
+                    }
+                  </dd>
+                </div>
+              </dl>
+
+              @if (waitlist()) {
+                <p class="notice">
+                  This option is fully booked. Sending this request puts you on the waitlist; you
+                  don't pay anything now.
+                </p>
+              }
+
+              <label class="terms">
+                <input
+                  type="checkbox"
+                  [checked]="accepted()"
+                  (change)="accepted.set(!accepted())"
+                />
+                <span>
+                  I have read the
+                  <a [routerLink]="['/tours', t.slug]" fragment="policies" target="_blank">
+                    payment and cancellation policy
+                  </a>
+                  , and I understand the seats are confirmed only after the advance is paid.
+                </span>
+              </label>
+              @if (showErrors() && !accepted()) {
+                <small class="error">Please accept the policy to continue.</small>
+              }
+            }
+          }
+        </div>
+
+        <div class="nav">
+          @if (step() > 0) {
+            <button type="button" class="btn btn-outline" (click)="back()">
+              <app-icon name="arrow-left" [size]="16" />
+              Back
+            </button>
+          }
+          @if (step() < steps.length - 1) {
+            <button
+              type="button"
+              class="btn btn-primary next"
+              (click)="next()"
+              [disabled]="!departures().length"
+            >
+              Continue
+              <app-icon name="arrow-right" [size]="16" />
+            </button>
+          } @else {
+            <button type="button" class="btn btn-whatsapp next" (click)="send()">
+              <app-icon name="whatsapp" [size]="18" />
+              {{ waitlist() ? 'Send waitlist request' : 'Send booking request' }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <aside class="summary" aria-label="Price summary">
+        <h2>Your trip</h2>
+        @if (selected(); as s) {
+          <p class="sum-line">
+            <app-icon name="calendar" [size]="16" />
+            {{ s.dates }}
+          </p>
+        }
+        @if (chosen(); as c) {
+          <p class="sum-line">
+            <app-icon
+              [name]="
+                c.option.type === 'bike' ? 'bike' : c.option.type === 'own-car' ? 'car' : 'users'
+              "
+              [size]="16"
+            />
+            {{ c.option.label }}
+          </p>
+        }
+        @if (quote(); as q) {
+          <table>
+            <tbody>
+              @for (l of q.lines; track l.label) {
+                <tr>
+                  <td>{{ l.label }}</td>
+                  <td>{{ formatInr(l.amount) }}</td>
+                </tr>
+              }
+              <tr>
+                <td>GST {{ store.settings()?.gstPercent }}%</td>
+                <td>{{ formatInr(q.gst) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th scope="row">Total</th>
+                <td>{{ formatInr(q.total) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+          @if (!waitlist()) {
+            <div class="pay">
+              <p>
+                <span>Advance to confirm</span>
+                <strong>{{ formatInr(q.advance) }}</strong>
+              </p>
+              <p>
+                <span>Balance by {{ formatDate(q.balanceDueOn) }}</span>
+                <strong>{{ formatInr(q.balance) }}</strong>
+              </p>
+            </div>
+          }
+        }
+        <p class="small">
+          Nothing is charged online. We confirm seats and share payment details on WhatsApp.
+        </p>
+      </aside>
+    </div>
+  }
+} @else {
+  <div class="container section">
+    @if (store.state() === 'loading') {
+      <div class="skeleton" style="height: 420px"></div>
+    } @else {
+      <div class="state-box">
+        <h3>We couldn't find this tour</h3>
+        <a class="btn btn-primary" routerLink="/tours">See all tours</a>
+      </div>
+    }
+  </div>
+}

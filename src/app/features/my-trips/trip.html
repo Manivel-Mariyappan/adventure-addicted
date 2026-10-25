@@ -1,0 +1,216 @@
+@if (trip(); as t) {
+  <section class="banner">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a routerLink="/my-trips">My trips</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">{{ t.ref }}</span>
+      </nav>
+      <div class="title">
+        <h1>{{ tour()?.name ?? t.tourCode }}</h1>
+        <span class="pill" [attr.data-tone]="tones[status()]">{{ status() }}</span>
+      </div>
+      <p class="lead">{{ dates() }} · Ref {{ t.ref }}</p>
+    </div>
+  </section>
+
+  <div class="container page">
+    <div class="main">
+      <ol class="progress" aria-label="Booking progress">
+        @for (s of steps(); track s.label) {
+          <li [class.done]="s.done">
+            <span class="dot"><app-icon name="check" [size]="14" /></span>
+            {{ s.label }}
+          </li>
+        }
+      </ol>
+
+      @if (status() === 'Requested') {
+        <p class="notice">
+          We have your request. Once we confirm the seats on WhatsApp and you pay the advance, the
+          status here changes to Confirmed.
+        </p>
+      }
+      @if (t.cancelRequestedAt && status() !== 'Cancelled') {
+        <p class="notice warn">
+          You asked to cancel on {{ formatDate(t.cancelRequestedAt.slice(0, 10)) }}. We will confirm
+          the refund on WhatsApp.
+        </p>
+      }
+
+      <section class="card block">
+        <h2>Trip details</h2>
+        <dl>
+          <div>
+            <dt>Dates</dt>
+            <dd>
+              {{ dates() }}
+              <small>({{ t.departureCode }})</small>
+            </dd>
+          </div>
+          <div>
+            <dt>Travel</dt>
+            <dd>{{ option()?.label ?? t.optionId }} × {{ t.travellers }}</dd>
+          </div>
+          @if (tour(); as tour) {
+            <div>
+              <dt>Starts / ends</dt>
+              <dd>{{ tour.startLocation }} / {{ tour.endLocation }}</dd>
+            </div>
+          }
+          <div>
+            <dt>Lead</dt>
+            <dd>
+              {{ t.lead.name }}, {{ t.lead.phone }}{{ t.lead.email ? ', ' + t.lead.email : '' }}
+            </dd>
+          </div>
+        </dl>
+        <h3>Travellers</h3>
+        <ul class="people">
+          @for (p of t.people; track $index) {
+            <li>
+              <app-icon name="user" [size]="15" />
+              {{ p.name }}
+              @if (p.age || p.gender) {
+                <small>{{ p.age ?? '' }}{{ p.age && p.gender ? ', ' : '' }}{{ p.gender }}</small>
+              }
+            </li>
+          }
+        </ul>
+        @if (tour(); as tour) {
+          <a class="link-arrow" [routerLink]="['/tours', tour.slug]" fragment="itinerary">
+            Day-by-day itinerary
+          </a>
+        }
+      </section>
+
+      @if (coordinator(); as c) {
+        <section class="card block coordinator">
+          <span class="avatar" aria-hidden="true">{{ c.name.charAt(0) }}</span>
+          <div>
+            <h2>Your coordinator: {{ c.name }}</h2>
+            <p>{{ c.bio }}</p>
+            <a class="btn btn-outline btn-sm" [href]="'tel:' + c.phone">
+              <app-icon name="phone" [size]="16" />
+              {{ c.phone }}
+            </a>
+          </div>
+        </section>
+      }
+
+      <section class="card block">
+        <h2>Price</h2>
+        <table>
+          <tbody>
+            @for (line of t.priceLines; track line.label) {
+              <tr>
+                <td>{{ line.label }}</td>
+                <td>{{ formatInr(line.amount) }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th scope="row">Total</th>
+              <td>{{ formatInr(money()?.total ?? t.total) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+        @if (published() && published()!.total !== t.total) {
+          <p class="small">The total was updated by our team after your request.</p>
+        }
+      </section>
+    </div>
+
+    <aside class="side">
+      @if (money(); as m) {
+        <section class="card block pay">
+          <h2>Payments</h2>
+          <p class="row">
+            <span>Paid</span>
+            <strong>{{ formatInr(m.paid) }}</strong>
+          </p>
+          <p class="row">
+            <span>Outstanding</span>
+            <strong>{{ formatInr(m.due) }}</strong>
+          </p>
+          @if (m.advanceDue && status() !== 'Waitlisted') {
+            <p class="due">
+              Advance of {{ formatInr(m.advanceDue) }} needed to confirm your seats.
+            </p>
+          } @else if (m.due) {
+            <p class="due">Balance due by {{ formatDate(m.balanceDue) }}.</p>
+          }
+          @if (payHref(); as href) {
+            @if (status() !== 'Waitlisted' && status() !== 'Cancelled') {
+              <a class="btn btn-whatsapp" [href]="href" target="_blank" rel="noopener">
+                <app-icon name="whatsapp" [size]="18" />
+                Ask for payment details
+              </a>
+            }
+          }
+          <p class="small">
+            Pay only to the account our team shares with you. Never send card details or OTPs on
+            WhatsApp.
+          </p>
+        </section>
+      }
+
+      @if (canCancel()) {
+        <section class="card block">
+          <h2>Need to cancel?</h2>
+          @if (!cancelOpen()) {
+            <button type="button" class="btn btn-danger btn-sm" (click)="cancelOpen.set(true)">
+              Request cancellation
+            </button>
+          } @else {
+            @if (estimate(); as e) {
+              <p class="estimate">
+                Cancelling today ({{ e.daysBefore }} days before departure) refunds
+                <strong>{{ e.percent }}%</strong>
+                of what you paid:
+                <strong>{{ formatInr(e.refund) }}</strong>
+                .
+              </p>
+            }
+            <label class="field">
+              <span>Reason (optional)</span>
+              <input
+                class="input"
+                [value]="reason()"
+                (input)="reason.set($any($event.target).value)"
+                placeholder="e.g. change of plans"
+              />
+            </label>
+            <div class="cancel-actions">
+              @if (cancelHref(); as href) {
+                <a
+                  class="btn btn-danger btn-sm"
+                  [href]="href"
+                  target="_blank"
+                  rel="noopener"
+                  (click)="markCancelRequested()"
+                >
+                  Send on WhatsApp
+                </a>
+              }
+              <button type="button" class="btn btn-outline btn-sm" (click)="cancelOpen.set(false)">
+                Keep my booking
+              </button>
+            </div>
+          }
+        </section>
+      }
+
+      <button type="button" class="forget" (click)="forget()">Remove from this device</button>
+    </aside>
+  </div>
+} @else {
+  <div class="container section">
+    <div class="state-box">
+      <h3>This trip isn't saved on this device</h3>
+      <p>Use the reference from your WhatsApp chat on the My trips page to check its status.</p>
+      <a class="btn btn-primary" routerLink="/my-trips">My trips</a>
+    </div>
+  </div>
+}

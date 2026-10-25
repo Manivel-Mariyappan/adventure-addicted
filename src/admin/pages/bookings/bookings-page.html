@@ -1,0 +1,74 @@
+@if (departureFilter(); as d) {
+  <div class="alert alert-light border d-flex align-items-center gap-2 py-2">
+    Showing bookings for
+    <strong>{{ d.code }}</strong>
+    <a class="btn btn-sm btn-outline-secondary ms-auto" routerLink="/admin/bookings">Show all</a>
+  </div>
+}
+
+<div class="d-flex flex-wrap gap-2 mb-3" role="group" aria-label="Filter by status">
+  <button
+    type="button"
+    class="btn btn-sm"
+    [class]="status() ? 'btn-outline-secondary' : 'btn-dark'"
+    (click)="status.set(null)"
+  >
+    All
+  </button>
+  @for (s of statuses; track s) {
+    <button
+      type="button"
+      class="btn btn-sm"
+      [class]="status() === s ? 'btn-dark' : 'btn-outline-secondary'"
+      (click)="status.set(s)"
+    >
+      {{ s }}
+      <span class="badge text-bg-light ms-1">{{ counts()[s] }}</span>
+    </button>
+  }
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white d-flex flex-wrap align-items-center gap-2 py-3">
+    <input
+      type="search"
+      class="form-control form-control-sm"
+      style="max-width: 300px"
+      placeholder="Search by ref, name, phone or tour"
+      (input)="search.set($any($event.target).value)"
+    />
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="exportCsv()">
+      Export CSV
+    </button>
+    @if (data.demoBookingCount()) {
+      <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteDemo()">
+        Delete {{ data.demoBookingCount() }} demo bookings
+      </button>
+    }
+    <button type="button" class="btn btn-sm btn-primary ms-auto" (click)="open(null)">
+      + Add booking
+    </button>
+  </div>
+  <ag-grid-angular
+    style="display: block; height: calc(100vh - 300px); min-height: 380px"
+    [theme]="theme"
+    [rowData]="rows()"
+    [columnDefs]="columns"
+    [defaultColDef]="{
+      sortable: true,
+      filter: true,
+      resizable: true,
+      suppressHeaderMenuButton: true,
+    }"
+    [getRowId]="getRowId"
+    [quickFilterText]="search()"
+    [rowHeight]="50"
+    [pagination]="true"
+    [paginationPageSize]="25"
+  />
+</div>
+<p class="small text-body-secondary mt-2">
+  When a customer sends a booking request on WhatsApp, click Add booking and paste the message.
+  Requests hold their seats for the hours set in Company settings; confirm them once the advance is
+  paid.
+</p>

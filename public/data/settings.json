@@ -1,0 +1,46 @@
+{
+  "companyName": "Adventure Addicted Company",
+  "tagline": "Guided bike expeditions and road trips across North India",
+  "whatsappNumber": "919786995053",
+  "phone": "+91 97869 95053",
+  "email": "",
+  "addressLine1": "",
+  "city": "",
+  "state": "",
+  "postalCode": "",
+  "officeHours": "Monday to Saturday, 10:00 AM to 7:00 PM",
+  "instagram": "",
+  "youtube": "",
+  "facebook": "",
+  "gstPercent": 5,
+  "advancePercent": 30,
+  "balanceDueDays": 21,
+  "holdHours": 48,
+  "testimonials": [],
+  "faqs": [
+    {
+      "question": "How do I book?",
+      "answer": "Pick a departure and travel option, fill in the travellers and send the request on WhatsApp. We confirm the seats and share the payment details. Your seats are confirmed once the advance is paid."
+    },
+    {
+      "question": "How much do I pay upfront?",
+      "answer": "30% of the total confirms your seats. The balance is due 21 days before departure."
+    },
+    {
+      "question": "Can I join with my own car?",
+      "answer": "Yes, on tours with the \"own car\" option. You drive in our convoy and share the stays, meals, coordinator and backup vehicle. Fuel, tolls and repairs are yours."
+    },
+    {
+      "question": "I have never ridden in the mountains. Can I join?",
+      "answer": "You should be comfortable on a 400 cc+ bike on normal roads. The riding days are short and the coordinator rides with the group. If in doubt, take a seat in the backup vehicle and switch to a bike on easier days."
+    },
+    {
+      "question": "What if a departure does not fill up?",
+      "answer": "Each tour has a minimum group size. If a departure is short, we offer another date or a full refund of what you paid."
+    },
+    {
+      "question": "Is travel insurance included?",
+      "answer": "No. We strongly recommend travel insurance that covers high altitude and motorbike riding."
+    }
+  ]
+}

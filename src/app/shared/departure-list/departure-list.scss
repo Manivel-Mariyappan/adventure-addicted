@@ -1,0 +1,160 @@
+:host {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 1.6fr) auto;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  padding: 1rem 1.15rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+
+  &[data-state='soldout'],
+  &[data-state='closed'] {
+    background: var(--surface);
+  }
+}
+
+p {
+  margin: 0;
+}
+
+.dates {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.bar {
+  height: 6px;
+  margin: 0.55rem 0 0.35rem;
+  background: linear-gradient(90deg, var(--accent) var(--filled), var(--surface-2) var(--filled));
+  border-radius: 999px;
+}
+
+[data-state='filling'] .bar {
+  background: linear-gradient(90deg, var(--orange) var(--filled), var(--surface-2) var(--filled));
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--success);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+[data-state='filling'] .status {
+  color: var(--orange-ink);
+}
+
+[data-state='soldout'] .status,
+[data-state='closed'] .status {
+  color: var(--danger);
+}
+
+.options {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.84rem;
+  }
+
+  app-icon {
+    color: var(--accent);
+  }
+
+  .seats {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .each {
+    min-width: 5.5rem;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .out {
+    color: var(--muted);
+    text-decoration: line-through;
+
+    .seats {
+      text-decoration: none;
+    }
+  }
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.price {
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: right;
+
+  small {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .tag {
+    margin-left: 0.35rem;
+    vertical-align: middle;
+  }
+}
+
+[aria-disabled='true'] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .cta {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .price {
+    text-align: left;
+  }
+}

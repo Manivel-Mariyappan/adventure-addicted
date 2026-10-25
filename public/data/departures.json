@@ -1,0 +1,292 @@
+[
+  {
+    "id": "dep-ldk8-20260905",
+    "code": "LDK8-260905",
+    "tourId": "tour-ldk8",
+    "startDate": "2026-09-05",
+    "endDate": "2026-09-12",
+    "totalSeats": 20,
+    "optionSeats": {
+      "bike-solo": 14,
+      "bike-pillion": 6,
+      "suv-seat": 4
+    },
+    "priceOverrides": {},
+    "seatsTaken": {
+      "bike-solo": 12,
+      "bike-pillion": 4,
+      "suv-seat": 2
+    },
+    "coordinatorId": "crd-tenzin",
+    "bookingClosesOn": "2026-08-29",
+    "status": "completed"
+  },
+  {
+    "id": "dep-rj7-20261121",
+    "code": "RJ7-261121",
+    "tourId": "tour-rj7",
+    "startDate": "2026-11-21",
+    "endDate": "2026-11-27",
+    "totalSeats": 18,
+    "optionSeats": {
+      "own-car": 12,
+      "suv-seat": 6,
+      "bike-solo": 6
+    },
+    "priceOverrides": {},
+    "seatsTaken": {
+      "own-car": 6,
+      "suv-seat": 5
+    },
+    "coordinatorId": "crd-meera",
+    "bookingClosesOn": "2026-11-14",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-uk5-20261127",
+    "code": "UK5-261127",
+    "tourId": "tour-uk5",
+    "startDate": "2026-11-27",
+    "endDate": "2026-12-01",
+    "totalSeats": 20,
+    "optionSeats": {
+      "tempo-seat": 12,
+      "own-car": 10
+    },
+    "priceOverrides": {},
+    "seatsTaken": {
+      "tempo-seat": 3
+    },
+    "coordinatorId": "crd-arjun",
+    "bookingClosesOn": "2026-11-20",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-ksh6-20261226",
+    "code": "KSH6-261226",
+    "tourId": "tour-ksh6",
+    "startDate": "2026-12-26",
+    "endDate": "2026-12-31",
+    "totalSeats": 16,
+    "optionSeats": {
+      "suv-seat": 10,
+      "own-car": 8
+    },
+    "priceOverrides": {
+      "suv-seat": 27500
+    },
+    "seatsTaken": {
+      "suv-seat": 10,
+      "own-car": 6
+    },
+    "coordinatorId": "crd-meera",
+    "bookingClosesOn": "2026-12-19",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-rj7-20270116",
+    "code": "RJ7-270116",
+    "tourId": "tour-rj7",
+    "startDate": "2027-01-16",
+    "endDate": "2027-01-22",
+    "totalSeats": 18,
+    "optionSeats": {
+      "own-car": 12,
+      "suv-seat": 6,
+      "bike-solo": 6
+    },
+    "priceOverrides": {},
+    "seatsTaken": {},
+    "coordinatorId": "crd-meera",
+    "bookingClosesOn": "2027-01-09",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-uk5-20270319",
+    "code": "UK5-270319",
+    "tourId": "tour-uk5",
+    "startDate": "2027-03-19",
+    "endDate": "2027-03-23",
+    "totalSeats": 20,
+    "optionSeats": {
+      "tempo-seat": 12,
+      "own-car": 10
+    },
+    "priceOverrides": {},
+    "seatsTaken": {},
+    "coordinatorId": "crd-arjun",
+    "bookingClosesOn": "2027-03-12",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-ksh6-20270417",
+    "code": "KSH6-270417",
+    "tourId": "tour-ksh6",
+    "startDate": "2027-04-17",
+    "endDate": "2027-04-22",
+    "totalSeats": 16,
+    "optionSeats": {
+      "suv-seat": 10,
+      "own-car": 8
+    },
+    "priceOverrides": {},
+    "seatsTaken": {},
+    "coordinatorId": null,
+    "bookingClosesOn": "2027-04-10",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-ldk6f-20270522",
+    "code": "LDK6F-270522",
+    "tourId": "tour-ldk6f",
+    "startDate": "2027-05-22",
+    "endDate": "2027-05-27",
+    "totalSeats": 14,
+    "optionSeats": {
+      "suv-seat": 14
+    },
+    "priceOverrides": {},
+    "seatsTaken": {
+      "suv-seat": 4
+    },
+    "coordinatorId": "crd-tenzin",
+    "bookingClosesOn": "2027-05-15",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-ldk8-20270605",
+    "code": "LDK8-270605",
+    "tourId": "tour-ldk8",
+    "startDate": "2027-06-05",
+    "endDate": "2027-06-12",
+    "totalSeats": 20,
+    "optionSeats": {
+      "bike-solo": 14,
+      "bike-pillion": 6,
+      "suv-seat": 4
+    },
+    "priceOverrides": {},
+    "seatsTaken": {
+      "bike-solo": 9,
+      "bike-pillion": 2
+    },
+    "coordinatorId": "crd-tenzin",
+    "bookingClosesOn": "2027-05-29",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-mnl10-20270619",
+    "code": "MNL10-270619",
+    "tourId": "tour-mnl10",
+    "startDate": "2027-06-19",
+    "endDate": "2027-06-28",
+    "totalSeats": 18,
+    "optionSeats": {
+      "bike-solo": 10,
+      "bike-pillion": 4,
+      "own-car": 8
+    },
+    "priceOverrides": {},
+    "seatsTaken": {
+      "bike-solo": 3,
+      "own-car": 4
+    },
+    "coordinatorId": "crd-tenzin",
+    "bookingClosesOn": "2027-06-12",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-spt9-20270710",
+    "code": "SPT9-270710",
+    "tourId": "tour-spt9",
+    "startDate": "2027-07-10",
+    "endDate": "2027-07-18",
+    "totalSeats": 16,
+    "optionSeats": {
+      "own-car": 10,
+      "bike-solo": 6,
+      "tempo-seat": 10
+    },
+    "priceOverrides": {},
+    "seatsTaken": {
+      "own-car": 2
+    },
+    "coordinatorId": "crd-arjun",
+    "bookingClosesOn": "2027-07-03",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-ldk8-20270717",
+    "code": "LDK8-270717",
+    "tourId": "tour-ldk8",
+    "startDate": "2027-07-17",
+    "endDate": "2027-07-24",
+    "totalSeats": 20,
+    "optionSeats": {
+      "bike-solo": 14,
+      "bike-pillion": 6,
+      "suv-seat": 4
+    },
+    "priceOverrides": {},
+    "seatsTaken": {},
+    "coordinatorId": "crd-tenzin",
+    "bookingClosesOn": "2027-07-10",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-mnl10-20270807",
+    "code": "MNL10-270807",
+    "tourId": "tour-mnl10",
+    "startDate": "2027-08-07",
+    "endDate": "2027-08-16",
+    "totalSeats": 18,
+    "optionSeats": {
+      "bike-solo": 10,
+      "bike-pillion": 4,
+      "own-car": 8
+    },
+    "priceOverrides": {},
+    "seatsTaken": {},
+    "coordinatorId": null,
+    "bookingClosesOn": "2027-07-31",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-spt9-20270828",
+    "code": "SPT9-270828",
+    "tourId": "tour-spt9",
+    "startDate": "2027-08-28",
+    "endDate": "2027-09-05",
+    "totalSeats": 16,
+    "optionSeats": {
+      "own-car": 10,
+      "bike-solo": 6,
+      "tempo-seat": 10
+    },
+    "priceOverrides": {},
+    "seatsTaken": {},
+    "coordinatorId": "crd-arjun",
+    "bookingClosesOn": "2027-08-21",
+    "status": "scheduled"
+  },
+  {
+    "id": "dep-ldk8-20270904",
+    "code": "LDK8-270904",
+    "tourId": "tour-ldk8",
+    "startDate": "2027-09-04",
+    "endDate": "2027-09-11",
+    "totalSeats": 20,
+    "optionSeats": {
+      "bike-solo": 14,
+      "bike-pillion": 6,
+      "suv-seat": 4
+    },
+    "priceOverrides": {
+      "bike-solo": 36500
+    },
+    "seatsTaken": {},
+    "coordinatorId": "crd-tenzin",
+    "bookingClosesOn": "2027-08-28",
+    "status": "scheduled"
+  }
+]

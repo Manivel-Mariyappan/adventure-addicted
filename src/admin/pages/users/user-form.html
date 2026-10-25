@@ -1,0 +1,167 @@
+<div class="offcanvas-header border-bottom bg-white">
+  <h2 class="offcanvas-title h5 mb-0" id="user-form-title">
+    {{ user ? 'Edit admin user' : 'Add admin user' }}
+  </h2>
+  <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+</div>
+
+<form
+  class="offcanvas-body bg-body-tertiary"
+  [formGroup]="form"
+  (ngSubmit)="save()"
+  id="user-form"
+  novalidate
+>
+  <admin-card heading="Profile" subtitle="Who this account belongs to" icon="☺" [required]="true">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label" for="u-name">
+          Full name
+          <span class="text-danger">*</span>
+        </label>
+        <input
+          id="u-name"
+          placeholder="Enter full name"
+          class="form-control"
+          formControlName="fullName"
+          [class.is-invalid]="invalid('fullName')"
+        />
+        <div class="invalid-feedback">Full name is required.</div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="u-email">Email</label>
+        <input
+          id="u-email"
+          placeholder="Enter email address"
+          class="form-control"
+          type="email"
+          formControlName="email"
+          [class.is-invalid]="invalid('email')"
+        />
+        <div class="invalid-feedback">Enter a valid email address.</div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="u-mobile">Mobile</label>
+        <div class="input-group">
+          <span class="input-group-text">+91</span>
+          <input
+            id="u-mobile"
+            placeholder="Enter 10-digit mobile number"
+            class="form-control"
+            type="text"
+            maxlength="10"
+            formControlName="mobile"
+            appNumbersOnly
+            [decimals]="0"
+            [class.is-invalid]="invalid('mobile')"
+          />
+        </div>
+        @if (invalid('mobile')) {
+          <div class="invalid-feedback d-block">Enter a 10-digit mobile number.</div>
+        }
+      </div>
+    </div>
+  </admin-card>
+
+  <admin-card
+    heading="Login & access"
+    subtitle="Username, role and status"
+    icon="⚿"
+    [required]="true"
+  >
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="u-username">
+          Username
+          <span class="text-danger">*</span>
+        </label>
+        <input
+          id="u-username"
+          placeholder="Enter username"
+          class="form-control"
+          formControlName="username"
+          autocomplete="off"
+          [class.is-invalid]="invalid('username')"
+        />
+        <div class="invalid-feedback">3–30 characters: letters, numbers, dot or underscore.</div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="u-role">
+          Role
+          <span class="text-danger">*</span>
+        </label>
+        <ng-select
+          labelForId="u-role"
+          placeholder="Select role"
+          formControlName="role"
+          [items]="roles"
+          bindLabel="label"
+          bindValue="value"
+          [clearable]="false"
+          [searchable]="false"
+        />
+      </div>
+      <div class="col-12">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="u-active"
+            formControlName="active"
+          />
+          <label class="form-check-label" for="u-active">Account active</label>
+        </div>
+      </div>
+    </div>
+  </admin-card>
+
+  <admin-card
+    [heading]="user ? 'Change password' : 'Password'"
+    [subtitle]="user ? 'Leave empty to keep the current password' : 'At least 8 characters'"
+    icon="✱"
+    [required]="!user"
+  >
+    <div class="row g-3" formGroupName="passwords">
+      <div class="col-md-6">
+        <label class="form-label" for="u-pass">Password</label>
+        <input
+          id="u-pass"
+          placeholder="Enter password (min. 8 characters)"
+          class="form-control"
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+          [class.is-invalid]="passwordInvalid()"
+        />
+        <div class="invalid-feedback">At least 8 characters.</div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="u-pass2">Confirm password</label>
+        <input
+          id="u-pass2"
+          placeholder="Re-enter password"
+          class="form-control"
+          type="password"
+          formControlName="confirmPassword"
+          autocomplete="new-password"
+          [class.is-invalid]="mismatch()"
+        />
+        <div class="invalid-feedback">Passwords do not match.</div>
+      </div>
+    </div>
+    <div card-footer>
+      Passwords are not stored in this browser. They will be sent to the Auth API and stored hashed
+      in MySQL.
+    </div>
+  </admin-card>
+</form>
+
+<div class="border-top bg-white p-3 d-flex justify-content-end gap-2">
+  <button type="button" class="btn btn-outline-secondary" (click)="offcanvas.dismiss()">
+    Cancel
+  </button>
+  <button type="submit" form="user-form" class="btn btn-primary px-4">
+    {{ user ? 'Update user' : 'Add user' }}
+  </button>
+</div>

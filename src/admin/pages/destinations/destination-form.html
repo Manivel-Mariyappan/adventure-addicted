@@ -1,0 +1,252 @@
+<div class="offcanvas-header border-bottom bg-white">
+  <h2 class="offcanvas-title h5 mb-0" id="destination-form-title">
+    {{ destination ? 'Edit destination' : 'Add destination' }}
+  </h2>
+  <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss()"></button>
+</div>
+
+<form
+  class="offcanvas-body bg-body-tertiary"
+  [formGroup]="form"
+  (ngSubmit)="save()"
+  id="destination-form"
+  novalidate
+>
+  <admin-card heading="Destination" subtitle="Name, place and season" icon="▲" [required]="true">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="d-name">
+          Name
+          <span class="text-danger">*</span>
+        </label>
+        <input
+          id="d-name"
+          class="form-control"
+          formControlName="name"
+          placeholder="e.g. Nubra Valley"
+          [class.is-invalid]="invalid('name')"
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="d-slug">
+          URL slug
+          <span class="text-danger">*</span>
+        </label>
+        <input
+          id="d-slug"
+          class="form-control"
+          formControlName="slug"
+          placeholder="Filled in from the name"
+          [class.is-invalid]="invalid('slug')"
+        />
+        <div class="form-text">/destinations/{{ form.controls.slug.value || '...' }}</div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="d-parent">Inside region</label>
+        <ng-select
+          labelForId="d-parent"
+          formControlName="parentId"
+          [items]="regions()"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="None: this is a region"
+        />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="d-alt">Altitude</label>
+        <div class="input-group">
+          <input
+            id="d-alt"
+            class="form-control"
+            formControlName="altitudeM"
+            appNumbersOnly
+            [decimals]="0"
+            placeholder="3500"
+          />
+          <span class="input-group-text">m</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="d-order">Order</label>
+        <input
+          id="d-order"
+          class="form-control"
+          formControlName="displayOrder"
+          appNumbersOnly
+          [decimals]="0"
+          placeholder="1"
+        />
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="d-season">Best season</label>
+        <input
+          id="d-season"
+          class="form-control"
+          formControlName="bestSeason"
+          placeholder="e.g. June to September"
+        />
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="d-summary">Summary</label>
+        <input
+          id="d-summary"
+          class="form-control"
+          formControlName="summary"
+          maxlength="140"
+          placeholder="One line shown on cards"
+        />
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="d-desc">Description</label>
+        <textarea
+          id="d-desc"
+          class="form-control"
+          rows="4"
+          formControlName="description"
+          placeholder="A short paragraph about the place"
+        ></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="d-hl">Highlights</label>
+        <textarea
+          id="d-hl"
+          class="form-control"
+          rows="4"
+          formControlName="highlights"
+          placeholder="One per line, e.g. Hunder sand dunes"
+        ></textarea>
+      </div>
+    </div>
+  </admin-card>
+
+  <admin-card
+    heading="Photos"
+    subtitle="The main photo is used on cards and as the page banner"
+    icon="▣"
+  >
+    <label card-actions class="btn btn-sm btn-primary mb-0">
+      Upload photo
+      <input
+        #file
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        hidden
+        (change)="upload(file)"
+      />
+    </label>
+    <div class="d-flex align-items-center gap-3 mb-3">
+      @if (image()) {
+        <img
+          [src]="assetUrl(image())"
+          alt=""
+          class="rounded-3 border"
+          width="160"
+          height="100"
+          style="object-fit: cover"
+        />
+      }
+      <input
+        class="form-control"
+        placeholder="Or a path, e.g. images/nubra.webp"
+        [value]="image().startsWith('data:') ? '' : image()"
+        (change)="image.set($any($event.target).value.trim())"
+      />
+    </div>
+    <label class="form-label" for="d-gallery">Gallery</label>
+    <textarea
+      id="d-gallery"
+      class="form-control"
+      rows="3"
+      formControlName="gallery"
+      placeholder="One image path per line"
+    ></textarea>
+  </admin-card>
+
+  <admin-card heading="FAQs" icon="?">
+    <button card-actions type="button" class="btn btn-sm btn-outline-primary" (click)="addFaq()">
+      + Add question
+    </button>
+    <div formArrayName="faqs" class="vstack gap-3">
+      @for (row of form.controls.faqs.controls; track row; let i = $index) {
+        <div [formGroupName]="i" class="border rounded-3 p-3 bg-white">
+          <div class="d-flex gap-2 mb-2">
+            <input
+              class="form-control"
+              formControlName="question"
+              placeholder="Question"
+              aria-label="Question"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              (click)="form.controls.faqs.removeAt(i)"
+              aria-label="Remove"
+            >
+              ✕
+            </button>
+          </div>
+          <textarea
+            class="form-control"
+            rows="2"
+            formControlName="answer"
+            placeholder="Answer"
+            aria-label="Answer"
+          ></textarea>
+        </div>
+      } @empty {
+        <p class="text-body-secondary mb-0">No questions yet.</p>
+      }
+    </div>
+  </admin-card>
+
+  <admin-card heading="Visibility and SEO" icon="◉">
+    <div class="vstack gap-2 mb-3">
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="d-active"
+          formControlName="active"
+        />
+        <label class="form-check-label" for="d-active">Active on the website</label>
+      </div>
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="d-feat"
+          formControlName="featured"
+        />
+        <label class="form-check-label" for="d-feat">Featured on the home page</label>
+      </div>
+    </div>
+    <label class="form-label" for="d-mt">Page title</label>
+    <input
+      id="d-mt"
+      class="form-control mb-3"
+      formControlName="metaTitle"
+      maxlength="70"
+      placeholder="Leave empty to use the name"
+    />
+    <label class="form-label" for="d-md">Page description</label>
+    <textarea
+      id="d-md"
+      class="form-control"
+      rows="2"
+      formControlName="metaDescription"
+      maxlength="160"
+      placeholder="Leave empty to use the summary"
+    ></textarea>
+  </admin-card>
+</form>
+
+<div class="border-top bg-white p-3 d-flex justify-content-end gap-2">
+  <button type="button" class="btn btn-outline-secondary" (click)="offcanvas.dismiss()">
+    Cancel
+  </button>
+  <button type="submit" form="destination-form" class="btn btn-primary px-4">
+    {{ destination ? 'Update destination' : 'Add destination' }}
+  </button>
+</div>

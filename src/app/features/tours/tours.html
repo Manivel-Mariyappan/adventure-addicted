@@ -1,0 +1,191 @@
+<section class="banner">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a routerLink="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Tours</span>
+    </nav>
+    <h1>{{ title() }}</h1>
+    <p class="lead">
+      {{
+        place()?.summary ??
+          'Fixed departures with small groups. Pick a date and the way you want to travel.'
+      }}
+    </p>
+  </div>
+</section>
+
+<div class="container layout">
+  <aside class="filters" aria-label="Filters">
+    <label class="field">
+      <span>Destination</span>
+      <select class="input" (change)="set({ destination: $any($event.target).value || null })">
+        <option value="" [selected]="!destination()">Anywhere</option>
+        @for (r of catalog.regions(); track r.id) {
+          <optgroup [label]="r.name">
+            <option [value]="r.slug" [selected]="destination() === r.slug">
+              All of {{ r.name }}
+            </option>
+            @for (c of catalog.children(r); track c.id) {
+              <option [value]="c.slug" [selected]="destination() === c.slug">{{ c.name }}</option>
+            }
+          </optgroup>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Departure month</span>
+      <select class="input" (change)="set({ month: $any($event.target).value || null })">
+        <option value="" [selected]="!month()">Any month</option>
+        @for (m of catalog.months(); track m) {
+          <option [value]="m" [selected]="month() === m">{{ formatMonth(m + '-01') }}</option>
+        }
+      </select>
+    </label>
+
+    <fieldset>
+      <legend>How you travel</legend>
+      <div class="chips">
+        @for (t of travelTypes; track t.key) {
+          <button
+            type="button"
+            [class.on]="travel() === t.key"
+            [attr.aria-pressed]="travel() === t.key"
+            (click)="set({ travel: travel() === t.key ? null : t.key })"
+          >
+            <app-icon [name]="t.icon" [size]="15" />
+            {{ t.label }}
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Duration</legend>
+      <div class="chips">
+        @for (d of durations; track d.key) {
+          <button
+            type="button"
+            [class.on]="days() === d.key"
+            [attr.aria-pressed]="days() === d.key"
+            (click)="set({ days: days() === d.key ? null : d.key })"
+          >
+            {{ d.label }}
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Budget per person</legend>
+      <div class="chips">
+        @for (p of prices; track p) {
+          <button
+            type="button"
+            [class.on]="price() === '' + p"
+            [attr.aria-pressed]="price() === '' + p"
+            (click)="set({ price: price() === '' + p ? null : p })"
+          >
+            Under ₹{{ p / 1000 }}k
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Flights</legend>
+      <div class="chips">
+        <button
+          type="button"
+          [class.on]="flights() === 'included'"
+          (click)="set({ flights: flights() === 'included' ? null : 'included' })"
+        >
+          <app-icon name="plane" [size]="15" />
+          Included
+        </button>
+        <button
+          type="button"
+          [class.on]="flights() === 'land'"
+          (click)="set({ flights: flights() === 'land' ? null : 'land' })"
+        >
+          Land only
+        </button>
+      </div>
+    </fieldset>
+
+    <label class="switch">
+      <input type="checkbox" [checked]="!!seats()" (change)="set({ seats: seats() ? null : 1 })" />
+      <span>Only tours with seats available</span>
+    </label>
+  </aside>
+
+  <section class="results" aria-label="Tours">
+    <div class="toolbar">
+      <label class="search">
+        <app-icon name="search" [size]="17" />
+        <span class="visually-hidden">Search tours</span>
+        <input
+          #search
+          type="search"
+          [value]="q() ?? ''"
+          placeholder="Search a place, pass or tour name"
+          (input)="set({ q: search.value.trim() || null })"
+        />
+      </label>
+      <label>
+        <span class="visually-hidden">Sort</span>
+        <select class="input sort" (change)="set({ sort: $any($event.target).value })">
+          @for (s of sorts; track s.key) {
+            <option [value]="s.key" [selected]="(sort() ?? 'date') === s.key">{{ s.label }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <p class="count" aria-live="polite">
+      <strong>{{ results().length }}</strong>
+      {{ results().length === 1 ? 'tour' : 'tours' }}
+      @if (hasFilters()) {
+        <button type="button" class="clear" (click)="clear()">Clear filters</button>
+      }
+    </p>
+
+    @switch (catalog.state()) {
+      @case ('loading') {
+        <div class="grid" aria-busy="true">
+          @for (i of [1, 2, 3, 4]; track i) {
+            <div class="skeleton" style="aspect-ratio: 3 / 4"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="state-box">
+          <h3>We couldn't load the tours</h3>
+          <p>Please check your connection and try again.</p>
+          <button type="button" class="btn btn-outline" (click)="catalog.reload()">
+            Try again
+          </button>
+        </div>
+      }
+      @default {
+        @if (results().length) {
+          <div class="grid">
+            @for (t of results(); track t.id) {
+              <app-tour-card [tour]="t" />
+            }
+          </div>
+        } @else {
+          <div class="state-box">
+            <h3>No tours match these filters</h3>
+            <p>Try another month or travel option, or tell us what you have in mind.</p>
+            <div class="state-actions">
+              <button type="button" class="btn btn-outline" (click)="clear()">Clear filters</button>
+              <app-whatsapp-button [message]="enquiry()" label="Ask on WhatsApp" />
+            </div>
+          </div>
+        }
+      }
+    }
+  </section>
+</div>
