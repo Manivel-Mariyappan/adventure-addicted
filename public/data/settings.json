@@ -4,10 +4,28 @@
   "whatsappNumber": "919786995053",
   "phone": "+91 97869 95053",
   "email": "",
-  "addressLine1": "",
-  "city": "",
-  "state": "",
-  "postalCode": "",
+  "offices": [
+    {
+      "name": "Leh office",
+      "address": "Shop 14, Main Bazaar Road",
+      "city": "Leh",
+      "state": "Ladakh",
+      "postalCode": "194101",
+      "phone": "+91 97869 95053",
+      "hours": "May to September, every day 9:00 AM to 8:00 PM",
+      "mapQuery": "Main Bazaar Road, Leh, Ladakh 194101"
+    },
+    {
+      "name": "Manali office",
+      "address": "2nd floor, 21 Mall Road",
+      "city": "Manali",
+      "state": "Himachal Pradesh",
+      "postalCode": "175131",
+      "phone": "+91 97869 95053",
+      "hours": "Monday to Saturday, 10:00 AM to 7:00 PM",
+      "mapQuery": "Mall Road, Manali, Himachal Pradesh 175131"
+    }
+  ],
   "officeHours": "Monday to Saturday, 10:00 AM to 7:00 PM",
   "instagram": "",
   "youtube": "",

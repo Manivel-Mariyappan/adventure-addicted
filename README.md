@@ -73,7 +73,7 @@ still frame.
 | `departures.json` | dates, seats per option, prices, coordinator, seats taken | Admin > Departures |
 | `destinations.json` | regions and places | Admin > Destinations |
 | `coordinators.json` | name, bio, phone, PIN hash | Admin > Coordinators |
-| `settings.json` | contact, WhatsApp, GST, advance %, FAQs, reviews | Admin > Company settings |
+| `settings.json` | contact, WhatsApp, offices, GST, advance %, FAQs, reviews | Admin > Company settings |
 | `booking-status.json` | status by booking reference | written by Publish |
 
 Admin edits are drafts in the browser until you download the files from **Publish**, replace
@@ -84,8 +84,8 @@ browser: use **Publish > Download backup** regularly.
 
 - [ ] Change the admin password (`adminPasscodeSha256` in `src/app/core/config/app-config.ts`)
       and give each coordinator their own PIN.
-- [ ] Add the office address, email and social links in Company settings. WhatsApp and phone are
-      set to 97869 95053.
+- [ ] Replace the two sample offices (Leh and Manali) with your real addresses in Company settings,
+      and add your email and social links. WhatsApp and phone are set to 97869 95053.
 - [ ] Check every tour's prices, inclusions and cancellation policy. The demo tours, departures
       and coordinators are examples.
 - [ ] Delete the demo bookings (Bookings page) and publish `departures.json` again.

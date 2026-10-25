@@ -53,10 +53,14 @@
           <a [href]="'mailto:' + s.email">{{ s.email }}</a>
         </p>
       }
-      @if (address()) {
+      @for (o of offices(); track o.name) {
         <p>
           <app-icon name="pin" [size]="16" />
-          {{ address() }}
+          <span>
+            <strong>{{ o.name }}</strong>
+            <br />
+            {{ o.address }}
+          </span>
         </p>
       }
       @if (s.officeHours) {

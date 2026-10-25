@@ -81,53 +81,117 @@
       </admin-card>
 
       <admin-card
-        heading="Office address"
-        subtitle="Optional. The contact page shows a map when it is set"
+        heading="Offices"
+        subtitle="Shown on the contact page with a map, and in the footer"
         icon="⌂"
       >
-        <div class="row g-3">
-          <div class="col-12">
-            <label class="form-label" for="s-addr">Address</label>
-            <input
-              id="s-addr"
-              class="form-control"
-              formControlName="addressLine1"
-              placeholder="Enter building and street"
-            />
-          </div>
-          <div class="col-md-5">
-            <label class="form-label" for="s-city">City</label>
-            <input
-              id="s-city"
-              class="form-control"
-              formControlName="city"
-              placeholder="Enter city"
-            />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label" for="s-state">State</label>
-            <ng-select
-              labelForId="s-state"
-              formControlName="state"
-              [items]="states"
-              placeholder="Select state"
-              [addTag]="true"
-              addTagText="Use"
-            />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label" for="s-pin">PIN code</label>
-            <input
-              id="s-pin"
-              class="form-control"
-              formControlName="postalCode"
-              appNumbersOnly
-              [decimals]="0"
-              maxlength="6"
-              placeholder="6 digits"
-            />
-          </div>
+        <button
+          card-actions
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="addOffice()"
+        >
+          + Add office
+        </button>
+        <div formArrayName="offices" class="vstack gap-3">
+          @for (row of form.controls.offices.controls; track row; let i = $index) {
+            <div [formGroupName]="i" class="border rounded-3 p-3">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <label class="form-label small" [for]="'o-name-' + i">
+                    Office name
+                    <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    [id]="'o-name-' + i"
+                    class="form-control"
+                    formControlName="name"
+                    placeholder="e.g. Leh office"
+                    [class.is-invalid]="submitted() && row.controls.name.invalid"
+                  />
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label small" [for]="'o-phone-' + i">Phone</label>
+                  <input
+                    [id]="'o-phone-' + i"
+                    class="form-control"
+                    formControlName="phone"
+                    placeholder="Office phone"
+                  />
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger w-100"
+                    (click)="form.controls.offices.removeAt(i)"
+                    aria-label="Remove office"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div class="col-12">
+                  <label class="form-label small" [for]="'o-addr-' + i">Address</label>
+                  <input
+                    [id]="'o-addr-' + i"
+                    class="form-control"
+                    formControlName="address"
+                    placeholder="Building and street"
+                  />
+                </div>
+                <div class="col-md-5">
+                  <input
+                    class="form-control"
+                    formControlName="city"
+                    placeholder="City"
+                    aria-label="City"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <ng-select
+                    formControlName="state"
+                    [items]="states"
+                    placeholder="State"
+                    [addTag]="true"
+                    addTagText="Use"
+                    aria-label="State"
+                  />
+                </div>
+                <div class="col-md-3">
+                  <input
+                    class="form-control"
+                    formControlName="postalCode"
+                    appNumbersOnly
+                    [decimals]="0"
+                    maxlength="6"
+                    placeholder="PIN code"
+                    aria-label="PIN code"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <input
+                    class="form-control"
+                    formControlName="hours"
+                    placeholder="Opening hours"
+                    aria-label="Opening hours"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <input
+                    class="form-control"
+                    formControlName="mapQuery"
+                    placeholder="Map search (optional), e.g. shop name and town"
+                    aria-label="Map search"
+                  />
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-body-secondary mb-0">
+              No offices. The contact page shows phone and WhatsApp only.
+            </p>
+          }
         </div>
+        <div card-footer>If the map pin is off, put the business name and town in Map search.</div>
       </admin-card>
 
       <admin-card heading="Social media" subtitle="Links shown in the footer" icon="♥">

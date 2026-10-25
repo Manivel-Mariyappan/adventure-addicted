@@ -1,0 +1,112 @@
+<section class="banner">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a routerLink="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Contact</span>
+    </nav>
+    <h1>Talk to us</h1>
+    <p class="lead">
+      Questions about a route, the bikes or bringing your own car? Message us on WhatsApp, call, or
+      drop in at one of our offices.
+    </p>
+  </div>
+</section>
+
+@if (settings(); as s) {
+  <div class="container page">
+    <div class="quick">
+      <article class="card item">
+        <app-icon name="whatsapp" [size]="22" />
+        <div>
+          <h2>WhatsApp</h2>
+          @if (whatsapp.configured()) {
+            <p>{{ whatsappDisplay() }}</p>
+            <app-whatsapp-button [message]="message()" label="Chat on WhatsApp" [small]="true" />
+          } @else {
+            <p>Coming soon. Please call us for now.</p>
+          }
+        </div>
+      </article>
+      @if (s.phone) {
+        <article class="card item">
+          <app-icon name="phone" [size]="22" />
+          <div>
+            <h2>Phone</h2>
+            <p>
+              <a [href]="tel(s.phone)">{{ s.phone }}</a>
+            </p>
+            @if (s.officeHours) {
+              <p class="muted">{{ s.officeHours }}</p>
+            }
+          </div>
+        </article>
+      }
+      @if (s.email) {
+        <article class="card item">
+          <app-icon name="mail" [size]="22" />
+          <div>
+            <h2>Email</h2>
+            <p>
+              <a [href]="'mailto:' + s.email">{{ s.email }}</a>
+            </p>
+          </div>
+        </article>
+      }
+      <article class="card item">
+        <app-icon name="user" [size]="22" />
+        <div>
+          <h2>Already booked?</h2>
+          <p class="muted">
+            See your reference, payments and coordinator in
+            <a routerLink="/my-trips">My trips</a>
+          </p>
+        </div>
+      </article>
+    </div>
+
+    @if (offices().length) {
+      <h2 class="offices-title">Our offices</h2>
+      <div class="offices">
+        @for (o of offices(); track o.name) {
+          <article class="card office">
+            <iframe
+              [src]="o.map"
+              [title]="'Map showing our ' + o.name"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+            <div class="office-body">
+              <h3>{{ o.name }}</h3>
+              <p class="line">
+                <app-icon name="pin" [size]="17" />
+                {{ o.fullAddress }}
+              </p>
+              @if (o.hours) {
+                <p class="line">
+                  <app-icon name="clock" [size]="17" />
+                  {{ o.hours }}
+                </p>
+              }
+              @if (o.phone) {
+                <p class="line">
+                  <app-icon name="phone" [size]="17" />
+                  <a [href]="tel(o.phone)">{{ o.phone }}</a>
+                </p>
+              }
+              <a
+                class="btn btn-outline btn-sm"
+                [href]="o.directions"
+                target="_blank"
+                rel="noopener"
+              >
+                <app-icon name="route" [size]="16" />
+                Get directions
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+}

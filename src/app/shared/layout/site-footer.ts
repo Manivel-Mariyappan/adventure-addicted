@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CatalogService } from '../../core/services/catalog.service';
 import { ContentStore } from '../../core/services/content-store';
 import { WhatsappService } from '../../core/services/whatsapp.service';
+import { officeAddress } from '../../core/utils/offices';
 import { Icon } from '../icons';
 
 @Component({
@@ -19,10 +20,9 @@ export class SiteFooter {
 
   readonly year = new Date().getFullYear();
   readonly whatsappHref = computed(() => this.whatsapp.generalLink());
-  readonly address = computed(() => {
-    const s = this.settings();
-    return s ? [s.addressLine1, s.city, s.state, s.postalCode].filter(Boolean).join(', ') : '';
-  });
+  readonly offices = computed(() =>
+    (this.settings()?.offices ?? []).map((o) => ({ name: o.name, address: officeAddress(o) })),
+  );
   readonly socials = computed(() => {
     const s = this.settings();
     if (!s) return [];

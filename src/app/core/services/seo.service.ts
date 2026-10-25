@@ -64,14 +64,15 @@ export class SeoService {
       image: this.absolute('art/share.svg'),
       telephone: settings.phone || undefined,
       email: settings.email || undefined,
-      address: {
+      address: settings.offices.map((o) => ({
         '@type': 'PostalAddress',
-        streetAddress: settings.addressLine1 || undefined,
-        addressLocality: settings.city || undefined,
-        addressRegion: settings.state || undefined,
-        postalCode: settings.postalCode || undefined,
+        name: o.name,
+        streetAddress: o.address || undefined,
+        addressLocality: o.city || undefined,
+        addressRegion: o.state || undefined,
+        postalCode: o.postalCode || undefined,
         addressCountry: 'IN',
-      },
+      })),
     });
   }
 

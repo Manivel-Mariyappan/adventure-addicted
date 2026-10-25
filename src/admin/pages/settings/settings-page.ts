@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { CompanySettings, Faq, Testimonial } from '../../../app/core/models';
+import { CompanySettings, Faq, Office, Testimonial } from '../../../app/core/models';
 import { ContentStore } from '../../../app/core/services/content-store';
 import { normaliseWhatsappNumber } from '../../../app/core/services/whatsapp.service';
 import { AdminAlerts } from '../../core/alerts.service';
@@ -47,10 +47,6 @@ export class SettingsPage implements OnInit {
     phone: [''],
     email: ['', Validators.email],
     officeHours: [''],
-    addressLine1: [''],
-    city: [''],
-    state: this.fb.control<string | null>(null),
-    postalCode: [''],
     instagram: [''],
     youtube: [''],
     facebook: [''],
@@ -58,9 +54,23 @@ export class SettingsPage implements OnInit {
     advancePercent: this.fb.control<string | number>(30, Validators.required),
     balanceDueDays: this.fb.control<string | number>(21, Validators.required),
     holdHours: this.fb.control<string | number>(48, Validators.required),
+    offices: this.fb.array<ReturnType<SettingsPage['officeGroup']>>([]),
     faqs: this.fb.array<ReturnType<SettingsPage['faqGroup']>>([]),
     testimonials: this.fb.array<ReturnType<SettingsPage['testimonialGroup']>>([]),
   });
+
+  private officeGroup(o?: Office) {
+    return this.fb.nonNullable.group({
+      name: [o?.name ?? '', Validators.required],
+      address: [o?.address ?? ''],
+      city: [o?.city ?? ''],
+      state: this.fb.control<string | null>(o?.state || null),
+      postalCode: [o?.postalCode ?? ''],
+      phone: [o?.phone ?? ''],
+      hours: [o?.hours ?? ''],
+      mapQuery: [o?.mapQuery ?? ''],
+    });
+  }
 
   private faqGroup(faq: Faq = { question: '', answer: '' }) {
     return this.fb.nonNullable.group({ question: [faq.question], answer: [faq.answer] });
@@ -78,9 +88,15 @@ export class SettingsPage implements OnInit {
   ngOnInit(): void {
     const s = this.store.settings();
     if (!s) return;
-    this.form.patchValue({ ...s, state: s.state || null });
-    s.faqs.forEach((f) => this.form.controls.faqs.push(this.faqGroup(f)));
-    s.testimonials.forEach((t) => this.form.controls.testimonials.push(this.testimonialGroup(t)));
+    const { offices, faqs, testimonials, ...plain } = s;
+    this.form.patchValue(plain);
+    offices.forEach((o) => this.form.controls.offices.push(this.officeGroup(o)));
+    faqs.forEach((f) => this.form.controls.faqs.push(this.faqGroup(f)));
+    testimonials.forEach((t) => this.form.controls.testimonials.push(this.testimonialGroup(t)));
+  }
+
+  addOffice(): void {
+    this.form.controls.offices.push(this.officeGroup());
   }
 
   addFaq(): void {
@@ -99,7 +115,10 @@ export class SettingsPage implements OnInit {
   async save(): Promise<void> {
     this.submitted.set(true);
     if (this.form.invalid) {
-      void this.alerts.error('Please check the form', 'Some fields need attention.');
+      void this.alerts.error(
+        'Please check the form',
+        'Some fields need attention. Every office needs a name.',
+      );
       return;
     }
     if (
@@ -113,7 +132,9 @@ export class SettingsPage implements OnInit {
     const settings: CompanySettings = {
       ...v,
       whatsappNumber: normaliseWhatsappNumber(v.whatsappNumber),
-      state: v.state ?? '',
+      offices: v.offices
+        .filter((o) => o.name.trim())
+        .map((o) => ({ ...o, name: o.name.trim(), state: o.state ?? '' })),
       gstPercent: Number(v.gstPercent) || 0,
       advancePercent: Math.min(100, Number(v.advancePercent) || 0),
       balanceDueDays: Number(v.balanceDueDays) || 0,

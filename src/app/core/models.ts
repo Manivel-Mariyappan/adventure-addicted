@@ -154,16 +154,25 @@ export interface Testimonial {
   text: string;
 }
 
+export interface Office {
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  phone: string;
+  hours: string;
+  // what to search on Google Maps; empty = the address
+  mapQuery: string;
+}
+
 export interface CompanySettings {
   companyName: string;
   tagline: string;
   whatsappNumber: string;
   phone: string;
   email: string;
-  addressLine1: string;
-  city: string;
-  state: string;
-  postalCode: string;
+  offices: Office[];
   officeHours: string;
   instagram: string;
   youtube: string;
