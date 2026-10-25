@@ -5,6 +5,11 @@
   color: #fff;
 }
 
+// the 3D scene sits below the gradient overlay (::after, z-index -1)
+app-mountain-scene {
+  z-index: -2;
+}
+
 .hero-art {
   position: absolute;
   inset: 0;

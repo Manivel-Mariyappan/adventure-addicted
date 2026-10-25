@@ -262,6 +262,13 @@ html.aac-portal {
   }
 
   // wide offcanvas for the forms
+  // the tour package editor
+  .aac-offcanvas-xxl {
+    --bs-offcanvas-width: min(1240px, 100vw);
+    display: flex;
+    flex-direction: column;
+  }
+
   .aac-offcanvas-xl {
     --bs-offcanvas-width: min(1040px, 100vw);
     display: flex;

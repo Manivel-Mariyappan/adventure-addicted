@@ -1,0 +1,152 @@
+.stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--dark);
+  border-radius: var(--radius);
+  isolation: isolate;
+}
+
+app-mountain-scene {
+  z-index: 0;
+}
+
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.caption {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  max-width: min(420px, 75%);
+  padding: 0.75rem 0.95rem;
+  color: #fff;
+  background: rgba(15, 31, 61, 0.78);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(6px);
+
+  strong {
+    font-family: var(--font-head);
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+}
+
+.day {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fdba74;
+}
+
+.meta {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+}
+
+.play {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  background: var(--orange);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    background: var(--orange-ink);
+  }
+}
+
+.play-icon {
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 14px solid #fff;
+}
+
+.pause-icon {
+  width: 14px;
+  height: 16px;
+  border-left: 5px solid #fff;
+  border-right: 5px solid #fff;
+}
+
+.controls {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+
+  input[type='range'] {
+    width: 100%;
+    accent-color: var(--orange);
+  }
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+
+  button {
+    min-width: 2.2rem;
+    height: 2.2rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-2);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+
+    &.on {
+      color: #fff;
+      background: var(--dark);
+      border-color: var(--dark);
+    }
+  }
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+@media (max-width: 560px) {
+  .stage {
+    aspect-ratio: 4 / 3;
+  }
+
+  .caption {
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    max-width: none;
+    padding-right: 4.5rem;
+  }
+
+  .play {
+    right: 0.9rem;
+    bottom: 0.9rem;
+  }
+}

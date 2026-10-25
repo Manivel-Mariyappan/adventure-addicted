@@ -1,23 +1,36 @@
-<form [formGroup]="form" (ngSubmit)="save()" novalidate>
-  <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-    <a routerLink="/admin/tours" class="btn btn-sm btn-outline-secondary">← All tours</a>
-    @if (tour(); as t) {
-      <span class="text-body-secondary small">
-        {{ t.code }} · last saved {{ t.updatedAt.slice(0, 10) }}
-      </span>
-      <a
-        class="btn btn-sm btn-outline-primary ms-auto"
-        [href]="'/tours/' + t.slug"
-        target="_blank"
-        rel="noopener"
-      >
-        Preview on website ↗
-      </a>
-    }
-  </div>
+<div class="offcanvas-header border-bottom bg-white gap-2">
+  <h2 class="offcanvas-title h5 mb-0" id="tour-editor-title">
+    {{ tour() ? tour()!.name : 'New tour package' }}
+  </h2>
+  @if (tour(); as t) {
+    <span class="badge text-bg-light border">{{ t.code }}</span>
+    <a
+      class="btn btn-sm btn-outline-primary ms-auto"
+      [href]="'/tours/' + t.slug"
+      target="_blank"
+      rel="noopener"
+    >
+      Preview on website ↗
+    </a>
+  }
+  <button
+    type="button"
+    class="btn-close"
+    [class.ms-auto]="!tour()"
+    aria-label="Close"
+    (click)="offcanvas.dismiss()"
+  ></button>
+</div>
 
+<form
+  class="offcanvas-body bg-body-tertiary"
+  [formGroup]="form"
+  (ngSubmit)="save()"
+  id="tour-form"
+  novalidate
+>
   <div class="row g-3">
-    <div class="col-xl-8">
+    <div class="col-lg-8">
       <admin-card
         heading="Basics"
         subtitle="Name, places and what the trip is like"
@@ -667,8 +680,8 @@
       </admin-card>
     </div>
 
-    <div class="col-xl-4">
-      <div class="sticky-xl-top" style="top: 1rem">
+    <div class="col-lg-4">
+      <div>
         <admin-card heading="Publishing" icon="◉">
           <label class="form-label" for="t-status">Status</label>
           <ng-select
@@ -714,11 +727,6 @@
                 placeholder="16"
               />
             </div>
-          </div>
-          <div card-footer class="d-grid">
-            <button type="submit" class="btn btn-primary">
-              {{ tour() ? 'Save changes' : 'Create tour' }}
-            </button>
           </div>
         </admin-card>
 
@@ -801,10 +809,13 @@
       </div>
     </div>
   </div>
-
-  <div class="sticky-save d-flex justify-content-end gap-2 d-xl-none">
-    <button type="submit" class="btn btn-primary px-4">
-      {{ tour() ? 'Save changes' : 'Create tour' }}
-    </button>
-  </div>
 </form>
+
+<div class="border-top bg-white p-3 d-flex justify-content-end gap-2">
+  <button type="button" class="btn btn-outline-secondary" (click)="offcanvas.dismiss()">
+    Cancel
+  </button>
+  <button type="submit" form="tour-form" class="btn btn-primary px-4">
+    {{ tour() ? 'Save changes' : 'Create tour' }}
+  </button>
+</div>

@@ -8,6 +8,8 @@ customers send booking requests on WhatsApp, and the admin keeps bookings in its
 data shapes follow the planned ASP.NET Core + MySQL backend, so it can be connected later.
 
 - Angular 21 (standalone components, signals, zoneless), TypeScript
+- Three.js 3D flythroughs: animated mountain roads behind the home, tour and destination banners,
+  and a "Watch the route" fly-along on every tour page, built from the itinerary
 - Admin and coordinator portals: Bootstrap 5, ng-select, AG Grid, ng-bootstrap, SweetAlert2
 
 ## Quick start
@@ -53,6 +55,15 @@ download a **trip report** file, which the office imports on the departure page.
 show up in the profit figures.
 
 Passenger details never go into the public JSON files.
+
+## 3D scenes
+
+The scenes are generated in the browser (`src/app/shared/mountain-scene/`), not video files, so
+they cost about 120 kB and load only when one scrolls into view. Each region has its own look
+(Ladakh lake, Kashmir and Himachal pine forests, Rajasthan dunes). On the tour page the terrain
+rises where the itinerary's altitudes are high, with a marker and caption for each day.
+Without WebGL the page shows the illustration instead; visitors who prefer reduced motion get a
+still frame.
 
 ## Data files (`public/data/`)
 

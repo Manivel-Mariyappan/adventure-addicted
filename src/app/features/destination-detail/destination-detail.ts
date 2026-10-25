@@ -8,12 +8,22 @@ import { assetUrl } from '../../core/utils/url';
 import { DestinationCard } from '../../shared/destination-card';
 import { Icon } from '../../shared/icons';
 import { TourCard } from '../../shared/tour-card/tour-card';
+import { MountainScene } from '../../shared/mountain-scene/mountain-scene';
+import { themeFor } from '../../shared/mountain-scene/scene-theme';
 import { WhatsappButton } from '../../shared/whatsapp-button';
 
 @Component({
   selector: 'app-destination-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DecimalPipe, Icon, TourCard, DestinationCard, WhatsappButton],
+  imports: [
+    RouterLink,
+    DecimalPipe,
+    Icon,
+    TourCard,
+    DestinationCard,
+    WhatsappButton,
+    MountainScene,
+  ],
   templateUrl: './destination-detail.html',
   styleUrl: './destination-detail.scss',
 })
@@ -23,6 +33,7 @@ export class DestinationDetail {
 
   readonly place = computed(() => this.catalog.destination(this.slug()));
   readonly image = computed(() => assetUrl(this.place()?.image ?? 'art/hero.svg'));
+  readonly theme = computed(() => themeFor(this.place()?.region));
   readonly gallery = computed(() => (this.place()?.gallery ?? []).map(assetUrl));
   readonly parent = computed(() => {
     const p = this.place();

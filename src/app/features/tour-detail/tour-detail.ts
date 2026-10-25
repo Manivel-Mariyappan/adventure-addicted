@@ -13,6 +13,9 @@ import { assetUrl } from '../../core/utils/url';
 import { DepartureList } from '../../shared/departure-list/departure-list';
 import { Icon } from '../../shared/icons';
 import { Itinerary } from '../../shared/itinerary/itinerary';
+import { MountainScene } from '../../shared/mountain-scene/mountain-scene';
+import { themeFor } from '../../shared/mountain-scene/scene-theme';
+import { RoutePreview } from '../../shared/route-preview/route-preview';
 import { WhatsappButton } from '../../shared/whatsapp-button';
 
 const DIFFICULTY_NOTES: Record<Difficulty, string> = {
@@ -26,7 +29,16 @@ const DIFFICULTY_NOTES: Record<Difficulty, string> = {
 @Component({
   selector: 'app-tour-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DecimalPipe, Icon, Itinerary, DepartureList, WhatsappButton],
+  imports: [
+    RouterLink,
+    DecimalPipe,
+    Icon,
+    Itinerary,
+    DepartureList,
+    WhatsappButton,
+    MountainScene,
+    RoutePreview,
+  ],
   templateUrl: './tour-detail.html',
   styleUrl: './tour-detail.scss',
 })
@@ -43,6 +55,7 @@ export class TourDetail {
     const t = this.tour();
     return t ? this.catalog.destinationsOf(t) : [];
   });
+  readonly theme = computed(() => themeFor(this.places()[0]?.region));
   readonly difficultyNote = computed(() => DIFFICULTY_NOTES[this.tour()?.difficulty ?? 'Moderate']);
   readonly fromPrice = computed(() => {
     const t = this.tour();

@@ -10,12 +10,13 @@ import { assetUrl } from '../../core/utils/url';
 import { DestinationCard } from '../../shared/destination-card';
 import { Icon, IconName } from '../../shared/icons';
 import { TourCard } from '../../shared/tour-card/tour-card';
+import { MountainScene } from '../../shared/mountain-scene/mountain-scene';
 import { WhatsappButton } from '../../shared/whatsapp-button';
 
 @Component({
   selector: 'app-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon, TourCard, DestinationCard, WhatsappButton],
+  imports: [RouterLink, Icon, TourCard, DestinationCard, WhatsappButton, MountainScene],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

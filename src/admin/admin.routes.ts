@@ -62,11 +62,6 @@ export const ADMIN_ROUTES: Routes = [
             ...page('Tour packages'),
           },
           {
-            path: 'tours/:id',
-            loadComponent: () => import('./pages/tours/tour-editor').then((m) => m.TourEditor),
-            ...page('Tour package'),
-          },
-          {
             path: 'destinations',
             loadComponent: () =>
               import('./pages/destinations/destinations-page').then((m) => m.DestinationsPage),

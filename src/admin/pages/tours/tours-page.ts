@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef } from 'ag-grid-community';
 import { TourPackage, TourStatus } from '../../../app/core/models';
@@ -16,6 +16,7 @@ import {
   rowButtons,
   thumbnail,
 } from '../../shared/grid';
+import { TourEditor } from './tour-editor';
 
 const STATUS_COLORS: Record<TourStatus, string> = {
   published: 'success',
@@ -50,11 +51,7 @@ const STATUS_COLORS: Record<TourStatus, string> = {
           placeholder="Search by name or code"
           (input)="search.set($any($event.target).value)"
         />
-        <button
-          type="button"
-          class="btn btn-sm btn-primary ms-auto"
-          (click)="router.navigate(['/admin/tours', 'new'])"
-        >
+        <button type="button" class="btn btn-sm btn-primary ms-auto" (click)="open(null)">
           + New tour package
         </button>
       </div>
@@ -77,7 +74,7 @@ const STATUS_COLORS: Record<TourStatus, string> = {
   `,
 })
 export class ToursPage {
-  readonly router = inject(Router);
+  private readonly offcanvas = inject(NgbOffcanvas);
   private readonly store = inject(ContentStore);
   private readonly alerts = inject(AdminAlerts);
 
@@ -152,7 +149,7 @@ export class ToursPage {
         {
           label: 'Edit',
           className: 'btn-outline-primary',
-          onClick: () => void this.router.navigate(['/admin/tours', t.id]),
+          onClick: () => this.open(t.id),
         },
         {
           label: 'Duplicate',
@@ -175,6 +172,16 @@ export class ToursPage {
     },
   ];
 
+  open(tourId: string | null): void {
+    const ref = this.offcanvas.open(TourEditor, {
+      position: 'end',
+      panelClass: 'aac-offcanvas-xxl',
+      backdrop: 'static',
+      ariaLabelledBy: 'tour-editor-title',
+    });
+    (ref.componentInstance as TourEditor).tourId.set(tourId);
+  }
+
   duplicate(t: TourPackage): void {
     const now = new Date().toISOString();
     const copy: TourPackage = {
@@ -189,7 +196,7 @@ export class ToursPage {
       updatedAt: now,
     };
     this.store.saveDraft('tours', [...this.store.tours(), copy]);
-    void this.router.navigate(['/admin/tours', copy.id]);
+    this.open(copy.id);
   }
 
   async setStatus(t: TourPackage, status: TourStatus): Promise<void> {

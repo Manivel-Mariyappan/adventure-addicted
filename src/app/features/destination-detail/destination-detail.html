@@ -1,6 +1,15 @@
 @if (place(); as p) {
   <section class="hero">
-    <img class="hero-art" [src]="image()" alt="" width="1600" height="1000" fetchpriority="high" />
+    <app-mountain-scene [theme]="theme()" time="dawn" [duration]="60">
+      <img
+        class="hero-art"
+        [src]="image()"
+        alt=""
+        width="1600"
+        height="1000"
+        fetchpriority="high"
+      />
+    </app-mountain-scene>
     <div class="container hero-inner">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a routerLink="/">Home</a>

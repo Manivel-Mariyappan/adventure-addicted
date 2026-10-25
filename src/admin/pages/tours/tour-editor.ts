@@ -4,12 +4,11 @@ import {
   OnInit,
   computed,
   inject,
-  input,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { NgbActiveOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import {
   AddOn,
@@ -37,20 +36,22 @@ const num = (v: string | number | null | undefined): number | null =>
 @Component({
   selector: 'app-tour-editor',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, NgSelectComponent, NumbersOnlyDirective, AdminCard],
+  imports: [ReactiveFormsModule, NgSelectComponent, NumbersOnlyDirective, AdminCard],
   templateUrl: './tour-editor.html',
+  host: { class: 'd-flex flex-column h-100' },
 })
 export class TourEditor implements OnInit {
   private readonly store = inject(ContentStore);
   private readonly fb = inject(FormBuilder);
   private readonly alerts = inject(AdminAlerts);
-  private readonly router = inject(Router);
+  readonly offcanvas = inject(NgbActiveOffcanvas);
   readonly assetUrl = assetUrl;
 
   // 'new' or a tour id
-  readonly id = input.required<string>();
+  // set by the opener; null for a new package
+  readonly tourId = signal<string | null>(null);
 
-  readonly tour = computed(() => this.store.tours().find((t) => t.id === this.id()) ?? null);
+  readonly tour = computed(() => this.store.tours().find((t) => t.id === this.tourId()) ?? null);
   readonly destinations = computed(() =>
     this.store.destinations().map((d) => ({
       id: d.id,
@@ -397,7 +398,6 @@ export class TourEditor implements OnInit {
     );
     this.form.markAsPristine();
     void this.alerts.success(this.tour() ? 'Tour saved' : 'Tour created', record.name);
-    if (this.id() === 'new')
-      void this.router.navigate(['/admin/tours', record.id], { replaceUrl: true });
+    this.offcanvas.close(record);
   }
 }
