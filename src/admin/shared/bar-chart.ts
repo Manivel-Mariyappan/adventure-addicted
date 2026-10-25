@@ -10,6 +10,7 @@ export interface BarDatum {
 }
 
 // One-series bar chart: columns over time, or horizontal bars for a ranking.
+// Class names avoid Bootstrap's .col and .row, which the admin loads.
 // Bars are capped at 24px with a 4px rounded end; values are labelled sparingly
 // (the highest and the last column), the rest are in the tooltip and the table.
 @Component({
@@ -30,7 +31,11 @@ export interface BarDatum {
             @if (i === peak() || last) {
               <span class="cap">{{ d.display }}</span>
             }
-            <span class="col" [style.height.%]="pct(d.value)" [class.active]="hover() === i"></span>
+            <span
+              class="column"
+              [style.height.%]="pct(d.value)"
+              [class.active]="hover() === i"
+            ></span>
             <span class="tick">{{ d.label }}</span>
             @if (hover() === i) {
               <span class="tip" role="tooltip">
@@ -48,7 +53,7 @@ export interface BarDatum {
       <div class="bars" (mouseleave)="hover.set(null)">
         @for (d of data(); track d.label; let i = $index) {
           <div
-            class="row"
+            class="bar-row"
             (mouseenter)="hover.set(i)"
             tabindex="0"
             [attr.aria-label]="d.label + ': ' + d.display"
@@ -134,13 +139,13 @@ export interface BarDatum {
       align-items: center;
       outline: none;
     }
-    .col {
+    .column {
       width: min(24px, 70%);
       min-height: 2px;
       background: var(--series);
       border-radius: 4px 4px 0 0;
     }
-    .col.active {
+    .column.active {
       background: var(--series-hover);
     }
     .cap {
@@ -180,7 +185,7 @@ export interface BarDatum {
       display: grid;
       gap: 0.55rem;
     }
-    .row {
+    .bar-row {
       position: relative;
       display: grid;
       grid-template-columns: minmax(90px, 34%) 1fr;
@@ -215,7 +220,7 @@ export interface BarDatum {
       color: #334155;
       white-space: nowrap;
     }
-    .row .tip {
+    .bar-row .tip {
       bottom: 100%;
       left: 40%;
       transform: none;
