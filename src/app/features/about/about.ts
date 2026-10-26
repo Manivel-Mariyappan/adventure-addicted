@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CatalogService } from '../../core/services/catalog.service';
+import { ContentStore } from '../../core/services/content-store';
 import { SeoService } from '../../core/services/seo.service';
 import { Icon } from '../../shared/icons';
 
@@ -18,10 +19,11 @@ import { Icon } from '../../shared/icons';
         </nav>
         <h1>About Adventure Addicted</h1>
         <p class="lead">
-          We plan and lead group trips across North India: bike expeditions, self-drive road trips
-          and easy family tours.
+          {{
+            settings()?.description ||
+              'We plan and lead group trips across North India: bike expeditions, self-drive road trips and easy family tours.'
+          }}
         </p>
-        <!-- TODO: the founders' story and the year the company started -->
       </div>
     </section>
 
@@ -87,6 +89,23 @@ import { Icon } from '../../shared/icons';
         </section>
       }
 
+      @if (testimonials().length) {
+        <section>
+          <h2>What our riders say</h2>
+          <div class="reviews">
+            @for (t of testimonials(); track t.name) {
+              <figure>
+                <blockquote>{{ t.text }}</blockquote>
+                <figcaption>
+                  <strong>{{ t.name }}</strong>
+                  {{ t.city }} · {{ t.tour }}
+                </figcaption>
+              </figure>
+            }
+          </div>
+        </section>
+      }
+
       <section class="cta card">
         <app-icon name="mountain" [size]="30" />
         <div>
@@ -98,6 +117,32 @@ import { Icon } from '../../shared/icons';
     </div>
   `,
   styles: `
+    .banner .lead {
+      white-space: pre-line;
+    }
+    .reviews {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .reviews figure {
+      margin: 0;
+      padding: 1.35rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+    }
+    .reviews blockquote {
+      margin: 0 0 1rem;
+      font-size: 0.95rem;
+    }
+    .reviews figcaption {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .reviews figcaption strong {
+      display: block;
+      color: var(--text);
+    }
     .page {
       display: grid;
       gap: 2.5rem;
@@ -203,7 +248,8 @@ import { Icon } from '../../shared/icons';
     }
     @media (max-width: 800px) {
       .how ol,
-      .people {
+      .people,
+      .reviews {
         grid-template-columns: 1fr;
       }
       .numbers {
@@ -221,6 +267,8 @@ import { Icon } from '../../shared/icons';
 })
 export class About {
   readonly catalog = inject(CatalogService);
+  readonly settings = inject(ContentStore).settings;
+  readonly testimonials = computed(() => this.settings()?.testimonials ?? []);
 
   constructor() {
     inject(SeoService).set({

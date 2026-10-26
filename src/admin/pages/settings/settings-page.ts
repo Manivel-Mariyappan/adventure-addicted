@@ -43,6 +43,7 @@ export class SettingsPage implements OnInit {
   readonly form = this.fb.nonNullable.group({
     companyName: ['', Validators.required],
     tagline: [''],
+    description: [''],
     whatsappNumber: ['', Validators.pattern(/^\d{10,15}$/)],
     phone: [''],
     email: ['', Validators.email],
@@ -131,6 +132,7 @@ export class SettingsPage implements OnInit {
     const v = this.form.getRawValue();
     const settings: CompanySettings = {
       ...v,
+      description: v.description.trim(),
       whatsappNumber: normaliseWhatsappNumber(v.whatsappNumber),
       offices: v.offices
         .filter((o) => o.name.trim())

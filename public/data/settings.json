@@ -1,6 +1,7 @@
 {
   "companyName": "Adventure Addicted Company",
   "tagline": "Guided bike expeditions and road trips across North India",
+  "description": "We plan and lead group trips across North India: bike expeditions, self-drive road trips and easy family tours.",
   "whatsappNumber": "919786995053",
   "phone": "+91 97869 95053",
   "email": "",
@@ -34,7 +35,20 @@
   "advancePercent": 30,
   "balanceDueDays": 21,
   "holdHours": 48,
-  "testimonials": [],
+  "testimonials": [
+    {
+      "name": "Rahul S.",
+      "city": "Bengaluru",
+      "tour": "Leh Ladakh Bike Expedition",
+      "text": "Sample review: the bikes were in great shape, the mechanic sorted every problem on the road and our coordinator kept the group together all the way over Khardung La."
+    },
+    {
+      "name": "Priya M.",
+      "city": "Chennai",
+      "tour": "Ladakh Family Escape with Flights",
+      "text": "Sample review: an easy first trip to the mountains with our parents. Acclimatisation days, warm stays and a coordinator who answered every question on WhatsApp."
+    }
+  ],
   "faqs": [
     {
       "question": "How do I book?",

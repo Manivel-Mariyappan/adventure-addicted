@@ -91,7 +91,8 @@ browser: use **Publish > Download backup** regularly.
 - [ ] Delete the demo bookings (Bookings page) and publish `departures.json` again.
 - [ ] Replace the illustrations in `public/art/` with real photos (upload them in the admin, or
       add paths).
-- [ ] Add real customer reviews in Company settings; the section stays hidden until then.
+- [ ] Replace the two sample reviews in Company settings > Testimonials with real customer reviews
+      (shown on the Home and About pages; the section hides when the list is empty).
 
 ## Project layout
 

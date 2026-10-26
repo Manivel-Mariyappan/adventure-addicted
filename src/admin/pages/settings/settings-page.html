@@ -3,7 +3,7 @@
     <div class="col-xl-6">
       <admin-card
         heading="Company"
-        subtitle="Shown in the header and footer"
+        subtitle="Name and tagline in the header and footer, description on the About page"
         icon="◆"
         [required]="true"
       >
@@ -29,6 +29,16 @@
               formControlName="tagline"
               placeholder="Enter a short tagline"
             />
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="s-desc">Company description</label>
+            <textarea
+              id="s-desc"
+              class="form-control"
+              rows="4"
+              formControlName="description"
+              placeholder="Who you are, when you started and what kind of trips you run"
+            ></textarea>
           </div>
         </div>
       </admin-card>

@@ -169,6 +169,8 @@ export interface Office {
 export interface CompanySettings {
   companyName: string;
   tagline: string;
+  // a few sentences about the company, shown on the About page
+  description: string;
   whatsappNumber: string;
   phone: string;
   email: string;
