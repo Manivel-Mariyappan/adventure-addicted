@@ -67,6 +67,33 @@ export function thumbnail(shape: 'square' | 'round' = 'square') {
   };
 }
 
+// Round photo (or the first letter of the name) followed by the name.
+export function nameWithPhoto(name: string, photo: string | undefined): HTMLElement {
+  const wrap = document.createElement('div');
+  wrap.className = 'd-flex align-items-center gap-2 h-100';
+  let avatar: HTMLElement;
+  if (photo) {
+    const img = document.createElement('img');
+    img.src = assetUrl(photo);
+    img.alt = '';
+    img.loading = 'lazy';
+    img.className = 'rounded-circle border flex-shrink-0';
+    img.style.cssText = 'width: 34px; height: 34px; object-fit: cover';
+    avatar = img;
+  } else {
+    avatar = document.createElement('span');
+    avatar.className =
+      'rounded-circle bg-body-secondary text-body-secondary fw-semibold d-grid flex-shrink-0';
+    avatar.style.cssText = 'width: 34px; height: 34px; place-items: center';
+    avatar.textContent = name.charAt(0);
+  }
+  const text = document.createElement('span');
+  text.className = 'text-truncate';
+  text.textContent = name;
+  wrap.append(avatar, text);
+  return wrap;
+}
+
 // On phones a pinned column takes too much room, so only pin on wider screens.
 export function pinRightOnWideScreens(): 'right' | null {
   return matchMedia('(min-width: 768px)').matches ? 'right' : null;

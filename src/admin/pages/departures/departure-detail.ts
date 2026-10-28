@@ -253,7 +253,10 @@ export class DepartureDetail {
       const report = JSON.parse(await file.text()) as TripReport;
       if (report.kind !== 'aac-trip-report') throw new Error('not a report');
       if (report.departureId !== this.id()) {
-        void this.alerts.error('Wrong departure', 'This report is for a different departure.');
+        void this.alerts.error(
+          'Wrong report file',
+          'This report belongs to a different departure.',
+        );
         return;
       }
       const record = { ...this.ops(), report, updatedAt: new Date().toISOString() };

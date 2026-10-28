@@ -1,6 +1,13 @@
 <ng-template #navTpl let-close="close">
   <div class="brand">
-    <img class="logo" src="favicon.svg" alt="" width="34" height="34" />
+    <img
+      class="logo"
+      [src]="store.logo()"
+      alt=""
+      style="object-fit: contain"
+      width="34"
+      height="34"
+    />
     <span>
       Adventure Addicted
       <small>Admin</small>
@@ -23,7 +30,11 @@
   <div class="side-foot">
     @if (auth.currentUser(); as u) {
       <div class="me">
-        <span class="avatar">{{ u.fullName.charAt(0) }}</span>
+        @if (u.photo) {
+          <img class="avatar" [src]="assetUrl(u.photo)" alt="" />
+        } @else {
+          <span class="avatar">{{ u.fullName.charAt(0) }}</span>
+        }
         <span>
           <strong>{{ u.fullName }}</strong>
           <small>{{ u.role }}</small>
@@ -94,6 +105,28 @@
         </div>
       }
       @default {
+        @for (kind of store.staleDrafts(); track kind) {
+          <div
+            class="alert alert-warning d-flex flex-wrap align-items-center gap-2 py-2"
+            role="alert"
+          >
+            <span class="me-auto small">
+              <strong>{{ draftLabels[kind] }}:</strong>
+              the data file has changed since you started editing. You are seeing your saved
+              changes, not the new file.
+            </span>
+            <button type="button" class="btn btn-sm btn-warning" (click)="loadNewFile(kind)">
+              Load the new file
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary"
+              (click)="store.keepDraft(kind)"
+            >
+              Keep my changes
+            </button>
+          </div>
+        }
         <router-outlet />
       }
     }

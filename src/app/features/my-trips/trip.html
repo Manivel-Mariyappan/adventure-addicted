@@ -86,7 +86,7 @@
 
       @if (coordinator(); as c) {
         <section class="card block coordinator">
-          <span class="avatar" aria-hidden="true">{{ c.name.charAt(0) }}</span>
+          <app-coordinator-avatar [coordinator]="c" />
           <div>
             <h2>Your coordinator: {{ c.name }}</h2>
             <p>{{ c.bio }}</p>

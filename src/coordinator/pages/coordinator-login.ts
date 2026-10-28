@@ -12,7 +12,7 @@ import { CoordinatorAuthService } from '../core/coordinator-auth.service';
     <div class="min-vh-100 d-flex align-items-center justify-content-center p-3 page">
       <form class="card shadow border-0 p-4" style="width: min(400px, 100%)" (ngSubmit)="submit()">
         <div class="d-flex align-items-center gap-2 mb-3">
-          <img src="favicon.svg" alt="" width="36" height="36" />
+          <img [src]="logo()" alt="" style="object-fit: contain" width="36" height="36" />
           <span class="fw-bold">Adventure Addicted</span>
         </div>
         <h1 class="h4 fw-bold mb-1">Coordinator portal</h1>
@@ -69,6 +69,7 @@ export class CoordinatorLogin {
   private readonly auth = inject(CoordinatorAuthService);
   private readonly router = inject(Router);
   private readonly store = inject(ContentStore);
+  readonly logo = this.store.logo;
 
   readonly coordinators = computed(() => this.store.coordinators().filter((c) => c.active));
   readonly error = signal('');
@@ -79,14 +80,14 @@ export class CoordinatorLogin {
   async submit(): Promise<void> {
     this.error.set('');
     if (!this.who || !this.pin) {
-      this.error.set('Choose your name and enter your PIN.');
+      this.error.set('Select your name and enter your PIN.');
       return;
     }
     this.busy.set(true);
     const ok = await this.auth.login(this.who, this.pin);
     this.busy.set(false);
     if (!ok) {
-      this.error.set('That PIN is not right.');
+      this.error.set('Incorrect PIN. Please try again.');
       return;
     }
     void this.router.navigateByUrl('/coordinator');

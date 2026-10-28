@@ -140,7 +140,10 @@ export class DestinationsPage {
     const tours = this.tourCounts().get(d.id) ?? 0;
     const children = this.store.destinations().filter((x) => x.parentId === d.id).length;
     if (children) {
-      void this.alerts.error('Move its places first', `${children} places are inside ${d.name}.`);
+      void this.alerts.error(
+        'Destination has places',
+        `${d.name} contains ${children} places. Move or delete them first.`,
+      );
       return;
     }
     const text = tours

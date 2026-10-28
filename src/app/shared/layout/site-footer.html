@@ -1,7 +1,7 @@
 <div class="container grid">
   <div class="about">
     <p class="brand">
-      <img src="favicon.svg" alt="" width="36" height="36" />
+      <img [src]="logo()" alt="" style="object-fit: contain" width="36" height="36" />
       {{ settings()?.companyName ?? 'Adventure Addicted Company' }}
     </p>
     <p>{{ settings()?.tagline }}</p>

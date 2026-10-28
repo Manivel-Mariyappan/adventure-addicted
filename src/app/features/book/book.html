@@ -252,7 +252,7 @@
                       placeholder="As on your ID"
                     />
                     @if (showErrors() && leadErrors().name) {
-                      <small class="error">Please enter your name.</small>
+                      <small class="error">Full name is required.</small>
                     }
                   </label>
                   <label class="field">
@@ -267,7 +267,7 @@
                       placeholder="10-digit mobile number"
                     />
                     @if (showErrors() && leadErrors().phone) {
-                      <small class="error">Enter a 10-digit mobile number.</small>
+                      <small class="error">Enter a valid 10-digit mobile number.</small>
                     }
                   </label>
                   <label class="field">
@@ -282,7 +282,7 @@
                       placeholder="For the invoice (optional)"
                     />
                     @if (showErrors() && leadErrors().email) {
-                      <small class="error">This email doesn't look right.</small>
+                      <small class="error">Enter a valid email address.</small>
                     }
                   </label>
                   <label class="field">
@@ -344,7 +344,7 @@
                     </label>
                   </div>
                   @if (showErrors() && peopleErrors()[i].name) {
-                    <small class="error">Please enter traveller {{ i + 1 }}'s name.</small>
+                    <small class="error">Full name of traveller {{ i + 1 }} is required.</small>
                   }
                 </fieldset>
               }
@@ -410,11 +410,13 @@
                   <a [routerLink]="['/tours', t.slug]" fragment="policies" target="_blank">
                     payment and cancellation policy
                   </a>
-                  , and I understand the seats are confirmed only after the advance is paid.
+                  and understand that seats are confirmed only after the advance is paid.
                 </span>
               </label>
               @if (showErrors() && !accepted()) {
-                <small class="error">Please accept the policy to continue.</small>
+                <small class="error">
+                  Please accept the payment and cancellation policy to continue.
+                </small>
               }
             }
           }

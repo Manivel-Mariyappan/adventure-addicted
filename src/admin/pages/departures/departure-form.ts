@@ -161,19 +161,20 @@ export class DepartureForm implements OnInit {
     const problems: string[] = [];
     if (total < 1) problems.push('Total seats must be at least 1.');
     if (!Object.keys(optionSeats).length)
-      problems.push('Offer at least one travel option (enter its seats).');
+      problems.push('Enter seats for at least one travel option.');
     if (Object.values(optionSeats).some((s) => s > total))
-      problems.push('An option has more seats than the whole group.');
+      problems.push('A travel option cannot have more seats than the group total.');
     const takenTotal = Object.values(this.taken()).reduce((a, b) => a + b, 0);
     if (total < takenTotal)
-      problems.push(`${takenTotal} seats are already booked; total seats can't be lower.`);
+      problems.push(`${takenTotal} seats are already booked, so total seats cannot be lower.`);
     for (const [id, n] of Object.entries(this.taken())) {
       if ((optionSeats[id] ?? 0) < n)
         problems.push(
           `${n} seats are booked on "${t.travelOptions.find((o) => o.id === id)?.label ?? id}".`,
         );
     }
-    if (!this.departure && start < todayIso()) problems.push('The start date is in the past.');
+    if (!this.departure && start < todayIso())
+      problems.push('The start date cannot be in the past.');
     if (problems.length) {
       void this.alerts.error('Please check the form', problems.join(' '));
       return;
@@ -182,7 +183,7 @@ export class DepartureForm implements OnInit {
     const code = departureCode(t.code, start);
     if (this.store.departures().some((d) => d.code === code && d.id !== this.departure?.id)) {
       void this.alerts.error(
-        'Already scheduled',
+        'Departure already exists',
         `${t.name} already has a departure on this date (${code}).`,
       );
       return;

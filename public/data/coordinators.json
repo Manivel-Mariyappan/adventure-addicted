@@ -2,8 +2,9 @@
   {
     "id": "crd-tenzin",
     "name": "Tenzin Norbu",
-    "phone": "+91 90000 00011",
-    "photo": "",
+    "email": "tenzin.norbu@example.com",
+    "phone": "9000000011",
+    "photo": "art/coordinators/tenzin-norbu.svg",
     "bio": "Born in Leh. Has led more than 60 Ladakh rides and knows every mechanic between Manali and Leh.",
     "languages": [
       "English",
@@ -17,8 +18,9 @@
   {
     "id": "crd-arjun",
     "name": "Arjun Rawat",
-    "phone": "+91 90000 00012",
-    "photo": "",
+    "email": "arjun.rawat@example.com",
+    "phone": "9000000012",
+    "photo": "art/coordinators/arjun-rawat.svg",
     "bio": "Rafting guide turned tour leader from Rishikesh. Leads our Uttarakhand and Spiti trips.",
     "languages": [
       "English",
@@ -32,8 +34,9 @@
   {
     "id": "crd-meera",
     "name": "Meera Shekhawat",
-    "phone": "+91 90000 00013",
-    "photo": "",
+    "email": "meera.shekhawat@example.com",
+    "phone": "9000000013",
+    "photo": "art/coordinators/meera-shekhawat.svg",
     "bio": "Road-trip planner from Jodhpur. Leads our Rajasthan and Kashmir trips.",
     "languages": [
       "English",

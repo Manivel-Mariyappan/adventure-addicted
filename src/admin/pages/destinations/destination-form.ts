@@ -112,7 +112,10 @@ export class DestinationForm implements OnInit {
     const v = this.form.getRawValue();
     const others = this.store.destinations().filter((d) => d.id !== this.destination?.id);
     if (others.some((d) => d.slug === v.slug)) {
-      void this.alerts.error('Duplicate URL slug', `"${v.slug}" is already used.`);
+      void this.alerts.error(
+        'Duplicate URL slug',
+        `The URL slug "${v.slug}" is already used by another destination.`,
+      );
       return;
     }
     if (this.destination && !(await this.alerts.confirm('Update this destination?', v.name)))

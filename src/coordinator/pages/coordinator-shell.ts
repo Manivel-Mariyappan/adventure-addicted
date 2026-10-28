@@ -11,7 +11,7 @@ import { CoordinatorAuthService } from '../core/coordinator-auth.service';
   template: `
     <header class="bar">
       <a routerLink="/coordinator" class="brand">
-        <img src="favicon.svg" alt="" width="30" height="30" />
+        <img [src]="store.logo()" alt="" style="object-fit: contain" width="30" height="30" />
         <span>Trips</span>
       </a>
       @if (auth.coordinator(); as c) {

@@ -12,7 +12,8 @@ import {
 } from '@angular/router';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { filter, map } from 'rxjs';
-import { ContentStore } from '../../app/core/services/content-store';
+import { ContentStore, DraftKind } from '../../app/core/services/content-store';
+import { assetUrl } from '../../app/core/utils/url';
 import { AdminAuthService } from '../core/admin-auth.service';
 import { AdminDataService } from '../core/admin-data.service';
 import { AdminAlerts } from '../core/alerts.service';
@@ -31,6 +32,7 @@ export class AdminShell {
   private readonly offcanvas = inject(NgbOffcanvas);
   private readonly alerts = inject(AdminAlerts);
   readonly store = inject(ContentStore);
+  readonly assetUrl = assetUrl;
 
   readonly nav = [
     {
@@ -89,6 +91,26 @@ export class AdminShell {
     let r = this.route.snapshot;
     while (r.firstChild) r = r.firstChild;
     return (r.data['heading'] as string | undefined) ?? 'Admin';
+  }
+
+  readonly draftLabels: Record<DraftKind, string> = {
+    destinations: 'Destinations',
+    tours: 'Tour packages',
+    departures: 'Departures',
+    coordinators: 'Coordinators',
+    settings: 'Company settings',
+  };
+
+  async loadNewFile(kind: DraftKind): Promise<void> {
+    const ok = await this.alerts.confirm(
+      `Load the new ${this.draftLabels[kind].toLowerCase()} file?`,
+      'Your unpublished changes here will be discarded.',
+      'Yes, load it',
+      'warning',
+    );
+    if (!ok) return;
+    this.store.discardDraft(kind);
+    void this.alerts.toast('New file loaded');
   }
 
   openMenu(content: TemplateRef<unknown>): void {

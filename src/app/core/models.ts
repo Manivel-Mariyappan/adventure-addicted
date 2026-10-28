@@ -137,6 +137,8 @@ export interface Departure {
 export interface Coordinator {
   id: string;
   name: string;
+  // office contact only; not shown on the website
+  email: string;
   phone: string;
   photo: string;
   bio: string;
@@ -168,6 +170,8 @@ export interface Office {
 
 export interface CompanySettings {
   companyName: string;
+  // uploaded logo (data URL) or a path; empty uses the default favicon.svg
+  logo?: string;
   tagline: string;
   // a few sentences about the company, shown on the About page
   description: string;

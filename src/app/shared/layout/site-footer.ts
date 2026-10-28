@@ -16,6 +16,7 @@ import { Icon } from '../icons';
 export class SiteFooter {
   private readonly whatsapp = inject(WhatsappService);
   readonly settings = inject(ContentStore).settings;
+  readonly logo = inject(ContentStore).logo;
   readonly regions = inject(CatalogService).regions;
 
   readonly year = new Date().getFullYear();

@@ -2,12 +2,15 @@ import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angu
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { ContentStore } from '../../../app/core/services/content-store';
+import { Icon } from '../../../app/shared/icons';
+import { PrayerFlags } from '../../../app/shared/prayer-flags';
 import { AdminAuthService } from '../../core/admin-auth.service';
 
 @Component({
   selector: 'app-admin-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Icon, PrayerFlags],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -15,6 +18,7 @@ export class LoginPage {
   private readonly auth = inject(AdminAuthService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  readonly logo = inject(ContentStore).logo;
 
   readonly next = input<string>();
   readonly error = signal('');

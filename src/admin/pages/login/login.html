@@ -1,10 +1,18 @@
 <div class="min-vh-100 d-flex align-items-center justify-content-center p-3 page">
   <form class="card shadow border-0 login" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    <div class="card-body p-4 p-md-5">
-      <div class="d-flex align-items-center gap-2 mb-4">
-        <img src="favicon.svg" alt="" width="36" height="36" />
-        <span class="fw-bold">Adventure Addicted</span>
+    <!-- night sky over the passes, with prayer flags strung across -->
+    <div class="band">
+      <svg viewBox="0 0 440 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path d="M0 150V112l60-38 44 26 70-56 58 44 46-30 72 52 50-26 40 22v44Z" fill="#24396a" />
+        <path d="M0 150v-20l90-34 70 30 80-40 90 42 110-30v52Z" fill="#1a2b52" />
+      </svg>
+      <app-prayer-flags class="flags" />
+      <div class="brand">
+        <img [src]="logo()" alt="" style="object-fit: contain" width="34" height="34" />
+        <span>Adventure Addicted</span>
       </div>
+    </div>
+    <div class="card-body p-4 px-md-5 pt-4">
       <h1 class="h3 fw-bold mb-1">Admin portal</h1>
       <p class="text-body-secondary mb-4">
         Sign in to manage tours, departures, bookings and payments.
@@ -25,7 +33,7 @@
           autofocus
           [class.is-invalid]="submitted() && form.controls.username.invalid"
         />
-        <div class="invalid-feedback">Enter your username.</div>
+        <div class="invalid-feedback">Username is required.</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="password">Password</label>
@@ -41,16 +49,21 @@
           />
           <button
             type="button"
-            class="btn btn-outline-secondary"
+            class="btn btn-outline-secondary d-flex align-items-center"
             (click)="showPassword.set(!showPassword())"
             [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            [title]="showPassword() ? 'Hide password' : 'Show password'"
           >
-            {{ showPassword() ? 'Hide' : 'Show' }}
+            <app-icon [name]="showPassword() ? 'eye-off' : 'eye'" [size]="20" />
           </button>
-          <div class="invalid-feedback">Enter your password.</div>
+          <div class="invalid-feedback">Password is required.</div>
         </div>
       </div>
-      <button class="btn btn-primary btn-lg w-100" type="submit" [disabled]="busy()">
+      <button
+        class="btn btn-primary btn-lg w-100 fs-6 fw-semibold"
+        type="submit"
+        [disabled]="busy()"
+      >
         @if (busy()) {
           <span class="spinner-border spinner-border-sm me-2"></span>
         }

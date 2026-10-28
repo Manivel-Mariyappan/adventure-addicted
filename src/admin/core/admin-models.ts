@@ -12,6 +12,8 @@ export interface AdminUser {
   username: string;
   email: string;
   mobile: string;
+  // profile image: an uploaded data URL or a path; may be missing on older saved users
+  photo?: string;
   role: AdminRole;
   active: boolean;
   lastLogin: string | null;

@@ -417,7 +417,7 @@ export class BookingForm implements OnInit {
     if (this.form.invalid || !price) {
       void this.alerts.error(
         'Please check the form',
-        'Departure, travel option, lead name, a 10-digit phone and every traveller name are needed. Payments need an amount.',
+        'Departure, travel option, lead traveller name, a valid 10-digit mobile number and every traveller name are required. Each payment needs an amount.',
       );
       return;
     }

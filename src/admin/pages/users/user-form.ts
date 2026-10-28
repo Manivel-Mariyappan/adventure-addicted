@@ -8,9 +8,11 @@ import {
 } from '@angular/forms';
 import { NgbActiveOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { assetUrl } from '../../../app/core/utils/url';
 import { AdminDataService } from '../../core/admin-data.service';
 import { AdminRole, AdminUser } from '../../core/admin-models';
 import { AdminAlerts } from '../../core/alerts.service';
+import { resizeToWebp } from '../../core/image-resize';
 import { newId } from '../../core/local-collection';
 import { NumbersOnlyDirective } from '../../core/numbers-only.directive';
 import { AdminCard } from '../../shared/admin-card';
@@ -49,6 +51,9 @@ export class UserForm implements OnInit {
     { value: 'Operations', label: 'Operations: tours, departures and bookings' },
   ];
   readonly submitted = signal(false);
+  // data URL from an upload, or a path
+  readonly photo = signal('');
+  readonly assetUrl = assetUrl;
 
   readonly form = this.fb.nonNullable.group({
     fullName: ['', [Validators.required, Validators.maxLength(80)]],
@@ -56,7 +61,6 @@ export class UserForm implements OnInit {
     mobile: ['', Validators.pattern(/^\d{10}$/)],
     username: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._]{3,30}$/)]],
     role: this.fb.nonNullable.control<AdminRole>('Operations'),
-    active: [true],
     passwords: this.fb.nonNullable.group(
       { password: [''], confirmPassword: [''] },
       { validators: passwordsMatch },
@@ -68,11 +72,18 @@ export class UserForm implements OnInit {
     const password = this.form.controls.passwords.controls.password;
     if (u) {
       this.form.patchValue(u);
+      this.photo.set(u.photo ?? '');
       password.setValidators(Validators.minLength(8));
     } else {
       password.setValidators([Validators.required, Validators.minLength(8)]);
     }
     password.updateValueAndValidity();
+  }
+
+  async upload(input: HTMLInputElement): Promise<void> {
+    const file = input.files?.[0];
+    if (file) this.photo.set(await resizeToWebp(file, 400));
+    input.value = '';
   }
 
   invalid(name: 'fullName' | 'email' | 'mobile' | 'username'): boolean {
@@ -94,7 +105,10 @@ export class UserForm implements OnInit {
     this.submitted.set(true);
     this.form.markAllAsTouched();
     if (this.form.invalid) {
-      void this.alerts.error('Please check the form', 'Some fields are missing or invalid.');
+      void this.alerts.error(
+        'Please check the form',
+        'Some fields are missing or invalid. Please review the highlighted fields.',
+      );
       return;
     }
     const { passwords: _passwords, ...v } = this.form.getRawValue();
@@ -105,7 +119,7 @@ export class UserForm implements OnInit {
         .some((u) => u.username.toLowerCase() === username && u.id !== this.user?.id)
     ) {
       void this.alerts.error(
-        'Username taken',
+        'Username already in use',
         `"${username}" is already used by another admin user.`,
       );
       return;
@@ -113,8 +127,11 @@ export class UserForm implements OnInit {
     const admins = this.data.users
       .all()
       .filter((u) => u.role === 'Owner' && u.active && u.id !== this.user?.id);
-    if (this.user?.role === 'Owner' && (v.role !== 'Owner' || !v.active) && admins.length === 0) {
-      void this.alerts.error('Keep one owner', 'At least one active Owner account is required.');
+    if (this.user?.role === 'Owner' && v.role !== 'Owner' && admins.length === 0) {
+      void this.alerts.error(
+        'Owner account required',
+        'At least one active Owner account is required.',
+      );
       return;
     }
     if (
@@ -126,6 +143,9 @@ export class UserForm implements OnInit {
       id: this.user?.id ?? newId('usr'),
       ...v,
       username,
+      photo: this.photo(),
+      // made inactive or active again from the users list
+      active: this.user?.active ?? true,
       lastLogin: this.user?.lastLogin ?? null,
       createdAt: this.user?.createdAt ?? new Date().toISOString(),
     };

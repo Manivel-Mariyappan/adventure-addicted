@@ -1,12 +1,35 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { CompanySettings, Faq, Office, Testimonial } from '../../../app/core/models';
+import { CompanySettings, Faq, Office } from '../../../app/core/models';
 import { ContentStore } from '../../../app/core/services/content-store';
 import { normaliseWhatsappNumber } from '../../../app/core/services/whatsapp.service';
+import { formatInr, roundMoney } from '../../../app/core/utils/price';
+import { assetUrl } from '../../../app/core/utils/url';
 import { AdminAlerts } from '../../core/alerts.service';
+import { resizeToWebp } from '../../core/image-resize';
 import { NumbersOnlyDirective } from '../../core/numbers-only.directive';
+import { Icon } from '../../../app/shared/icons';
 import { AdminCard } from '../../shared/admin-card';
+
+const EXAMPLE_TRIP_PRICE = 50000;
+
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
 
 const STATES = [
   'Delhi',
@@ -29,8 +52,26 @@ const STATES = [
 @Component({
   selector: 'app-settings-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, NgSelectComponent, NumbersOnlyDirective, AdminCard],
+  imports: [ReactiveFormsModule, NgSelectComponent, NumbersOnlyDirective, AdminCard, Icon],
   templateUrl: './settings-page.html',
+  styles: `
+    /* read-only worked example, tinted so it doesn't look like a field */
+    .payment-summary {
+      color: #e2e8f0;
+      background: linear-gradient(135deg, #12204a 0%, #1e3a6e 100%);
+    }
+    .payment-summary .text-body-secondary {
+      color: #9fb0cc !important;
+    }
+    .payment-summary .total {
+      padding-block: 0.4rem;
+      margin-bottom: 0.4rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fbbf24;
+      border-block: 1px solid rgba(255, 255, 255, 0.15);
+    }
+  `,
 })
 export class SettingsPage implements OnInit {
   private readonly store = inject(ContentStore);
@@ -57,8 +98,47 @@ export class SettingsPage implements OnInit {
     holdHours: this.fb.control<string | number>(48, Validators.required),
     offices: this.fb.array<ReturnType<SettingsPage['officeGroup']>>([]),
     faqs: this.fb.array<ReturnType<SettingsPage['faqGroup']>>([]),
-    testimonials: this.fb.array<ReturnType<SettingsPage['testimonialGroup']>>([]),
   });
+
+  // Worked example under "Payments and holds", using the same maths as the booking page.
+  private readonly paymentValues = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
+  readonly example = computed(() => {
+    const v = this.paymentValues();
+    const gstPercent = Number(v.gstPercent) || 0;
+    const advancePercent = Math.min(100, Number(v.advancePercent) || 0);
+    const price = EXAMPLE_TRIP_PRICE;
+    const gst = roundMoney((price * gstPercent) / 100);
+    const total = roundMoney(price + gst);
+    const advance = Math.min(total, Math.ceil((total * advancePercent) / 100));
+    return {
+      gstPercent,
+      advancePercent,
+      balanceDueDays: Number(v.balanceDueDays) || 0,
+      holdHours: Number(v.holdHours) || 0,
+      price,
+      gst,
+      total,
+      advance,
+      balance: roundMoney(total - advance),
+    };
+  });
+  readonly formatInr = formatInr;
+
+  // uploaded data URL or a path; empty means the default favicon.svg
+  readonly logo = signal('');
+  readonly assetUrl = assetUrl;
+
+  async uploadLogo(input: HTMLInputElement): Promise<void> {
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    // SVGs stay as they are (sharp at any size); photos are shrunk to keep settings.json small
+    this.logo.set(
+      file.type === 'image/svg+xml' ? await readAsDataUrl(file) : await resizeToWebp(file, 256),
+    );
+  }
 
   private officeGroup(o?: Office) {
     return this.fb.nonNullable.group({
@@ -77,35 +157,41 @@ export class SettingsPage implements OnInit {
     return this.fb.nonNullable.group({ question: [faq.question], answer: [faq.answer] });
   }
 
-  private testimonialGroup(t: Testimonial = { name: '', city: '', tour: '', text: '' }) {
-    return this.fb.nonNullable.group({
-      name: [t.name],
-      city: [t.city],
-      tour: [t.tour],
-      text: [t.text],
-    });
-  }
-
   ngOnInit(): void {
     const s = this.store.settings();
     if (!s) return;
-    const { offices, faqs, testimonials, ...plain } = s;
+    // testimonials are not edited here for now; save() keeps the stored ones
+    const { offices, faqs, testimonials: _testimonials, ...plain } = s;
+    this.logo.set(s.logo ?? '');
     this.form.patchValue(plain);
     offices.forEach((o) => this.form.controls.offices.push(this.officeGroup(o)));
     faqs.forEach((f) => this.form.controls.faqs.push(this.faqGroup(f)));
-    testimonials.forEach((t) => this.form.controls.testimonials.push(this.testimonialGroup(t)));
   }
 
   addOffice(): void {
     this.form.controls.offices.push(this.officeGroup());
   }
 
-  addFaq(): void {
-    this.form.controls.faqs.push(this.faqGroup());
+  async removeOffice(i: number): Promise<void> {
+    const name = this.form.controls.offices.at(i).controls.name.value.trim() || 'this office';
+    const ok = await this.alerts.confirmDelete(
+      `Remove ${name}?`,
+      'It is removed from the contact page and footer when you save and publish.',
+    );
+    if (ok) this.form.controls.offices.removeAt(i);
   }
 
-  addTestimonial(): void {
-    this.form.controls.testimonials.push(this.testimonialGroup());
+  async removeFaq(i: number): Promise<void> {
+    const question = this.form.controls.faqs.at(i).controls.question.value.trim();
+    const ok = await this.alerts.confirmDelete(
+      'Remove this question?',
+      question || 'It is removed from the home page when you save and publish.',
+    );
+    if (ok) this.form.controls.faqs.removeAt(i);
+  }
+
+  addFaq(): void {
+    this.form.controls.faqs.push(this.faqGroup());
   }
 
   invalid(name: 'companyName' | 'whatsappNumber' | 'email'): boolean {
@@ -118,7 +204,7 @@ export class SettingsPage implements OnInit {
     if (this.form.invalid) {
       void this.alerts.error(
         'Please check the form',
-        'Some fields need attention. Every office needs a name.',
+        'Some fields need attention. Each office requires a name.',
       );
       return;
     }
@@ -132,6 +218,7 @@ export class SettingsPage implements OnInit {
     const v = this.form.getRawValue();
     const settings: CompanySettings = {
       ...v,
+      logo: this.logo(),
       description: v.description.trim(),
       whatsappNumber: normaliseWhatsappNumber(v.whatsappNumber),
       offices: v.offices
@@ -142,7 +229,7 @@ export class SettingsPage implements OnInit {
       balanceDueDays: Number(v.balanceDueDays) || 0,
       holdHours: Number(v.holdHours) || 0,
       faqs: v.faqs.filter((f) => f.question.trim() && f.answer.trim()),
-      testimonials: v.testimonials.filter((t) => t.name.trim() && t.text.trim()),
+      testimonials: this.store.settings()?.testimonials ?? [],
     };
     this.store.saveDraft('settings', settings);
     this.form.markAsPristine();

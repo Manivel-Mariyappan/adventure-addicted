@@ -10,6 +10,7 @@ import { formatRange } from '../../core/utils/dates';
 import { formatInr } from '../../core/utils/price';
 import { departureState, isBookable, seatsLeft } from '../../core/utils/trip-rules';
 import { assetUrl } from '../../core/utils/url';
+import { CoordinatorAvatar } from '../../shared/coordinator-avatar';
 import { DepartureList } from '../../shared/departure-list/departure-list';
 import { Icon } from '../../shared/icons';
 import { Itinerary } from '../../shared/itinerary/itinerary';
@@ -33,6 +34,7 @@ const DIFFICULTY_NOTES: Record<Difficulty, string> = {
     RouterLink,
     DecimalPipe,
     Icon,
+    CoordinatorAvatar,
     Itinerary,
     DepartureList,
     WhatsappButton,

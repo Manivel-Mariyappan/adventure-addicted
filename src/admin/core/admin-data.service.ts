@@ -7,6 +7,26 @@ import { LocalCollection } from './local-collection';
 
 const now = () => new Date().toISOString();
 
+// placeholder profile image for demo users; replace it from Admin users > Edit
+const DEMO_ADMIN_PHOTO = 'art/admins/demo-admin.svg';
+const DEMO_DETAILS_FLAG = 'aac.admin.users.demo-details';
+
+function readFlag(key: string): boolean {
+  try {
+    return localStorage.getItem(key) !== null;
+  } catch {
+    return true; // no storage: nothing to fill in
+  }
+}
+
+function setFlag(key: string): void {
+  try {
+    localStorage.setItem(key, '1');
+  } catch {
+    // storage unavailable
+  }
+}
+
 // localStorage stand-ins until the API exists
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
@@ -15,14 +35,31 @@ export class AdminDataService {
       id: 'usr-owner',
       fullName: 'Company Owner',
       username: 'admin',
-      email: '',
-      mobile: '',
+      email: 'admin@example.com',
+      mobile: '9000000001',
+      photo: DEMO_ADMIN_PHOTO,
       role: 'Owner',
       active: true,
       lastLogin: null,
       createdAt: now(),
     },
   ]);
+
+  constructor() {
+    // Once per browser, give existing users demo details where theirs are empty: the demo image
+    // and a placeholder email and mobile. After that an empty photo means it was removed.
+    if (!readFlag(DEMO_DETAILS_FLAG)) {
+      this.users.setAll(
+        this.users.all().map((u, i) => ({
+          ...u,
+          photo: u.photo || DEMO_ADMIN_PHOTO,
+          email: u.email || `${u.username}@example.com`,
+          mobile: u.mobile || `90000000${String(i + 1).padStart(2, '0')}`,
+        })),
+      );
+      setFlag(DEMO_DETAILS_FLAG);
+    }
+  }
 
   readonly bookings = new LocalCollection<Booking>('aac.admin.bookings', () => []);
   readonly ops = new LocalCollection<DepartureOps>('aac.admin.departure-ops', () => []);

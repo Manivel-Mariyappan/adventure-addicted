@@ -10,6 +10,7 @@ import {
   Destination,
   TourPackage,
 } from '../models';
+import { assetUrl } from '../utils/url';
 
 type LoadState = 'loading' | 'ready' | 'error';
 
@@ -28,6 +29,25 @@ interface DraftValues {
   departures: Departure[];
   coordinators: Coordinator[];
   settings: CompanySettings;
+}
+
+// Short hash of a data file's contents, to notice when the file changed after a draft began.
+function fingerprint(value: unknown): string {
+  const text = JSON.stringify(value);
+  let hash = 5381;
+  for (let i = 0; i < text.length; i++) hash = (hash * 33) ^ text.charCodeAt(i);
+  return (hash >>> 0).toString(36);
+}
+
+// the fingerprint of the published file each draft was started from
+const baseKey = (kind: DraftKind) => `${DRAFT_KEYS[kind]}.base`;
+
+function readBase(kind: DraftKind): string | null {
+  try {
+    return localStorage.getItem(baseKey(kind));
+  } catch {
+    return null;
+  }
 }
 
 function readDraft<K extends DraftKind>(kind: K): DraftValues[K] | null {
@@ -65,6 +85,23 @@ export class ContentStore {
     settings: readDraft('settings'),
   });
 
+  private readonly bases = signal<Record<DraftKind, string | null>>({
+    destinations: readBase('destinations'),
+    tours: readBase('tours'),
+    departures: readBase('departures'),
+    coordinators: readBase('coordinators'),
+    settings: readBase('settings'),
+  });
+
+  // Drafts whose JSON file has changed since the draft was started (or that predate this
+  // check). The draft hides those changes until it is discarded or kept on purpose.
+  readonly staleDrafts = computed(() => {
+    if (this.state() !== 'ready') return [];
+    return (Object.keys(DRAFT_KEYS) as DraftKind[]).filter(
+      (k) => this.drafts()[k] !== null && this.bases()[k] !== fingerprint(this.published[k]()),
+    );
+  });
+
   readonly destinations = computed(
     () => this.drafts().destinations ?? this.published.destinations(),
   );
@@ -74,6 +111,8 @@ export class ContentStore {
     () => this.drafts().coordinators ?? this.published.coordinators(),
   );
   readonly settings = computed(() => this.drafts().settings ?? this.published.settings());
+  // the company logo for headers and sign-in pages
+  readonly logo = computed(() => assetUrl(this.settings()?.logo || 'favicon.svg'));
 
   readonly hasDrafts = computed(() => Object.values(this.drafts()).some((d) => d !== null));
   readonly draftKinds = computed(() =>
@@ -132,6 +171,23 @@ export class ContentStore {
       );
     }
     this.drafts.update((d) => ({ ...d, [kind]: value }));
+    // the first edit records which version of the file the draft started from
+    if (this.bases()[kind] === null) this.setBase(kind, fingerprint(this.published[kind]()));
+  }
+
+  // Keep the draft even though the file changed: stop warning until it changes again.
+  keepDraft(kind: DraftKind): void {
+    this.setBase(kind, fingerprint(this.published[kind]()));
+  }
+
+  private setBase(kind: DraftKind, value: string | null): void {
+    try {
+      if (value === null) localStorage.removeItem(baseKey(kind));
+      else localStorage.setItem(baseKey(kind), value);
+    } catch {
+      // storage unavailable; the warning just shows again next time
+    }
+    this.bases.update((b) => ({ ...b, [kind]: value }));
   }
 
   discardDraft(kind: DraftKind): void {
@@ -141,6 +197,7 @@ export class ContentStore {
       // storage unavailable, nothing to remove
     }
     this.drafts.update((d) => ({ ...d, [kind]: null }));
+    this.setBase(kind, null);
   }
 
   isDraft(kind: DraftKind): boolean {

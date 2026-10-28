@@ -3,12 +3,13 @@ import { RouterLink } from '@angular/router';
 import { CatalogService } from '../../core/services/catalog.service';
 import { ContentStore } from '../../core/services/content-store';
 import { SeoService } from '../../core/services/seo.service';
+import { CoordinatorAvatar } from '../../shared/coordinator-avatar';
 import { Icon } from '../../shared/icons';
 
 @Component({
   selector: 'app-about',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, CoordinatorAvatar],
   template: `
     <section class="banner">
       <div class="container">
@@ -79,7 +80,7 @@ import { Icon } from '../../shared/icons';
           <div class="people">
             @for (c of catalog.coordinators(); track c.id) {
               <article class="card person">
-                <span class="avatar" aria-hidden="true">{{ c.name.charAt(0) }}</span>
+                <app-coordinator-avatar [coordinator]="c" />
                 <h3>{{ c.name }}</h3>
                 <p class="meta">{{ c.experienceYears }} years · {{ c.languages.join(', ') }}</p>
                 <p>{{ c.bio }}</p>
@@ -214,18 +215,6 @@ import { Icon } from '../../shared/icons';
       margin: 0.5rem 0 0;
       font-size: 0.9rem;
       color: var(--text-2);
-    }
-    .avatar {
-      display: grid;
-      place-items: center;
-      width: 3.2rem;
-      height: 3.2rem;
-      font-family: var(--font-head);
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #fff;
-      background: var(--accent);
-      border-radius: 50%;
     }
     .cta {
       display: flex;

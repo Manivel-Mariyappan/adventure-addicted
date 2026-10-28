@@ -384,20 +384,6 @@ table {
   }
 }
 
-.avatar {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 3.2rem;
-  height: 3.2rem;
-  font-family: var(--font-head);
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 50%;
-}
-
 .faq {
   border-bottom: 1px solid var(--line);
 

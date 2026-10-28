@@ -280,7 +280,7 @@
             <div [formGroupName]="i" class="border rounded-3 p-3 bg-white">
               <div class="row g-2">
                 <div class="col-md-3">
-                  <label class="form-label small">Type</label>
+                  <label class="form-label small">Travel type</label>
                   <ng-select
                     formControlName="type"
                     [items]="travelTypes"
@@ -292,7 +292,7 @@
                 </div>
                 <div class="col-md-5">
                   <label class="form-label small">
-                    Label
+                    Option name
                     <span class="text-danger">*</span>
                   </label>
                   <input
@@ -542,7 +542,7 @@
                   <div class="col-md-6">
                     <div class="row g-2">
                       <div class="col-12">
-                        <label class="form-label small">Stay</label>
+                        <label class="form-label small">Accommodation</label>
                         <input
                           class="form-control form-control-sm"
                           formControlName="stay"
@@ -706,7 +706,7 @@
           </div>
           <div class="row g-2">
             <div class="col-6">
-              <label class="form-label small" for="t-min">Min group</label>
+              <label class="form-label small" for="t-min">Minimum group size</label>
               <input
                 id="t-min"
                 class="form-control"
@@ -717,7 +717,7 @@
               />
             </div>
             <div class="col-6">
-              <label class="form-label small" for="t-max">Max group</label>
+              <label class="form-label small" for="t-max">Maximum group size</label>
               <input
                 id="t-max"
                 class="form-control"

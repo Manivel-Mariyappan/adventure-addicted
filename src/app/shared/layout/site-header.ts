@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
+import { ContentStore } from '../../core/services/content-store';
 import { MyTripsService } from '../../core/services/my-trips.service';
 import { Icon } from '../icons';
 
@@ -20,6 +21,7 @@ import { Icon } from '../icons';
 })
 export class SiteHeader {
   private readonly myTrips = inject(MyTripsService);
+  readonly logo = inject(ContentStore).logo;
 
   readonly menuOpen = signal(false);
   readonly scrolled = signal(false);

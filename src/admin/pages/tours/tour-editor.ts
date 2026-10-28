@@ -294,7 +294,7 @@ export class TourEditor implements OnInit {
     if (!v.itinerary.length || this.itinerary.invalid)
       problems.push('a title for every itinerary day');
     if (problems.length) {
-      void this.alerts.error('Please add', problems.join(', ') + '.');
+      void this.alerts.error('Missing details', `Please add ${problems.join(', ')}.`);
       return;
     }
     const others = this.store.tours().filter((t) => t.id !== this.tour()?.id);

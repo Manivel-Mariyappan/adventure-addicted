@@ -9,12 +9,13 @@ import { addDays, formatDate, formatRange, todayIso } from '../../core/utils/dat
 import { formatInr, roundMoney } from '../../core/utils/price';
 import { cancellationEstimate } from '../../core/utils/trip-rules';
 import { STATUS_TONE } from '../../core/utils/status-tone';
+import { CoordinatorAvatar } from '../../shared/coordinator-avatar';
 import { Icon } from '../../shared/icons';
 
 @Component({
   selector: 'app-trip',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, CoordinatorAvatar],
   templateUrl: './trip.html',
   styleUrl: './trip.scss',
 })

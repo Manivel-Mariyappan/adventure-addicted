@@ -118,7 +118,10 @@ export class TripWorkspace {
       const pack = JSON.parse(await file.text()) as TripPack;
       if (pack.kind !== 'aac-trip-pack') throw new Error('not a pack');
       if (pack.departureId !== this.id()) {
-        void this.alerts.error('Different trip', `This pack is for ${pack.departureCode}.`);
+        void this.alerts.error(
+          'Wrong trip pack',
+          `This trip pack belongs to departure ${pack.departureCode}.`,
+        );
         return;
       }
       this.save((log) => ({ ...log, pack }));

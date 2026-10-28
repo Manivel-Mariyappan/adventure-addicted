@@ -3,8 +3,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Coordinator } from '../../../app/core/models';
 import { ContentStore } from '../../../app/core/services/content-store';
+import { assetUrl } from '../../../app/core/utils/url';
 import { AdminAlerts } from '../../core/alerts.service';
 import { sha256Hex } from '../../core/hash';
+import { resizeToWebp } from '../../core/image-resize';
 import { newId } from '../../core/local-collection';
 import { NumbersOnlyDirective } from '../../core/numbers-only.directive';
 import { AdminCard } from '../../shared/admin-card';
@@ -35,6 +37,47 @@ import { AdminCard } from '../../shared/admin-card';
       novalidate
     >
       <admin-card heading="Profile" subtitle="Shown on tour pages" icon="☺" [required]="true">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          @if (photo()) {
+            <img
+              [src]="assetUrl(photo())"
+              alt="Profile image"
+              width="72"
+              height="72"
+              class="rounded-circle border flex-shrink-0"
+              style="object-fit: cover"
+            />
+          } @else {
+            <span
+              class="rounded-circle bg-body-secondary text-body-secondary d-grid flex-shrink-0 fs-3 fw-bold"
+              style="width: 72px; height: 72px; place-items: center"
+              aria-hidden="true"
+            >
+              {{ form.controls.name.value.trim().charAt(0) || '?' }}
+            </span>
+          }
+          <div>
+            <div class="fw-semibold mb-1">Profile image</div>
+            <div class="d-flex gap-2">
+              <label class="btn btn-sm btn-outline-primary mb-0">
+                {{ photo() ? 'Change image' : 'Upload image' }}
+                <input
+                  #file
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  hidden
+                  (change)="upload(file)"
+                />
+              </label>
+              @if (photo()) {
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="photo.set('')">
+                  Remove
+                </button>
+              }
+            </div>
+            <div class="form-text">Square photo works best. JPG, PNG or WebP.</div>
+          </div>
+        </div>
         <div class="row g-3">
           <div class="col-md-6">
             <label class="form-label" for="c-name"
@@ -47,6 +90,26 @@ import { AdminCard } from '../../shared/admin-card';
               placeholder="Enter full name"
               [class.is-invalid]="invalid('name')"
             />
+            <div class="invalid-feedback">Full name is required.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="c-email">Email <span class="text-danger">*</span></label>
+            <input
+              id="c-email"
+              type="email"
+              class="form-control"
+              formControlName="email"
+              placeholder="Enter email address"
+              autocomplete="off"
+              [class.is-invalid]="invalid('email')"
+            />
+            <div class="invalid-feedback">
+              {{
+                form.controls.email.hasError('required')
+                  ? 'Email is required.'
+                  : 'Enter a valid email address.'
+              }}
+            </div>
           </div>
           <div class="col-md-6">
             <label class="form-label" for="c-phone">Phone <span class="text-danger">*</span></label>
@@ -54,12 +117,46 @@ import { AdminCard } from '../../shared/admin-card';
               id="c-phone"
               class="form-control"
               formControlName="phone"
-              placeholder="+91 90000 00000"
+              placeholder="Enter 10-digit mobile number"
+              maxlength="10"
+              appNumbersOnly
+              [decimals]="0"
+              inputmode="numeric"
               [class.is-invalid]="invalid('phone')"
             />
+            <div class="invalid-feedback">
+              {{
+                form.controls.phone.hasError('required')
+                  ? 'Phone is required.'
+                  : 'Enter a valid 10-digit mobile number.'
+              }}
+            </div>
             <div class="form-text">Shown only to travellers with confirmed seats.</div>
           </div>
-          <div class="col-md-8">
+          <div class="col-md-6">
+            <label class="form-label" for="c-exp"
+              >Experience (in years) <span class="text-danger">*</span></label
+            >
+            <input
+              id="c-exp"
+              class="form-control"
+              formControlName="experienceYears"
+              appNumbersOnly
+              [decimals]="0"
+              maxlength="2"
+              inputmode="numeric"
+              placeholder="e.g. 5"
+              [class.is-invalid]="invalid('experienceYears')"
+            />
+            <div class="invalid-feedback">
+              {{
+                form.controls.experienceYears.hasError('required')
+                  ? 'Experience is required.'
+                  : 'Enter a number from 1 to 99.'
+              }}
+            </div>
+          </div>
+          <div class="col-12">
             <label class="form-label" for="c-lang">Languages</label>
             <input
               id="c-lang"
@@ -67,20 +164,6 @@ import { AdminCard } from '../../shared/admin-card';
               formControlName="languages"
               placeholder="Comma separated, e.g. English, Hindi"
             />
-          </div>
-          <div class="col-md-4">
-            <label class="form-label" for="c-exp">Experience</label>
-            <div class="input-group">
-              <input
-                id="c-exp"
-                class="form-control"
-                formControlName="experienceYears"
-                appNumbersOnly
-                [decimals]="0"
-                placeholder="5"
-              />
-              <span class="input-group-text">years</span>
-            </div>
           </div>
           <div class="col-12">
             <label class="form-label" for="c-bio">Short bio</label>
@@ -113,18 +196,8 @@ import { AdminCard } from '../../shared/admin-card';
           [class.is-invalid]="pinError()"
         />
         @if (pinError()) {
-          <div class="invalid-feedback">Enter a PIN of 4 to 6 digits.</div>
+          <div class="invalid-feedback">PIN must be 4 to 6 digits.</div>
         }
-        <div class="form-check form-switch mt-3">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
-            id="c-active"
-            formControlName="active"
-          />
-          <label class="form-check-label" for="c-active">Active</label>
-        </div>
       </admin-card>
     </form>
 
@@ -148,23 +221,47 @@ export class CoordinatorForm implements OnInit {
   coordinator: Coordinator | null = null;
 
   readonly submitted = signal(false);
+  // data URL from an upload, or a path from coordinators.json
+  readonly photo = signal('');
+  readonly assetUrl = assetUrl;
 
   readonly form = this.fb.nonNullable.group({
     name: ['', Validators.required],
-    phone: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     languages: [''],
-    experienceYears: this.fb.control<string | number>(''),
+    // 1 to 99; 0 and 00 are not allowed
+    experienceYears: this.fb.control<string | number>('', [
+      Validators.required,
+      Validators.pattern(/^[1-9]\d?$/),
+    ]),
     bio: [''],
     pin: [''],
-    active: [true],
   });
 
   ngOnInit(): void {
     const c = this.coordinator;
-    if (c) this.form.patchValue({ ...c, languages: c.languages.join(', '), pin: '' });
+    if (!c) return;
+    this.form.patchValue({
+      ...c,
+      email: c.email ?? '',
+      // older records have "+91 90000 00011"; keep the last 10 digits
+      phone: c.phone.replace(/\D/g, '').slice(-10),
+      experienceYears: c.experienceYears || '',
+      languages: c.languages.join(', '),
+      pin: '',
+    });
+    this.photo.set(c.photo);
   }
 
-  invalid(name: 'name' | 'phone'): boolean {
+  async upload(input: HTMLInputElement): Promise<void> {
+    const file = input.files?.[0];
+    // a small square is plenty for a round avatar, and keeps coordinators.json light
+    if (file) this.photo.set(await resizeToWebp(file, 400));
+    input.value = '';
+  }
+
+  invalid(name: 'name' | 'email' | 'phone' | 'experienceYears'): boolean {
     const c = this.form.controls[name];
     return c.invalid && (c.touched || this.submitted());
   }
@@ -178,7 +275,10 @@ export class CoordinatorForm implements OnInit {
   async save(): Promise<void> {
     this.submitted.set(true);
     if (this.form.invalid || this.pinError()) {
-      void this.alerts.error('Please check the form', 'Name, phone and a PIN are required.');
+      void this.alerts.error(
+        'Please check the form',
+        'Full name, a valid email, a 10-digit phone, experience (1 to 99 years) and PIN are required.',
+      );
       return;
     }
     const v = this.form.getRawValue();
@@ -186,8 +286,9 @@ export class CoordinatorForm implements OnInit {
     const record: Coordinator = {
       id: this.coordinator?.id ?? newId('crd'),
       name: v.name.trim(),
+      email: v.email.trim(),
       phone: v.phone.trim(),
-      photo: this.coordinator?.photo ?? '',
+      photo: this.photo(),
       bio: v.bio.trim(),
       languages: v.languages
         .split(',')
@@ -195,7 +296,8 @@ export class CoordinatorForm implements OnInit {
         .filter(Boolean),
       experienceYears: Number(v.experienceYears) || 0,
       pinHash: pin ? await sha256Hex(pin) : (this.coordinator?.pinHash ?? ''),
-      active: v.active,
+      // deleting and activating happen from the list, not here
+      active: this.coordinator?.active ?? true,
     };
     this.store.saveDraft(
       'coordinators',
