@@ -108,6 +108,7 @@ export class CoordinatorsPage {
       cellRenderer: (p: ICellRendererParams<Coordinator>) =>
         p.data ? nameWithPhoto(p.data.name, p.data.photo) : '',
     },
+    { headerName: 'Gender', field: 'gender', width: 100 },
     { headerName: 'Email', field: 'email', flex: 1, minWidth: 180 },
     { headerName: 'Phone', field: 'phone', width: 125 },
     {

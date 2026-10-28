@@ -2,6 +2,7 @@
   {
     "id": "crd-tenzin",
     "name": "Tenzin Norbu",
+    "gender": "Male",
     "email": "tenzin.norbu@example.com",
     "phone": "9000000011",
     "photo": "art/coordinators/tenzin-norbu.svg",
@@ -18,6 +19,7 @@
   {
     "id": "crd-arjun",
     "name": "Arjun Rawat",
+    "gender": "Male",
     "email": "arjun.rawat@example.com",
     "phone": "9000000012",
     "photo": "art/coordinators/arjun-rawat.svg",
@@ -34,6 +36,7 @@
   {
     "id": "crd-meera",
     "name": "Meera Shekhawat",
+    "gender": "Female",
     "email": "meera.shekhawat@example.com",
     "phone": "9000000013",
     "photo": "art/coordinators/meera-shekhawat.svg",

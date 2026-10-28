@@ -134,9 +134,12 @@ export interface Departure {
   status: DepartureStatus;
 }
 
+export type CoordinatorGender = 'Male' | 'Female' | 'Other';
+
 export interface Coordinator {
   id: string;
   name: string;
+  gender: CoordinatorGender;
   // office contact only; not shown on the website
   email: string;
   phone: string;

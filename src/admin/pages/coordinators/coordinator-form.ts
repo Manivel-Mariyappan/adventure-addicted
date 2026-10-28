@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveOffcanvas } from '@ng-bootstrap/ng-bootstrap';
-import { Coordinator } from '../../../app/core/models';
+import { Coordinator, CoordinatorGender } from '../../../app/core/models';
 import { ContentStore } from '../../../app/core/services/content-store';
 import { assetUrl } from '../../../app/core/utils/url';
 import { AdminAlerts } from '../../core/alerts.service';
@@ -93,6 +93,32 @@ import { AdminCard } from '../../shared/admin-card';
             <div class="invalid-feedback">Full name is required.</div>
           </div>
           <div class="col-md-6">
+            <span class="form-label d-block" id="c-gender-label"
+              >Gender <span class="text-danger">*</span></span
+            >
+            <div class="btn-group w-100" role="radiogroup" aria-labelledby="c-gender-label">
+              @for (g of genders; track g) {
+                <input
+                  type="radio"
+                  class="btn-check"
+                  formControlName="gender"
+                  [id]="'c-gender-' + g"
+                  [value]="g"
+                />
+                <label
+                  class="btn"
+                  [class.btn-outline-primary]="!invalid('gender')"
+                  [class.btn-outline-danger]="invalid('gender')"
+                  [for]="'c-gender-' + g"
+                  >{{ g }}</label
+                >
+              }
+            </div>
+            @if (invalid('gender')) {
+              <div class="invalid-feedback d-block">Gender is required.</div>
+            }
+          </div>
+          <div class="col-md-6">
             <label class="form-label" for="c-email">Email <span class="text-danger">*</span></label>
             <input
               id="c-email"
@@ -156,7 +182,7 @@ import { AdminCard } from '../../shared/admin-card';
               }}
             </div>
           </div>
-          <div class="col-12">
+          <div class="col-md-6">
             <label class="form-label" for="c-lang">Languages</label>
             <input
               id="c-lang"
@@ -221,12 +247,14 @@ export class CoordinatorForm implements OnInit {
   coordinator: Coordinator | null = null;
 
   readonly submitted = signal(false);
+  readonly genders: CoordinatorGender[] = ['Male', 'Female', 'Other'];
   // data URL from an upload, or a path from coordinators.json
   readonly photo = signal('');
   readonly assetUrl = assetUrl;
 
   readonly form = this.fb.nonNullable.group({
     name: ['', Validators.required],
+    gender: this.fb.control<CoordinatorGender | ''>('', Validators.required),
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     languages: [''],
@@ -245,6 +273,8 @@ export class CoordinatorForm implements OnInit {
     this.form.patchValue({
       ...c,
       email: c.email ?? '',
+      // older records have no gender, so it must be chosen on the next edit
+      gender: c.gender ?? '',
       // older records have "+91 90000 00011"; keep the last 10 digits
       phone: c.phone.replace(/\D/g, '').slice(-10),
       experienceYears: c.experienceYears || '',
@@ -261,7 +291,7 @@ export class CoordinatorForm implements OnInit {
     input.value = '';
   }
 
-  invalid(name: 'name' | 'email' | 'phone' | 'experienceYears'): boolean {
+  invalid(name: 'name' | 'gender' | 'email' | 'phone' | 'experienceYears'): boolean {
     const c = this.form.controls[name];
     return c.invalid && (c.touched || this.submitted());
   }
@@ -277,7 +307,7 @@ export class CoordinatorForm implements OnInit {
     if (this.form.invalid || this.pinError()) {
       void this.alerts.error(
         'Please check the form',
-        'Full name, a valid email, a 10-digit phone, experience (1 to 99 years) and PIN are required.',
+        'Full name, gender, a valid email, a 10-digit phone, experience (1 to 99 years) and PIN are required.',
       );
       return;
     }
@@ -286,6 +316,7 @@ export class CoordinatorForm implements OnInit {
     const record: Coordinator = {
       id: this.coordinator?.id ?? newId('crd'),
       name: v.name.trim(),
+      gender: v.gender as CoordinatorGender,
       email: v.email.trim(),
       phone: v.phone.trim(),
       photo: this.photo(),
