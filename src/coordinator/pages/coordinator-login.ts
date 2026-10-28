@@ -9,7 +9,10 @@ import { CoordinatorAuthService } from '../core/coordinator-auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule],
   template: `
-    <div class="min-vh-100 d-flex align-items-center justify-content-center p-3 page">
+    <div
+      class="min-vh-100 d-flex align-items-center justify-content-center p-3 page"
+      style="background-image: url('art/hero.svg')"
+    >
       <form class="card shadow border-0 p-4" style="width: min(400px, 100%)" (ngSubmit)="submit()">
         <div class="d-flex align-items-center gap-2 mb-3">
           <img [src]="logo()" alt="" style="object-fit: contain" width="36" height="36" />
@@ -61,7 +64,8 @@ import { CoordinatorAuthService } from '../core/coordinator-auth.service';
   `,
   styles: `
     .page {
-      background: #0f1f3d url('/art/hero.svg') center / cover;
+      /* the image is set inline in the template so it resolves against <base href> */
+      background: #0f1f3d center / cover;
     }
   `,
 })

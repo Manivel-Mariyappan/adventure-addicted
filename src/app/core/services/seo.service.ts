@@ -20,8 +20,9 @@ export class SeoService {
   private readonly meta = inject(Meta);
   private readonly doc = inject(DOCUMENT);
 
+  // the site's home, including any sub-path from <base href>, e.g. https://x.github.io/repo
   private get origin(): string {
-    return APP_CONFIG.siteUrl || this.doc.location.origin;
+    return (APP_CONFIG.siteUrl || this.doc.baseURI).replace(/\/$/, '');
   }
 
   absolute(path: string): string {
@@ -32,7 +33,10 @@ export class SeoService {
     const fullTitle = page.title.includes('Adventure Addicted')
       ? page.title
       : `${page.title} | Adventure Addicted`;
-    const url = this.absolute(page.path ?? this.doc.location.pathname);
+    // without a path, use this page's own address (it already includes any sub-path)
+    const url = page.path
+      ? this.absolute(page.path)
+      : this.doc.location.origin + this.doc.location.pathname;
     const image = this.absolute(page.image ?? 'art/share.svg');
 
     this.title.setTitle(fullTitle);

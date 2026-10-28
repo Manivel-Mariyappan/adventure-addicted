@@ -8,8 +8,9 @@ export function slugify(value: string): string {
     .replace(/[\s_-]+/g, '-');
 }
 
-// Paths in the JSON files are relative ("demo/products/bulb.svg"); make them root-relative.
+// Paths in the JSON files are relative ("art/leh.svg"). Keep them relative so they resolve
+// against <base href>, which lets the site run at a domain root or under a sub-path
+// (GitHub Pages). An old root-relative "/art/leh.svg" loses its leading slash for the same reason.
 export function assetUrl(path: string): string {
-  const isAlreadyUsable = /^(https?:|data:|blob:|\/)/.test(path);
-  return isAlreadyUsable ? path : `/${path}`;
+  return path.replace(/^\/(?!\/)/, '');
 }

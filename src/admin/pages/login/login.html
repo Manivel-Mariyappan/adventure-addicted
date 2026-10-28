@@ -1,4 +1,7 @@
-<div class="min-vh-100 d-flex align-items-center justify-content-center p-3 page">
+<div
+  class="min-vh-100 d-flex align-items-center justify-content-center p-3 page"
+  style="background-image: url('art/hero.svg')"
+>
   <form class="card shadow border-0 login" [formGroup]="form" (ngSubmit)="submit()" novalidate>
     <!-- night sky over the passes, with prayer flags strung across -->
     <div class="band">
@@ -69,7 +72,7 @@
         }
         Sign in
       </button>
-      <a href="/" class="d-block text-center mt-3 small">← Back to website</a>
+      <a routerLink="/" class="d-block text-center mt-3 small">← Back to website</a>
     </div>
   </form>
 </div>

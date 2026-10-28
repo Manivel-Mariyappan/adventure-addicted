@@ -11,6 +11,9 @@ import { WhatsappFab } from './shared/layout/whatsapp-fab';
 
 const isPortal = (url: string) => /^\/(admin|coordinator)(\/|$|\?)/.test(url);
 
+// The current path inside the app, without the <base href> (e.g. "/adventure-addicted").
+const appPath = () => location.pathname.slice(new URL(document.baseURI).pathname.length - 1) || '/';
+
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,7 +24,7 @@ const isPortal = (url: string) => /^\/(admin|coordinator)(\/|$|\?)/.test(url);
 export class App {
   readonly store = inject(ContentStore);
   // the admin and coordinator portals have their own layout
-  readonly portal = signal(isPortal(location.pathname));
+  readonly portal = signal(isPortal(appPath()));
 
   constructor() {
     const router = inject(Router);

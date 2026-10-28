@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ContentStore } from '../../../app/core/services/content-store';
 import { Icon } from '../../../app/shared/icons';
 import { PrayerFlags } from '../../../app/shared/prayer-flags';
@@ -10,7 +10,7 @@ import { AdminAuthService } from '../../core/admin-auth.service';
 @Component({
   selector: 'app-admin-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, Icon, PrayerFlags],
+  imports: [ReactiveFormsModule, RouterLink, Icon, PrayerFlags],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })

@@ -1,0 +1,59 @@
+# Builds the site and publishes it to GitHub Pages on every push to master.
+# The site is served at https://<owner>.github.io/<repo>/, so the build uses that sub-path
+# as its base href. With a custom domain, change --base-href to "/".
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# one deployment at a time; a newer push replaces a queued one
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test -- --watch=false
+
+      - run: npx ng build --base-href "/${{ github.event.repository.name }}/"
+
+      # Pages has no server-side routing: serve the app for unknown paths such as
+      # /tours/leh-ladakh or /admin, and stop Jekyll from hiding files.
+      - name: Single-page app fallback
+        run: |
+          cp dist/adventure-addicted/browser/index.html dist/adventure-addicted/browser/404.html
+          touch dist/adventure-addicted/browser/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/adventure-addicted/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
